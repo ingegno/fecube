@@ -581,7 +581,7 @@ Voor we hieraan beginnen, moeten we ontwerpen hoe we animaties zullen tonen, zod
  \item Do morse code of a sentence.
  \item ....
 \end{itemize}
-So, how to program this? We will do like in the movies: a specific effect consists of different actions. An action has a certain duration: $t_a$. The action is divided in frames $F$, which is a single image, like a picture taken at a specific instance. So, an action is a function, which for a specific time needs to tell us what frame to show: $F=\mbox{action(t)}$
+So, how to program this? We will do like in the movies: a specific effect consists of different shots or actions. An action has a certain duration: $t_a$. The action is divided in frames $F$, which is a single image, like a picture taken at a specific instance, see Figure  \ref{f:horse_movie}. So, an action is a function, which for a specific time needs to tell us what frame to show: $F=\mbox{action(t)}$
 
 To trigger persistence of vision, a frame is shown 40 ms, then the next frame is shown. For a single LED, a frame will be a single color to show. To show this color, we need to cycle over the 3 base colors: red, green, blue. Therfore, we will divide a frame $F$ into subframes $S$. A subframe is an image the LED can produce, so a brightness in red, or a brightness in green, or a brightness in blue. So, a frame will be some subframes shown in serial:
 $$F=S_B \circ S_G \circ S_R.$$
@@ -598,7 +598,7 @@ What is the best duration of a subframe? For a single LED, a third of a millisec
  \item Doe morse code van een zin
  \item ....
 \end{itemize}
-Dus, hoe zullen we dat programmeren? We zullen doen zoals in de filmen: een specifiek effect bestaat uit verschillende acties. Een actie heeft een zekere duur: $t_a$. De actie verdelen we in frames $F$, welke een enkel beeld zijn, zoals een foto genomen op een specifiek moment. Een actie is dus een functie, welke voor een specifieke tijd ons dient te vertellen welk frame te tonen: $F=\mbox{actie(t)}$
+Dus, hoe zullen we dat programmeren? We zullen doen zoals in de filmen: een specifiek effect bestaat uit verschillende shots of acties. Een actie heeft een zekere duur: $t_a$. De actie verdelen we in frames $F$, welke een enkel beeld zijn, zoals een foto genomen op een specifiek moment, zie Figuur \ref{f:horse_movie}. Een actie is dus een functie, welke voor een specifieke tijd ons dient te vertellen welk frame te tonen: $F=\mbox{actie(t)}$
 
 Om persistentie van beeld te krijgen, tonen we een frame 40 ms, waarna de volgende frame getoond wordt. Voor een enkele LED zal een frame specifieke kleur zijn. Om deze kleur te tonen, dienen te itereren over de 3 basiskleuren: rood, groen, blauw. Bijgevolg zullen we een frame $F$ onderverdelen in subframes $S$. Een subframe is een beeld die onze LED echt kan maken, dus een helderheid in rood, een helderheid in groen, of een helderheid in blauw. Dus, een frame is dan een aantal subframes die we in serie tonen:
 $$F=S_B \circ S_G \circ S_R.$$
@@ -607,6 +607,16 @@ $$F=S_B \circ S_G \circ S_R \circ \ldots \circ S_B \circ S_G \circ S_R \circ S_B
 
 Wat is de beste duur van een subframe? Voor een enkele LED zal een derde van een ms niet slecht zijn. We drukken dit uit in microseconden ($\mu$s). A $\mu$s is een duizendste van een milliseconde, terwijl een ms een duizendste van een seconde is.
 }
+
+\begin{figure}
+  \centering
+  \includegraphics[width=3.5cm]{png/Horse_frame1.png}
+  \includegraphics[width=3.5cm]{png/Horse_frame2.png}
+  \includegraphics[width=3.5cm]{png/Horse_frame3.png}
+  \includegraphics[width=3.5cm]{png/Horse_frame4.png}
+\caption{4 frames to make a moving horse. The full animation: \href{http://en.wikipedia.org/wiki/File:Horse\_gif.gif}{Wikipedia Horse\_gif} - 4 frames om een bewegend paard te maken. De volledige animatie: \href{http://en.wikipedia.org/wiki/File:Horse\_gif.gif}{Wikipedia Horse\_gif}}
+\label{f:horse_movie}
+\end{figure}
 
 \eng{Let's put our idea in practice for the same effect we did with PWM: show a random color for a single second. As our LED cannot show as many colors as the full RGB range, we will limit the range from 256 gradations to 256/4=64 gradations. We express the scene in the Red, Green, Blue component in 64 gradations, and a duration to show a color:\newline
 \textbf{scene = (red base 64, green base 64, blue base 64, duration)}.\newline
@@ -633,7 +643,7 @@ The code om dit te implementeren is in Code \ref{c:l2_c}.
 
 \begin{code}\label{c:l2_c}
  \ \newline
-%\inputardfull{\string"sketches/Fe_cube_03_RGB_npn_random_color_v4/Fe_cube_03_RGB_npn_random_color_v4.ino\string"}
+\inputardfull{\string"../sketches/Fe_cube_02_RGB_frames/Fe_cube_02_RGB_frames.ino\string"}
 \end{code}
 
 
