@@ -646,18 +646,80 @@ The code om dit te implementeren is in Code \ref{c:l2_c}.
 \inputardfull{\string"../sketches/Fe_cube_02_RGB_frames/Fe_cube_02_RGB_frames.ino\string"}
 \end{code}
 
+\eng{The code seems quite complex, but is actually divided in two parts: shots or actions you create, and a generic part that decides when a new frame is needed, requests the new frame from the shot, and then starts up subframe cycles to show this specific frame for 40 ms. This last part will remain the same, if you feel up to it, you can try to understand it, but if not, no problem, it suffices to be able to write new shots.
 
+So, let's go over the code. As always, we define first the pins we will use. Then the \ardo{setup()} function comes, that prepares the arduino. Nothing new there. 
+
+Next, we have a function for our shot: a random color. This function has a specific signature that all our shots need to have:\newline
+\textbf{ void random\_color(unsigned long framenr, int frame{$\lbrack$}3{$\rbrack$})}.\newline
+So, a shot returns nothing. That is indicated with \ardo{void}. It needs two parameters:
+the framenr of the shot, and a list of 3 integers: {int frame{$\lbrack$}3{$\rbrack$}}. The function will fill up this list with the frame to show. That is it! As our colors are values from 0 to 64, we use \ardo{random(65)}. To test you can indeed show all colors, instead of using random, change the code to see red, green, or blue. 
+
+The following function defines our movie. The movie function definition seems very complicated. In reality it just indicates the movie function will return a shot function, like our random\_color above. Apart from this, the movie function is passed a variable \ardo{shotduration}, which must be set with how many milliseconds the shot must take. Internally, every time a shot is finished, this function \ardo{movie} will be called to obtain the next shot.
+
+Below those two functions comes the internal loop to show a shot. This loop will call \ardo{movie} to obtain new shots, and will call the shot to obtain the frame to show. It will then take care of showing this frame for the frame duration (40ms). That's it.
+}
+
+\ned{De code ziet er complex uit, maar is eigenlijk verdeelt in twee delen: shots of acties die jij maakt, en een algemeen deel welke beslist wanneer een nieuw frame nodig is, dit frame opvraagt van de shot, en dan subframe cyclussen start om dit specifieke frame 40ms te tonen. Dit laatste deel zal niet meer wijzigen, als je wil kun je proberen het te verstaan, als niet, geen probleem, het volstaat in staat te zijn je eigen shots te schrijven.
+
+Laat ons over de code gaan. Zoals steeds beginnen we met de pinnen aanduiden die we zullen gebruiken. Dan komt de  \ardo{setup()} functie, welke de arduino klaarmaakt. Niets nieuws dus.
+
+Vervolgens hebben we de functie voor ons shot: een willekeurige kleur. Deze functie heeft een specifiek functievoorschrift die al onze shots zullen moeten hebben:\newline
+\textbf{ void random\_color(unsigned long framenr, int frame{$\lbrack$}3{$\rbrack$})}.\newline
+Dus, een shot geeft geen waarde terug. Dit duiden we aan met  \ardo{void}. Het heeft wel twee parameters nodig:
+het framenummer van het shot, en een lijst van 3 integers: {int frame{[}3{]}}. De functie dient deze lijst op te vullen met het frame dat getoond moet worden. Dat is het! Gezien onze kleuren lopen van 0 tot 64, gebruiken we \ardo{random(65)}. Om te testen dat je alle kleuren kunt tonen, wijzig eens random in de waarde voor enkel rood, groen, of blauw. 
+
+De volgende functie beschrijft onze film (\textit{movie} in het Engels). De functie definitie ziet er heel complex uit. In werkelijkheid duidt deze gewoon aan dat de \ardo{movie} functie een shot functie teruggeeft als waarde, zoals bevoorbeeld onze \ardo{random_color} functie van hierboven. Daarnaast krijgt de functie een variabele mee, \ardo{shotduration}, welke moet opgevuld worden met het aantal milliseconds de shot moet duren. De code zal telkens als een shot gedaan is, deze functie \ardo{movie} opnieuw oproepen om een volgend shot te bekomen.
+
+Onder deze twee functies komt dan de interne arduino \ardo{loop} om een shot te tonen. Deze loop zal dus  \ardo{movie} oproepen om nieuwe shots te bekomen, en zal dan de shot oproepen om een frame nummer te bekomen. Het zal er dan voor zorgen dat deze frame getoond wordt voor de duur van een frame (40ms). Dat is het.
+}
 \subsection{\engt{Smooth transitions} \nedt{Gladde overhangeng}}
 
-\eng{We now extend the previous code, and add a smooth transition from the first color to the next color.}
+\eng{We now extend the previous code, and create a new shot, as example of how to add shots. This shot is a smooth transition from a first color to a next color.
 
-\ned{TODO}
+The code for the shot, and the \ardo{movie} function can be found in Code \ref{c:l2_d}.
+So this replaces the shot and the movie part of the previous section. 
+
+Some remarks on the code. We divide the entire duration in frames, and calculate which one is needed. When we do the transition, we use blending of the two colors: this is a number between 0 and 1, call it $b$. We then mix begin and end color as: 
+$$(1-b)\times \mbox{begincolor} + b \times \mbox{endcolor}.$$
+So, if we start with $b=0$, we have the begincolor, and at $b=1$ we have the endcolor. 
+
+When you divide two integers, the result is an integer, so we use the \ardo{float} function to change an integer into a float. Like this we find the blend between 0 and 1 for a specific frame number. Finally, our frame consists of colors which we denote as an integer between 0 and 64, so we apply the \ardo{round} function to convert the float to the nearest integer. For example \ardo{round(1.3)=1} and \ardo{round(1.6)=2}.
+}
+
+\ned{We breiden nu de vorige code uit, en maken een nieuw shot, als voorbeeld van hoe we shots kunnen toevoegen. Dit shot is een gladde overgang van een eerste kleur naar een andere kleur.
+
+De code voor dit shot, en de \ardo{movie} functie die ze roept kun je vinden in  Code \ref{c:l2_d}. Dit vervant het shot en movie deel van de vorige sectie.
+
+Enkele opmerkingen. We verdelen de volledige duur in frames, en berekenen welke we nodig hebben. Als we een transitie doen blenden we de twee kleuren: dat is een nummer tussen 0 en 1, noem het $b$. We mixen dan begin en eindkleur als:
+$$(1-b)\times \mbox{beginkleur} + b \times \mbox{eindkleur}.$$
+Als we dus starten met $b=0$, hebben we de beginkleur, en voor $b=1$ de eindkleur.
+
+Als je twee gehele getallen deelt, is het resultaat opnieuw een geheel getal. Daarom gebruiken we de \ardo{float} functie om een geheel getal (integer) in een re\"eel getal (float) te veranderen. Zo vinden we de blend tussen 0 en 1 voor een specifieke frame. Maar, ons frame bestaat wel uit kleuren die we aanduiden met een getal tussen 0 en 64, daarom passen we de functie \ardo{round} to om de float te veranderen in de dichstbijgelegen integer. Bijvoorbeeld:  \ardo{round(1.3)=1} en \ardo{round(1.6)=2}.
+}
 
 \begin{code}\label{c:l2_d}
  \ \newline
-%\inputardfull{\string"sketches/Fe_cube_04_RGB_npn_smoothrandom_colorv2/Fe_cube_04_RGB_npn_smoothrandom_colorv2.ino\string"}
+\inputard{\string"../sketches/Fe_cube_02_RGB_smooth_trans/Fe_cube_02_RGB_smooth_trans.ino\string"}{47}{112}
 \end{code}
 
+
+\engo{\begin{doE}
+      \textbf{Your shot!}. Make your own shot now. For example, blink the led always faster and faster.
+      
+      Tip: For example, if the shot is 60 seconds, show on 6 seconds, off 6 seconds, on 3 seconds, off 3 seconds, on 1.5 seconds, off 1.5 seconds, .... The time is the framenumber times 40ms. 
+
+      Nicer: mix, this is blinking sequentially two different colors always faster. You should see them mix in front of you.
+     \end{doE}
+}
+\nedo{\begin{doN}
+      \textbf{Jouw shot}. Maak nu je eigen shot. Bevoorbeeld, knipper de led altijd maar sneller en sneller.
+      
+      Tip: Bevoorbeeld, als je shot 60 seconden is, toon de led 6 seconden aan, 6 uit, dan 3 aan, dan 3 uit, dan 1.5 seconden aan, dan 1.5 af, ... De tijd is het frame nummer maal 40 ms.
+
+      Mooier: mengen, dit is twee kleuren afwisselend knipperen, en dit versnellen. Je zou de kleuren moeten zien vermengen.
+     \end{doN}
+}
 
 \section{\engt{Lesson 3: LED Cube Construction} \nedt{Les 3: LED Cube constructie}}
 
