@@ -3,8 +3,6 @@ Controlling an RGB led via an npn switch and digital switching
 using a frame abstraction
 */
 
-#include "frames.h"
-
 // pins used
 int ledR=11;
 int ledG=10;
@@ -73,7 +71,18 @@ void random_color(unsigned long framenr, int frame[3]){
   //frame[0] = 0; frame[1] = 0; frame[2] = 64;
 }
 
-shotptr movie(unsigned long *shotduration){
+/*********************************************
+Following avoids
+   #include "frames.h"
+with frames.h in same directory containing:
+   typedef void (*shotptr)(unsigned long framenr, int frame[3]);
+and then in this file using this typedef:
+   shotptr movie(unsigned long *shotduration){
+Instead, all the above rolled into one:
+   movie is a function that returns a function with signature like eg
+       void random_color(unsigned long framenr, int frame[3])
+**********************************************/
+void (*movie(unsigned long *shotduration))(unsigned long, int[3]){
   // when a shot is finished, movie() is called to obtain the next shot. 
   // Here we have a single random color, and a fixed duration of 1000 ms.
   *shotduration = 1000;
@@ -92,7 +101,8 @@ shotptr movie(unsigned long *shotduration){
 unsigned long startTime = 0UL;
 unsigned long currentTime;
 unsigned long shotduration = 0UL;
-shotptr       curshot;
+//shotptr       curshot;
+void (*curshot)(long unsigned int, int*);
 int           curframe[3];
 unsigned long framenr = 0UL;
 unsigned long curframenr = 1UL;
