@@ -1,18 +1,6 @@
 \documentclass[11pt]{article}
 \usepackage{a4wide}
 
-\usepackage[
-      dvipdfm,    %put here the correct(!) driver you are using
-      colorlinks=true,    %no frame around URL
-      urlcolor=blue,    %blue color
-      menucolor=black,    %no colors
-      linkcolor=blue,    %blue color
-      bookmarks=true,    %tree-like TOC
-      bookmarksopen=true,    %expanded when starting
-      hyperfootnotes=false,    %no referencing of footnotes, does not compile
-      pdfpagemode=UseOutlines    %show the bookmarks when starting the pdf viewer
-]{hyperref}
-
 \usepackage[english,dutch]{babel}
 % better color management than parallel:
 \usepackage{pdfcolparallel}
@@ -28,6 +16,22 @@
 \usepackage{xcolor}
 \usepackage{framed}
 \colorlet{shadecolor}{gray!50}
+
+\usepackage[
+      %dvipdfm,    %put here the correct(!) driver you are using
+      pdftex,
+      unicode,
+      colorlinks=true,    %no frame around URL
+      urlcolor=blue,    %blue color
+      menucolor=black,    %no colors
+      linkcolor=blue,    %blue color
+      bookmarks=true,    %tree-like TOC
+      bookmarksopen=true,    %expanded when starting
+      hyperfootnotes=false,    %no referencing of footnotes, does not compile
+      pdfpagemode=UseOutlines,    %show the bookmarks when starting the pdf viewer
+      pdfauthor={Ingegno.be},
+      pdftitle={Fe Cube - Ingegno.be},
+]{hyperref}
 
 
 \newtheorem{opdrE}{Task} 
@@ -79,8 +83,16 @@
 
 \begin{Parallel}{7.5cm}{7.5cm}
  \section{\engt{Introduction} \nedt{Introductie}}
-\eng{In this booklet we will show how to create the Fe Cube. You will learn about LEDs, the arduino, multiplexing, soldering, color theory, and more! You can buy a kit from Ingegno.be, or buy your components somewhere else.}
-\ned{In dit boekje zullen we je leren hoe je de Fe Cube kunt maken. Je zal leren over LEDs, de arduino, multiplexing, solderen, kleurentheorie, en meer! Je kan een kit kopen met alle onderdelen van Ingegno.be, of je kan je eigen stukken gebruiken.}
+\eng{In this booklet we will show how to create the Fe Cube. You will learn about LEDs, the arduino, multiplexing, soldering, color theory, and more! You can buy a kit from Ingegno.be, or buy your components somewhere else.
+
+The code of this manual can be found on \href{https://github.com/ingegno/linefollower1}{the Ingegno github page}.
+}
+
+\ned{In dit boekje zullen we je leren hoe je de Fe Cube kunt maken. Je zal leren over LEDs, de arduino, multiplexing, solderen, kleurentheorie, en meer! Je kan een kit kopen met alle onderdelen van Ingegno.be, of je kan je eigen stukken gebruiken.
+
+
+De code van deze handleiding kan gevonden worden op \href{https://github.com/ingegno/linefollower1}{de Ingegno github pagina}.
+}
 
 \subsection{\engt{The components} \nedt{De componenten}}
 \eng{We will need following components: TODO
@@ -601,10 +613,24 @@ Wat is de beste duur van een subframe? Voor een enkele LED zal een derde van een
 The action of this scene is to show a single red, green, blue color, so 
 every frame is identical:
 $$F= (\mbox{red, green, blue})$$
-A subframe consists in showing this red, green or blue. Let's take red. If we show red, we will have a number from 0 to 63 to show. Let's call the number $R$, for example $R=35$. We said a subframe should be around 333$\mu$s. Let's take 64*5 = 320 $\mu$s.
+A subframe consists in showing this red, green or blue. Let's take red. If we show red, we will have a number from 0 to 64 to show. Let's call the number $R$, for example $R=35$. We said a subframe should be around 333$\mu$s. Let's take 64*5 = 320 $\mu$s. 
+
+If the value of red is 64, we show red for 320$\mu$s, if the value is 0 we show red  0 $\mu$s in this subframe. So, for $R=35$, we show it 35*5=175$\mu$s.
+
+The code to implement this is in Code \ref{c:l2_c}.
 }
 
-\ned{TODO}
+\ned{Laat ons dit indee in de praktijk brengen met hetzelfde effect dat we eerder via PWM deden: toon een willekeurige kleur voor een sekonde. Gezien de LED niet evenveel kleuren kan tonen als het volledige RGB spectrum, limiteren we de 256 gradaties in 256/4=64 gradaties. We drukken de scene uit in de Rood, Groen en Blauw component in 64 gradaties, en een duur om de kleur te tonen:\newline
+\textbf{scene = (red base 64, green base 64, blue base 64, duration)}.\newline
+De actie van deze scene is het tonen van een enkele rood, groen, blauw kleur, dus elke frame is identiek:
+$$F= (\mbox{rood, groen, blauw}).$$
+Een subframe bestaat in het tonen van rood, groen, of blauw. Laat ons rood nemen. We zullen een number van 0 tot 64 hebben voor rood. Laat ons dit nummer $R$ noemen, bevoorbeeld $R=35$. We hebben reeds gezegd dat de duur van het subframe rond de 333$\mu$s moet zijn. Laat ons 64*5=320 nemen als duur van het subframe. 
+
+Als de waarde van rood 64 is, tonen we rood voor 320$\mu$s, als de waarde 0 is tonen we rood 0$\mu$s in dit subframe. Dus, voor $R=35$, tonen we het 35*5=175$\mu$s.
+
+The code om dit te implementeren is in Code \ref{c:l2_c}.
+}
+
 \begin{code}\label{c:l2_c}
  \ \newline
 %\inputardfull{\string"sketches/Fe_cube_03_RGB_npn_random_color_v4/Fe_cube_03_RGB_npn_random_color_v4.ino\string"}
@@ -679,7 +705,8 @@ Our code is given in Code \ref{c:ledcube_snake}
 \subsection{Smooth Transitions - Mooie overgangen} 
 \eng{Now that we have verified we can control every aspect of our Fe Cube, we convert our Mixing colors script to now drive the cube. So, instead of one LED, we will be having 9 leds that smoothly go from one random color to the next. This will produce more light than our single LED on our test board.}
 
-\ned{TODO}
+\ned{
+TODO}
 
 
 \begin{code}\label{c:ledcube_smooth}
