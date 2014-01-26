@@ -49,7 +49,6 @@ long random_colorR, random_colorG, random_colorB; // global variables
 
 void random_color(unsigned long framenr, int frame[3]){
   //update the frame for the time shown
-  //Serial.print("asking framenr "); Serial.println(framenr);
   if (framenr == 0) {
     //determine the random color we will use
    random_colorR = int(random(65));
