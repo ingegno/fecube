@@ -11,7 +11,7 @@ int ledG=10;
 int ledB=9;
 int led1=2;
 
-bool test = true;  //use serial monitor for testing.
+bool test = false;  //use serial monitor for testing.
 
 void setup() {
   if (test) {
@@ -70,7 +70,7 @@ void random_color(unsigned long framenr, int frame[3]){
   frame[1] = random_colorG;
   frame[2] = random_colorB;
   //to test: hard code colors here:
-  //frame[0] = 64; frame[1] = 2; frame[2] = 0;
+  //frame[0] = 0; frame[1] = 0; frame[2] = 64;
 }
 
 shotptr movie(unsigned long *shotduration){
@@ -97,7 +97,8 @@ int           curframe[3];
 unsigned long framenr = 0UL;
 unsigned long curframenr = 1UL;
 bool          newframe = true;
-int           subframecolor, cursubframecolor;
+int           subframecolor;
+unsigned long subframecycle, cursubframecycle;
 unsigned long subframestarttime;
 unsigned long curmicrotime;
 
@@ -121,19 +122,25 @@ void loop(){
   } else {
     newframe = false;
   }
-  // we continue showing the subframes as needed for the current frame
+  // we continue showing a cycle of subframes as needed for the current frame
   curmicrotime = micros();
   if (newframe) {
     //reinit the subframes
     subframecolor = 0;
     subframestarttime = curmicrotime;
+    subframecycle = 0UL;;
+    cursubframecycle = 0UL;
   } else {
     // determine if a new subframecolor is needed
-    cursubframecolor = (curmicrotime - startTime) / 320UL;  // 320 = 5 * 64
-    if (cursubframecolor != subframecolor){
-      //new subframe
-      subframecolor = cursubframecolor % 3;
+    cursubframecycle = (curmicrotime - startTime) / 960UL; //960=3*5*64
+    if (cursubframecycle != subframecycle){
+      //new subframecycle
+      subframecycle = cursubframecycle;
       subframestarttime = curmicrotime;
+      subframecolor = 0;
+    } else {
+      subframecolor = subframecolor + 1;
+      subframecolor = subframecolor % 3;
     }
   }
   //we know the frame, the color, and how far in the subframe we are
@@ -147,15 +154,15 @@ void show_subframe_color(int color, long microtime){
   digitalWrite(ledG, LOW);
   digitalWrite(ledB, LOW);
   if (color == 0) {
-    if (microtime < 5 * curframe[0]) {
+    if (microtime < 15 * curframe[0]) {
       digitalWrite(ledR, HIGH);
     }
   } else if (color == 1) {
-    if (microtime < 5 * curframe[1]) {
+    if (microtime < 15 * curframe[1]) {
       digitalWrite(ledG, HIGH);
     }
   } else {
-    if (microtime < 5 * curframe[2]) {
+    if (microtime < 15 * curframe[2]) {
       digitalWrite(ledB, HIGH);
     }
   }
