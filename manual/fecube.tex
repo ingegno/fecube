@@ -10,6 +10,8 @@
 \usepackage{amsmath}
 \usepackage{graphicx}
 
+\usepackage{inconsolata} %a different monofont, texlive-fonts-extra needed!
+
 \usepackage{arduinohighlight}
 
 
@@ -46,16 +48,20 @@
 \newtheorem{code}{Code} 
 
 %% First to \eng, then \ned, closes automatically with a paragraph
-\newcommand{\eng}[1]{\selectlanguage{english} \ParallelLText{#1}}
-\newcommand{\ned}[1]{\selectlanguage{dutch} \ParallelRText{#1} \ParallelPar}
-\newcommand{\engt}[1]{{#1} - }
-\newcommand{\nedt}[1]{{#1}}
-\newcommand{\engo}[1]{\eng {#1}}
-\newcommand{\nedo}[1]{\ned {#1}}
+% \newcommand{\eng}[1]{\selectlanguage{english} \ParallelLText{#1}}
+% \newcommand{\ned}[1]{\selectlanguage{dutch} \ParallelRText{#1} \ParallelPar}
+% \newcommand{\engt}[1]{{#1} - }
+% \newcommand{\nedt}[1]{{#1}}
+% \newcommand{\engo}[1]{\eng {#1}}
+% \newcommand{\nedo}[1]{\ned {#1}}
 
 %% Use following for book in English language
-%\newcommand{\eng}[1]{\selectlanguage{english} {#1}}
-%\newcommand{\ned}[1]{\selectlanguage{dutch} }
+\newcommand{\eng}[1]{\selectlanguage{english} {#1}}
+\newcommand{\ned}[1]{\selectlanguage{dutch} }
+\newcommand{\nedt}[1]{ }
+\newcommand{\engt}[1]{{#1}}
+\newcommand{\nedo}[1]{\selectlanguage{dutch} }
+\newcommand{\engo}[1]{\selectlanguage{english} {#1}}
 
 %% Use following for book in Dutch language
 %\usepackage{multicol}
@@ -95,13 +101,39 @@ De code van deze handleiding kan gevonden worden op \href{https://github.com/ing
 }
 
 \subsection{\engt{The components} \nedt{De componenten}}
-\eng{We will need following components: TODO
+\eng{We will need following components: 
+\begin{enumerate}
+ \item A breadboard
+ \item 9 RGB-LED + 3 extra (we assume common kathode for the cube)
+ \item 1 big RGB-LED (we assume common anode)
+ \item 3 NPN + 1 extra (2N3904 normally)
+ \item 9 220 $\Omega$ resistors + 3 extra
+ \item many wires
+ \item lasercut base for the cube
+ \item iron wire pillars for the cube
+ \item soldering plate for fixed components + connecter parts
+\end{enumerate}
+You will also need a soldering iron, and optionally you can make a cover for the cube, eg using 3D printing.
 
-For an overview of componts, see the cheat sheet distributed seperately}
+For an overview of meaning of the components, see the cheat sheet distributed seperately.
+}
 
-\ned{We zullen volgende componenten gebruiken: TODO
+\ned{We zullen volgende componenten gebruiken: 
+\begin{enumerate}
+ \item Een schakelbord
+ \item 9 RGB-LED + 3 extra (we veronderstellen gemeenschappelijke kathode voor de kubus)
+ \item 1 grote RGB-LED (we veronderstellen gemeenschappelijke anode)
+ \item 3 NPN + 1 extra (2N3904 normaal)
+ \item 9 220 $\Omega$ weerstanden + 3 extra
+ \item veel draden
+ \item lasercut basis voor de kubus
+ \item ijzerdraad pilaren voor de kubus
+ \item soldering plaat voor vaste componenten + connectiestukken
+\end{enumerate}
+Je zal ook een soldeerijzer nodig hebben, en optioneel kun je een bedekking maken voor de kubus, bv via 3D printen.
 
-Voor een overzicht van de componenten, zie het overzicht die je apart gekregen hebt}
+Voor een overzicht van de betekenis van de componenten, zie het overzicht die je apart gekregen hebt.
+}
 
 \subsection{Arduino}
 \eng{We will make intensive use of Arduino, so you need to install the \href{http://arduino.cc}{Arduino software}. Once installed, you can connect the Arduino to your PC via de usb port.  In the programming environment you installed you can write programs, and load those on the Arduino board. They will be executed there as long as the Arduino recieves power.
@@ -129,7 +161,8 @@ Eenmaal geinstalleerd kun je nu je arduino koppelen aan je computer via de usb p
   \centering
   \includegraphics[width=6cm]{img/01_onepin_oneled_bb}\ \ 
    \includegraphics[width=6cm]{img/01_onepin_oneled_schem} 
-\caption{Using one pin and the ground, we can make a LED burn. Left with breadboard, right as a schematic - Met een pin en de grond kunnen we een LED doen branden. Links met breadboard, rechts als schema}
+\caption{\engt{Using one pin and the ground, we can make a LED burn. Left with breadboard, right as a schematic}
+\nedt{Met een pin en de grond kunnen we een LED doen branden. Links met breadboard, rechts als schema.}}
 \label{f:lesson1_onepin}       % Give a unique label
 \end{figure}
 
@@ -172,7 +205,8 @@ Als je de LED ronddraait (probeer het!) zal er geen licht schijnen. Er zal ook m
 \begin{figure}
   \centering
   \includegraphics[width=6cm]{png/LED}
-\caption{Blow up view of a LED - Een LED in het groot}
+\caption{\engt{Blow up view of a LED}
+\nedt{Een LED in het groot}}
 \label{f:LED}       % Give a unique label
 \end{figure}
 
@@ -209,7 +243,8 @@ Als je de LED omdraait, connecteer je het n-type materiaal aan de positieve krac
 \begin{figure}
   \centering
   \includegraphics[width=10cm]{png/PnJunction-LED}
-\caption{A PN junction as used in a LED - Een PN overgang zoals gebruikt in een LED (\textcopyright Wikimedia Commons S-kei)}
+\caption{\engt{A PN junction as used in a LED}
+\nedt{Een PN overgang zoals gebruikt in een LED} (\textcopyright Wikimedia Commons S-kei)}
 \label{f:NPJunction}       % Give a unique label
 \end{figure}
 
@@ -226,7 +261,8 @@ Als je de LED omdraait, connecteer je het n-type materiaal aan de positieve krac
 \begin{figure}
   \centering
   \includegraphics[width=6cm]{png/Tr-Pinouts} 
-\caption{Different NPN and PNP transistors. There is no standard for the pinouts, so use a datasheet, or try it with a LED like we do. If it does not work, use other legs as in this Picture! - Verschillende NPN en PNP transistoren. Er is geen standaard voor de beentjes, refereer naar een datasheet, of probeer het met een LED zoals wij hier doen. Als het niet werkt, gebruik andere beentjes zoals in deze Figuur!}
+\caption{\engt{Different NPN and PNP transistors. There is no standard for the pinouts, so use a datasheet, or try it with a LED like we do. If it does not work, use other legs as in this Picture!}
+\nedt{Verschillende NPN en PNP transistoren. Er is geen standaard voor de beentjes, refereer naar een datasheet, of probeer het met een LED zoals wij hier doen. Als het niet werkt, gebruik andere beentjes zoals in deze Figuur!}}
 \label{f:Tr_Pinouts}       % Give a unique label
 \end{figure}
 
@@ -240,7 +276,8 @@ Als je de LED omdraait, connecteer je het n-type materiaal aan de positieve krac
   \centering
   \includegraphics[width=6cm]{img/02_twopin_oneled_npn_bb} \ \ 
   \includegraphics[width=6cm]{img/02_twopin_oneled_npn_schem}
-\caption{Using two pins and an NPN gate, we can switch off the LED on both sides - Met twee pinnen en een NPN brug kunnen we de LED afzetten aan beide kanten.}
+\caption{\engt{Using two pins and an NPN gate, we can switch off the LED on both sides}
+\nedt{Met twee pinnen en een NPN brug kunnen we de LED afzetten aan beide kanten.}}
 \label{f:lesson1_twopin}       % Give a unique label
 \end{figure}
 
@@ -276,7 +313,8 @@ Merk op dat we in ons circuit een 5V signaal over de basis plaatsen, welke op zi
 \begin{figure}
   \centering
   \includegraphics[width=10cm]{png/NPN_BJT_Basic_Operation_(Active)} 
-\caption{An NPN transistor when the junction is active - Een NPN transistor als de overgang open staat.}
+\caption{\engt{An NPN transistor when the junction is active}
+\nedt{Een NPN transistor als de overgang open staat.}}
 \label{f:NPNactive}       % Give a unique label
 \end{figure}
 
@@ -315,7 +353,8 @@ De functie wordt analogWrite genoemd omdat het een golf is over een digitale pin
   \centering
   \includegraphics[width=6cm]{img/02_twopin_oneled_npn_bb} \ \ 
   \includegraphics[width=6cm]{img/02_twopin_oneled_npn_schem}
-\caption{The circuit to use PWM to change the brightness. Yes, it is identical to the previous one, all changes are in code - Het circuit om PWM te gebruiken om de helderheid te wijzigen. Ja, het is identiek aan het eerdere circuit, alle wijzigingen zijn in software.}
+\caption{\engt{The circuit to use PWM to change the brightness. Yes, it is identical to the previous one, all changes are in code}
+\nedt{Het circuit om PWM te gebruiken om de helderheid te wijzigen. Ja, het is identiek aan het eerdere circuit, alle wijzigingen zijn in software.}}
 \label{f:lesson1_twopin_PWM}       % Give a unique label
 \end{figure}
 
@@ -376,7 +415,8 @@ Het zou duidelijk moeten zijn dat we de digitale pinnen op verschillende maniere
   \centering
  \includegraphics[width=5cm]{img/03_twopin_oneled_npnreversed_bb} 
  \includegraphics[width=5cm]{img/03_twopin_oneled_npnreversed2_bb} 
-\caption{Using two pins and an NPN gate, we can switch off the LED on both sides. Now we use pin 2 to allow a sink at the pin. Right: Removing the NPN makes for a simpler circuit - Met twee pinnen en een NPN brug kunnen we de LED afzetten aan beide kanten. We gebruiken nu pin 2 zodat we de pin als grond kunnen gebruiken. Rechts: De NPN verwijderen zorgt voor een eenvoudiger circuit.}
+\caption{\engt{Using two pins and an NPN gate, we can switch off the LED on both sides. Now we use pin 2 to allow a sink at the pin. Right: Removing the NPN makes for a simpler circuit}
+\nedt{Met twee pinnen en een NPN brug kunnen we de LED afzetten aan beide kanten. We gebruiken nu pin 2 zodat we de pin als grond kunnen gebruiken. Rechts: De NPN verwijderen zorgt voor een eenvoudiger circuit.}}
 \label{f:lesson1_twopin_PWM_reversed}
 \end{figure}
 
@@ -396,7 +436,7 @@ Het zou duidelijk moeten zijn dat we de digitale pinnen op verschillende maniere
   \centering
   \includegraphics[width=6cm]{png/RGB_LED2}
   \includegraphics[width=3cm]{png/RGB_Led_schem} 
-\caption{Left a blow up of an RGB Led with common anode, Right a schematic version used in circuits - Links een vergroting van een RGB led met gedeelde anode, Rechts een schema zoals je in circuits kan vinden.}
+\caption{\engt{Left a blow up of an RGB Led with common anode, Right a schematic version used in circuits} \nedt{Links een vergroting van een RGB led met gedeelde anode, Rechts een schema zoals je in circuits kan vinden.}}
 \label{f:RGB_LED}
 \end{figure}
 
@@ -429,7 +469,7 @@ Het zou duidelijk moeten zijn dat we de digitale pinnen op verschillende maniere
   \centering
   \includegraphics[width=6cm]{img/04_rgbled_bb} \ \ 
   \includegraphics[width=6cm]{img/04_rgbled_schem}
-\caption{Circuit for a common anode RGB Led - Circuit voor een gedeelde anode RGB Led.}
+\caption{\engt{Circuit for a common anode RGB Led} \nedt{Circuit voor een gedeelde anode RGB Led.}}
 \label{f:lesson2_RGB}
 \end{figure}
 
@@ -614,7 +654,7 @@ Wat is de beste duur van een subframe? Voor een enkele LED zal een derde van een
   \includegraphics[width=3.5cm]{png/Horse_frame2.png}
   \includegraphics[width=3.5cm]{png/Horse_frame3.png}
   \includegraphics[width=3.5cm]{png/Horse_frame4.png}
-\caption{4 frames to make a moving horse. The full animation: \href{http://en.wikipedia.org/wiki/File:Horse\_gif.gif}{Wikipedia Horse\_gif} - 4 frames om een bewegend paard te maken. De volledige animatie: \href{http://en.wikipedia.org/wiki/File:Horse\_gif.gif}{Wikipedia Horse\_gif}}
+\caption{\engt{4 frames to make a moving horse. The full animation: \href{http://en.wikipedia.org/wiki/File:Horse\_gif.gif}{Wikipedia Horse\_gif}} \nedt{4 frames om een bewegend paard te maken. De volledige animatie: \href{http://en.wikipedia.org/wiki/File:Horse\_gif.gif}{Wikipedia Horse\_gif}}}
 \label{f:horse_movie}
 \end{figure}
 
@@ -707,27 +747,88 @@ Als je twee gehele getallen deelt, is het resultaat opnieuw een geheel getal. Da
 \engo{\begin{doE}
       \textbf{Your shot!}. Make your own shot now. For example, blink the led always faster and faster.
       
-      Tip: For example, if the shot is 60 seconds, show on 6 seconds, off 6 seconds, on 3 seconds, off 3 seconds, on 1.5 seconds, off 1.5 seconds, .... The time is the framenumber times 40ms. 
+      Tip: For example, if the shot is 60 seconds, and you start with a 2 second interval, you want to end with a 0.001 second interval. So, your interval could decrease linearly:
+      $$y=2+\frac{0.001-2}{60} \mbox{time}$$
 
-      Nicer: mix, this is blinking sequentially two different colors always faster. You should see them mix in front of you.
+      Nicer: mix, this is blinking sequentially two different colors always faster. You should see them mix in front of you. Still nicer: mix red, green and blue amounts.
      \end{doE}
 }
 \nedo{\begin{doN}
       \textbf{Jouw shot}. Maak nu je eigen shot. Bevoorbeeld, knipper de led altijd maar sneller en sneller.
       
-      Tip: Bevoorbeeld, als je shot 60 seconden is, toon de led 6 seconden aan, 6 uit, dan 3 aan, dan 3 uit, dan 1.5 seconden aan, dan 1.5 af, ... De tijd is het frame nummer maal 40 ms.
+      Tip: Bevoorbeeld, als je shot 60 seconden is, en je start van een 2 seconden interval, en je wil eindigen met een 0.001 sekonden interval, dan moeten je intervallen lineair afnemen:
+      $$y=2+\frac{0.001-2}{60} \mbox{tijd}$$
 
-      Mooier: mengen, dit is twee kleuren afwisselend knipperen, en dit versnellen. Je zou de kleuren moeten zien vermengen.
+      Mooier: mengen, dit is twee kleuren afwisselend knipperen, en dit versnellen. Je zou de kleuren moeten zien vermengen. Nog mooier: rood, groen en blauw hoeveelheden mengen
      \end{doN}
 }
 
+\newpage
 \section{\engt{Lesson 3: LED Cube Construction} \nedt{Les 3: LED Cube constructie}}
 
-\subsection{Layout - Opstelling}
+\subsection{\engt{Layout breadboard}  \nedt{Opstelling schakelbord}}
+
+\eng{We have all the necessary basis to start with making our Fe Cube. We start with putting all components on the breadboard. Then we test it with a program which is our previous RGB LED sketch adapted to the cube. Only when we have verified all works will we start the actual construction.
+
+So, put following components in front of you:
+\begin{enumerate}
+ \item Your breadboard
+ \item 9 RGB-LED (we assume common kathode in the following)
+ \item 3 NPN (2N3904 normally)
+ \item 9 220 $\Omega$ resistors
+ \item many wires.
+\end{enumerate}
+First, put the RGB-LED on the board, connect the color pins with each other via wires, and connect the common kathode via a resistor to another line, see Fig.~\ref{f:lesson3_bb1}.
+
+Connect then the resistors to pins 1 to 9. These are the pins that will feed the LED. So for a common kathode, these pins on \ardo{HIGH} will make the LED burn. Put the 3 NPN on the board. The color wire goes to the Emittor side (+) of the NPN for common kathode LED. The Collector side (-) goes to the GND line of your breadboard. The GND line of the breadboard goes to a GND pin on the Arduino.
+
+The Base leg of the NPN will control if the NPN junction is open or not. We will use pins 10, 11, 12 to control this. Your entire wiring should look like Fig.~\ref{f:lesson3_bb2}.
+}
+
+\ned{We hebben alles gezien om aan onze Fe Kubus te beginnen. We starten met alle componenten op het schakelbord te zetten. Dan testen we de schakeling met een programma die onze vorige RGB LED schets is aangepast voor de kubus. Alleen als we zeker zijn dat alles werkt zullen we de effectieve constructie doen.
+
+Plaats dus de volgende componenten voor jou:
+\begin{enumerate}
+ \item Jouw schakelbord
+ \item 9 RGB-LED (we veronderstellen gemeenschappelijke kathode in wat volgt)
+ \item 3 NPN (2N3904 normaal)
+ \item 9 220 $\Omega$ weerstanden
+ \item veel draden.
+\end{enumerate}
+Begin met de RGB-LED op je bord te zetten, verbindt de kleurpinnen met elkaar via draden, en connecteer de gemeenschappelijke kathode via een weerstand naar een andere lijn op je bord, zie Fig.~\ref{f:lesson3_bb1}.
+
+Verbind nu de weerstanden met pinnen 1 tot 9. Deze pinnen zullen de LED van stroom voorzien. Dus, voor een gemeenschappelijke kathode zullen we deze pinnen op \ardo{HIGH} zetten om de LED te doen branden. Plaats dan de 3 NPN op het bord. De draden van een kleur gaan naar de Emittor zijde (+) van de NPN voor gemeenschappelijke kathode LEDs. De Collector zijde (-) gaat naar de GND lijn op je schakelbord. Deze GND lijn gaat dan naar een GND pin op de Arduino.
+
+Het Basis been van de NPN zal bepalen of de NPN junctie open is of niet. We zullen pinnen 10, 11, 12 gebruiken voor dit been. Je volledige schakeling zou er moeten uitzien als Fig.~\ref{f:lesson3_bb2}.
+}
+
+\begin{figure}
+  \centering
+  \includegraphics[width=11cm]{img/05_fecube_01_bb.png} 
+\caption{\engt{Put the 9 LED on the board. Connect all equal colors to each other. The common kathode or anode goes with a 220 $\Omega$ resistor to a new line} \nedt{Plaats de 9 LED op het bord. Connecteer alle gelijke kleuren met elkaar. De gemeenschappelijke kathode of anode gaat met een 220 $\Omega$ weerstand naar een nieuwe lijn.}}
+\label{f:lesson3_bb1}.
+\end{figure}
+%
+\begin{figure}
+  \centering
+  \includegraphics[width=11cm]{img/05_fecube_02_bb.png} 
+\caption{\engt{Connect the resistors to pins 1 to 9. The colors go via an npn to the GND (kathode) or 5V (anode). Pins 10, 11, 12 go to the NPN to control the colors.} \nedt{Verbind de weerstanden met pinnen 1 tot 9. De kleuren gaan via een npn naar de GND (kathode) of 5V (anode). Pinnen 10, 11, 12 gaan naar de NPN om de kleuren te schakelen.}}
+\label{f:lesson3_bb2}
+\end{figure}
 
 
+\subsection{\engt{Testing breadboard Fe Cube}  \nedt{Schakelbord Fe Cube uittesten}}
 
-\section{\engt{Lesson 4: LED Cube Testing} \nedt{Les 4: LED Cube Uittesten}}
+\eng{We will only verify we can make the breadboard Fe Cube work. For this we adapt our RGB sketches. We will make a movie showing 1 minute a random color, then 4 seconds red, then 4 seconds green, then 4 seconds blue, then smooth transitions for 1 minute.
+
+This means we need all the shots we created for the RGB LED in the previous lesson, and need to create an adapted \ardo{movie} function to connect the shots as we want. We also need to change the start so that instead of only one led pin, we start up 9 led pins. 
+
+The Code can be found in ...
+}
+
+\ned{TODO}
+
+\section{\engt{Lesson 4: Fire up the LED Cube} \nedt{Les 4: De LED Cube gebruiken}}
 
 \subsection{\engt{RGB Switching} \nedt{RGB Schakelen}}
 \eng{You finished now constructing the cube. We need to test if all lights are working, as well if we can obtain the 3 root colors: red, green and blue.  So, based on the Arduino sketch for the single led, create a sketch that shows 1 second red, 1 second blue, and finally 1 second green, looping this sequence infinitely. 
