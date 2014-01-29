@@ -53,7 +53,7 @@ Het Basis been van de NPN zal bepalen of de NPN junctie open is of niet. We zull
 
 \subsection{\engt{Testing breadboard Fe Cube}  \nedt{Schakelbord Fe Cube uittesten}}
 
-\eng{We will only verify we can make the breadboard Fe Cube work. For this we adapt our RGB sketches. We will make a movie showing 1 minute a random color, then 4 seconds red, then 4 seconds green, then 4 seconds blue, then smooth transitions for 1 minute.
+\eng{We will only verify we can make the breadboard Fe Cube work. For this we adapt our RGB sketches. We will make a movie showing  4 seconds red, then 4 seconds green, then 4 seconds blue, then 1 minute a random color, then smooth transitions for 1 minute.
 
 This means we need all the shots we created for the RGB LED in the previous lesson, and need to create an adapted \ardo{movie} function to connect the shots as we want. We also need to change the start so that instead of only one led pin, we start up 9 led pins. 
 
@@ -86,14 +86,16 @@ Open Code \ref{c:l2_d}, and save it under a new name. The changes needed are fir
 \eng{We test the cube as a single LED, so all LED are on, or all LED are off. Hence, instead of setting only led1 on, we write a function to put all LED on, and put that in \ardo{show\_subframe\_color}}
 \ned{TODO}
 
-\inputard{\string"../sketches/Fe_cube_03_cube_test1/Fe_cube_03_cube_test1.ino\string"}{209}{211}
-and with that function for setting the pins \textbf{on} sending a LOW signal, as we are connected to the LED cathode (-)
-\inputard{\string"../sketches/Fe_cube_03_cube_test1/Fe_cube_03_cube_test1.ino\string"}{230}{243}
+\inputard{\string"../sketches/Fe_cube_03_cube_test1/Fe_cube_03_cube_test1.ino\string"}{215}{216}
+
+\eng{This new function for setting the pins \textbf{on} sends a LOW signal to the pins, as we are connected to the LED cathode (-)}
+\ned{TODO}
+\inputard{\string"../sketches/Fe_cube_03_cube_test1/Fe_cube_03_cube_test1.ino\string"}{242}{248}
 
 \eng{Finally, we need to update the \ardo{movie} function so that it would do what we want. So this function needs to be}
 \ned{TODO}
 
-\inputard{\string"../sketches/Fe_cube_03_cube_test1/Fe_cube_03_cube_test1.ino\string"}{108}{142}
+\inputard{\string"../sketches/Fe_cube_03_cube_test1/Fe_cube_03_cube_test1.ino\string"}{109}{149}
 
 
 \engo{\begin{doE}
@@ -108,7 +110,9 @@ and with that function for setting the pins \textbf{on} sending a LOW signal, as
 
 \subsection{\engt{Construction}  \nedt{Constructie}}
 \eng{We verified all is working, time to construct the cube. For this we will take components of our breadboard, and solder the connections in a FE Cube form.
-We call our cube the Fe Cube because it is organized as the Iron metal lattice. Solid iron has a specific structure which is present in the Atomium building in Brussels. 
+We call our cube the Fe Cube because it is organized as the Iron (Fe) metal lattice. Solid iron has a specific structure which is depicted in the \href{http://en.wikipedia.org/wiki/Atomium}{Atomium building} in Brussels. We call it a \href{http://en.wikipedia.org/wiki/Cubic_crystal_system}{Body-centered cubic crystal system}, short \textbf{bcc}.  This is a cube with an extra node in the center. 
+
+
 }
 
 \ned{TODO}
@@ -128,16 +132,17 @@ Let us create a generic shot that can load patterns. Like that we can write down
 
 We need to define the data structure of a pattern. What needs to be in a pattern?
 \begin{enumerate}
- \item We need for 9 LED what color they must have. A color is a RGB value like (13,50,2), so in base 64. That is, we need 27 numbers.
- \item We need to know how long to hold this pattern before moving to the next pattern. So, we need an extra number for the milliseconds to hold the pattern.
+ \item We need for 9 LED what color they must have. A color is a RGB value like (13,50,2), so in base 64. That is, we need 27 numbers to form a frame now.
+ \item We need to know how long to hold a frame before moving to the next frame. So, we need an extra number for the milliseconds to accompany the frame in the pattern.
 \end{enumerate}
-Therfore, a pattern will look like :\newline
+Therfore, a pattern will look like a list of numbers which indicate the different frames and how long they take. For a single frame this will be:\newline
 $\{$R1,G1,B1, R2,G2,B2, R3,G3,B3, R4,G4,B4, R5,G5,B5, R6,G6,B6, R7,G7,B7, R8,G8,B8, R9,G9,B9, duration$\}$\newline
 
-The order of the LEDS in this pattern will be ledTLF, ledTLA, ledTRF, ledTRA, ledBLF, ledBLA, ledBRF, ledBRA, ledMID. If a shot consists of 20 patterns, we create a single large array with all the patterns, one after the other. As Arduino code is not that clever, we need to know somehow what the last pattern is. We could count and pass this number of patterns, but that will quickly lead to an error. Easier is to finish the list with a dummy pattern with duration 0. If we read this 0, we know the pattern is finished. 
+The order of the LEDS in the frame will be ledTLF, ledTLA, ledTRF, ledTRA, ledBLF, ledBLA, ledBRF, ledBRA, ledMID. If a shot consists of pattern with 20 fixed frames, we create a single large array with all the frames, one after the other. As Arduino code is not that clever, we need to know somehow what the last pattern is. We could count and pass this number of patterns, but that will quickly lead to an error. Easier is to finish the list with a dummy pattern with duration 0. If we read this 0, we know the pattern is finished. 
 
-In our code, our movie function will read one pattern at a time, and then use the fixed\_pattern function to display the pattern.
+In our code, our movie function will use a \ardo{moviepattern} function that will handle a pattern you give it. The function will divide the pattern in shots: one shot per fixed frame. The shot will take as long as the duration you have passed in the pattern. This shot is the analogue of the \ardo{fixed\_color} for the single RGB LED: \ardo{fixed\_pattern}, which is a shot that produces a single fixed image on the cube. 
 }
+
 \ned{TODO}
 
 \eng{

@@ -3,7 +3,7 @@ Controlling a FE Cube
 */
 
 // pins used
-int ledR=11; int ledG=12; int ledB=9;
+int ledR=10; int ledG=11; int ledB=12;
 // led anodes are connected to pins via a resistor
 // Bottom/Top - Left/Right - Aft/Front
 int ledBLA=1; int ledTLA=2; int ledBLF=3; int ledTLF=4;
@@ -161,9 +161,14 @@ void fixed_pattern(unsigned long framenr, int frame[27]){
   }
 }
 
+float patternscale_start = 1.;        // scale time of pattern with this amount
+float patternscale_speedup = 0.75;   // every repeat, time is multiplied with this
+float patternscale_min = 0.002;      // min value of patternscale
+unsigned int patternrepeatmin = 250; // how many times to repeat min value before restart
+//internally used variables, don't change:
+float patternscale = patternscale_start;
+unsigned int patternrepeat = 0;
 unsigned int curpattern = 0;
-float patternscale = 1.;
-float patternscale_speedup = 0.75;
 
 void (*moviepattern(unsigned long *shotduration))(unsigned long, int[27]){
   // we obtain the current pattern:
@@ -178,8 +183,14 @@ void (*moviepattern(unsigned long *shotduration))(unsigned long, int[27]){
     //pattern table finished, restart table
     curpattern = 0;
     patternscale *= patternscale_speedup;
-    if (patternscale < 0.01){
-      patternscale = 1.;
+    if (patternscale < patternscale_min){
+      patternrepeat += 1;
+      if (patternrepeat > patternrepeatmin){
+        patternscale = patternscale_start;
+        patternrepeat = 0;
+      } else {
+        patternscale = patternscale_min;
+      }
     }
   }
   return fixed_pattern;
@@ -188,8 +199,8 @@ void (*moviepattern(unsigned long *shotduration))(unsigned long, int[27]){
 void (*movie(unsigned long *shotduration))(unsigned long, int[27]){
   // when a shot is finished, movie() is called to obtain the next shot.
   unsigned long curmovietime = millis();
-  if (curmovietime < 500) {
-    //first cal,l we load the snake pattern
+  if (curmovietime < 500UL) {
+    //first call, we load the snake pattern
     PatternTable = PatternSnakeRGB;
   }
   //we show a pattern:

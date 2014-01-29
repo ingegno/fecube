@@ -3,7 +3,7 @@ Controlling a FE Cube
 */
 
 // pins used
-int ledR=11; int ledG=12; int ledB=9;
+int ledR=10; int ledG=11; int ledB=12;
 // led anodes are connected to pins via a resistor
 // Bottom/Top - Left/Right - Aft/Front
 int ledBLA=1; int ledTLA=2; int ledBLF=3; int ledTLF=4;
@@ -109,29 +109,34 @@ void smooth_color(unsigned long framenr, int frame[3]){
 void (*movie(unsigned long *shotduration))(unsigned long, int[3]){
   // when a shot is finished, movie() is called to obtain the next shot.
   unsigned long curmovietime = millis();
-  if (curmovietime - movietime > 2*60*1000  + 3*4000){
+  if (test) {
+    Serial.print("shot ");
+    Serial.print(curmovietime - movietime); Serial.print(" ");
+    Serial.print(curmovietime); Serial.print(" ");
+  }
+  if (curmovietime - movietime > 2*60*1000UL  + 3*4000UL){
     //start the movie again from the start.
     movietime = curmovietime;
   }
-  if (curmovietime - movietime < 60 * 1000) {
-    //random color for 1 min, with 1 sec for a random color
-    *shotduration = 1000;
-    return random_color;
-  } else if (curmovietime - movietime < 60 * 1000 + 4000) {
+  if (curmovietime - movietime < 4000UL) {
     //4 seconds red
     *shotduration = 4000;
     random_colorR = 64; random_colorG = 0; random_colorB = 0;
     return fixed_color;
-  } else if (curmovietime - movietime < 60 * 1000 + 8000) {
-    //4 seconds red
+  } else if (curmovietime - movietime < 8000UL) {
+    //4 seconds green
     *shotduration = 4000;
     random_colorR = 0; random_colorG = 64; random_colorB = 0;
     return fixed_color;
-  } else if (curmovietime - movietime < 60 * 1000 + 12000) {
-    //4 seconds red
+  } else if (curmovietime - movietime < 12000UL) {
+    //4 seconds blue
     *shotduration = 4000;
     random_colorR = 0; random_colorG = 0; random_colorB = 64;
     return fixed_color;
+  } else if (curmovietime - movietime < 12000UL + 60UL * 1000UL) {
+    //random color for 1 min, with 1 sec for a random color
+    *shotduration = 1000;
+    return random_color;
   } else {
     // one minitue smooth transitions each 4 sec
     smooth_color_transition_duration = 3000;
@@ -208,7 +213,6 @@ void loop(){
 }
 
 void show_subframe_color(int color, long microtime){
-  // all off
   all_led_on();
   digitalWrite(ledR, LOW);
   digitalWrite(ledG, LOW);
