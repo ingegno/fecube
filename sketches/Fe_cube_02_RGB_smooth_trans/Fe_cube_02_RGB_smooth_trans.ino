@@ -43,7 +43,7 @@ General outline animation architecture
    output of a loop in arduino.  A cycle of subrames creates a frame. 
    The cycle is repeated for the duration of the frame.
 ***************************************************************************/
-
+unsigned long movietime = 0UL;
 long random_colorR = 0; // global variables
 long random_colorG = 0;
 long random_colorB = 0;

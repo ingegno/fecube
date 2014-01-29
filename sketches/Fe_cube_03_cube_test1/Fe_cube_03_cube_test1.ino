@@ -1,13 +1,14 @@
 /*
-Controlling an RGB led via an npn switch and digital switching
-using a frame abstraction
+Controlling a FE Cube
 */
 
 // pins used
-int ledR=11;
-int ledG=10;
-int ledB=9;
-int led1=2;
+int ledR=11; int ledG=12; int ledB=9;
+// led anodes are connected to pins via a resistor
+// Bottom/Top - Left/Right - Aft/Front
+int ledBLA=1; int ledTLA=2; int ledBLF=3; int ledTLF=4;
+int ledMID=5; int ledTRF=6; int ledBRA=7; int ledTRA=8;
+int ledBRF=9;
 
 bool test = false;  //use serial monitor for testing.
 
@@ -15,10 +16,11 @@ void setup() {
   if (test) {
     Serial.begin(9600);
   }
-  randomSeed(analogRead(0));
-  // define the pins we use for the RGB led
-  pinMode(ledR,OUTPUT); pinMode(ledG,OUTPUT);
-  pinMode(ledB,OUTPUT); pinMode(led1,OUTPUT);
+ randomSeed(analogRead(0));
+ pinMode(ledB,OUTPUT); pinMode(ledG,OUTPUT); pinMode(ledB,OUTPUT);
+ pinMode(ledBLA,OUTPUT);  pinMode(ledBLF,OUTPUT); pinMode(ledBRA,OUTPUT);
+ pinMode(ledBRF,OUTPUT); pinMode(ledMID,OUTPUT); pinMode(ledTLA,OUTPUT);
+ pinMode(ledTLF,OUTPUT); pinMode(ledTRA,OUTPUT); pinMode(ledTRF,OUTPUT);
 }
 
 /***************************************************************************
@@ -44,56 +46,103 @@ General outline animation architecture
    The cycle is repeated for the duration of the frame.
 ***************************************************************************/
 unsigned long movietime = 0UL;
-//our first shot: a random color for a specific duration
-long random_colorR = 0;
+long random_colorR = 0; // global variables
 long random_colorG = 0;
-long random_colorB = 0; // global variables
+long random_colorB = 0;
+
+void fixed_color(unsigned long framenr, int frame[3]){
+  //shot: show a fixed color stored in global variables:
+  frame[0] = random_colorR;
+  frame[1] = random_colorG;
+  frame[2] = random_colorB;
+}
 
 void random_color(unsigned long framenr, int frame[3]){
-  //update the frame for the time shown
+  //shot: a random color for a specific duration
   if (framenr == 0) {
     //determine the random color we will use
    random_colorR = int(random(65));
    random_colorG = int(random(65));
    random_colorB = int(random(65));
-   if (test) {
-     Serial.print("New random color:");
-     Serial.print(random_colorR * 4);Serial.print(" ");
-     Serial.print(random_colorG * 4);Serial.print(" ");
-     Serial.print(random_colorB * 4);Serial.print(" at time ");
-     Serial.println(millis()/1000.);
-   }
   }
   //store the random color in the frame
   frame[0] = random_colorR;
   frame[1] = random_colorG;
   frame[2] = random_colorB;
-  //to test: hard code colors here:
-  //frame[0] = 0; frame[1] = 0; frame[2] = 64;
 }
 
-/*********************************************
-Following avoids
-   #include "frames.h"
-with frames.h in same directory containing:
-   typedef void (*shotptr)(unsigned long framenr, int frame[3]);
-and then in this file using this typedef:
-   shotptr movie(unsigned long *shotduration){
-Instead, all the above rolled into one:
-   movie is a function that returns a function with signature like eg
-       void random_color(unsigned long framenr, int frame[3])
-**********************************************/
+long smooth_colorR, smooth_colorG, smooth_colorB; // global variables
+unsigned int smooth_color_transition_duration = 10000;
+unsigned int fixed_color_duration = 5000;
+
+void smooth_color(unsigned long framenr, int frame[3]){
+  //shot: shows a color, then goes smooth to a new color
+  unsigned int last_fixed_frame = fixed_color_duration/40;
+  unsigned int last_trans_frame = (smooth_color_transition_duration +
+                fixed_color_duration) / 40;
+  unsigned int smooth_frame_length = last_trans_frame - last_fixed_frame;
+  if (framenr < last_fixed_frame) {
+    //show the fixed color
+    fixed_color(framenr, frame);
+  } else if (framenr == last_fixed_frame){
+    // finished first color, we determine what will be our next color
+    smooth_colorR = int(random(65));
+    smooth_colorG = int(random(65));
+    smooth_colorB = int(random(65));
+    fixed_color(framenr, frame);
+  } else if(framenr < last_trans_frame) {
+    // we compute how much to mix both colors
+    float blend = (framenr - last_fixed_frame) /  float(smooth_frame_length);
+    frame[0] = round((1-blend) * random_colorR + blend * smooth_colorR);
+    frame[1] = round((1-blend) * random_colorG + blend * smooth_colorG);
+    frame[2] = round((1-blend) * random_colorB + blend * smooth_colorB);
+  } else {
+    //we have (framenr >= last_trans_frame)
+    //so finished, we end with last color showing it fixed
+    random_colorR = smooth_colorR;
+    random_colorG = smooth_colorG;
+    random_colorB = smooth_colorB;
+    fixed_color(framenr, frame);
+  }
+}
+
 void (*movie(unsigned long *shotduration))(unsigned long, int[3]){
-  // when a shot is finished, movie() is called to obtain the next shot. 
-  // Here we have a single random color, and a fixed duration of 1000 ms.
-  *shotduration = 1000;
-  return random_color;
+  // when a shot is finished, movie() is called to obtain the next shot.
+  unsigned long curmovietime = millis();
+  if (curmovietime - movietime > 2*60*1000  + 3*4000){
+    //start the movie again from the start.
+    movietime = curmovietime;
+  }
+  if (curmovietime - movietime < 60 * 1000) {
+    //random color for 1 min, with 1 sec for a random color
+    *shotduration = 1000;
+    return random_color;
+  } else if (curmovietime - movietime < 60 * 1000 + 4000) {
+    //4 seconds red
+    *shotduration = 4000;
+    random_colorR = 64; random_colorG = 0; random_colorB = 0;
+    return fixed_color;
+  } else if (curmovietime - movietime < 60 * 1000 + 8000) {
+    //4 seconds red
+    *shotduration = 4000;
+    random_colorR = 0; random_colorG = 64; random_colorB = 0;
+    return fixed_color;
+  } else if (curmovietime - movietime < 60 * 1000 + 12000) {
+    //4 seconds red
+    *shotduration = 4000;
+    random_colorR = 0; random_colorG = 0; random_colorB = 64;
+    return fixed_color;
+  } else {
+    // one minitue smooth transitions each 4 sec
+    smooth_color_transition_duration = 3000;
+    fixed_color_duration = 500;
+    // a color, smooth transition, and another color, so duration:
+    *shotduration = smooth_color_transition_duration + 2 * fixed_color_duration;
+    return smooth_color;
+  }
 }
-
 
 /***************************************************************************
-           THAT WAS IT! SHORT NO?
-           
        THE REST IS THE GENERAL FRAMEWORK TO SHOW FRAMES ACCORDING TO
             WHAT YOU WANTED
 
@@ -160,7 +209,7 @@ void loop(){
 
 void show_subframe_color(int color, long microtime){
   // all off
-  digitalWrite(led1, HIGH);
+  all_led_on();
   digitalWrite(ledR, LOW);
   digitalWrite(ledG, LOW);
   digitalWrite(ledB, LOW);
@@ -178,4 +227,18 @@ void show_subframe_color(int color, long microtime){
     }
   }
 }
- 
+
+void all_led_off(){
+ digitalWrite(ledBLA,HIGH); digitalWrite(ledBLF,HIGH);
+ digitalWrite(ledBRA,HIGH); digitalWrite(ledBRF,HIGH);
+ digitalWrite(ledMID,HIGH); digitalWrite(ledTLA,HIGH);
+ digitalWrite(ledTLF,HIGH); digitalWrite(ledTRA,HIGH);
+ digitalWrite(ledTRF,HIGH);
+}
+void all_led_on(){
+ digitalWrite(ledBLA,LOW); digitalWrite(ledBLF,LOW);
+ digitalWrite(ledBRA,LOW); digitalWrite(ledBRF,LOW);
+ digitalWrite(ledMID,LOW); digitalWrite(ledTLA,LOW);
+ digitalWrite(ledTLF,LOW); digitalWrite(ledTRA,LOW);
+ digitalWrite(ledTRF,LOW);
+}
