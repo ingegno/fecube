@@ -1,19 +1,71 @@
 /*
-Controlling a FE Cube
+Controlling a FE Cube - patterns
 */
+#include <avr/pgmspace.h> // allows use of PROGMEM to store patterns in flash
 
 // pins used
 int ledR=10; int ledG=11; int ledB=12;
 // led anodes are connected to pins via a resistor
 // Bottom/Top - Left/Right - Aft/Front
-int ledBLA=1; int ledTLA=2; int ledBLF=3; int ledTLF=4;
-int ledMID=5; int ledTRF=6; int ledBRA=7; int ledTRA=8;
+int ledBLA=1; int ledTLA=4; int ledBLF=3; int ledTLF=2;
+int ledMID=5; int ledTRF=8; int ledBRA=7; int ledTRA=6;
 int ledBRF=9;
 
 int ledorder[] = {ledTLF,   ledTLA,   ledTRF,   ledTRA,   ledBLF,   ledBLA,   ledBRF,   ledBRA,   ledMID};
 int colorder[] = {ledR, ledG, ledB};
 
-bool test = false;  //use serial monitor for testing.
+
+const PROGMEM prog_int16_t PatternSnakeRGB[] = {
+//order led:
+//ledTLF,   ledTLA,   ledTRF,   ledTRA,   ledBLF,   ledBLA,   ledBRF,   ledBRA,   ledMID,  duration
+//snake red
+ 0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0, 64, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  1000,
+ 0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0, 64, 0, 0,  0, 0, 0,  1000,
+ 0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0, 64, 0, 0,  0, 0, 0,  0, 0, 0,  1000,
+ 0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0, 64, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  1000,
+ 0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0, 64, 0, 0,  1000,
+ 0, 0, 0, 64, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  1000,
+ 0, 0, 0,  0, 0, 0,  0, 0, 0, 64, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  1000,
+ 0, 0, 0,  0, 0, 0, 64, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  1000,
+64, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  1000,
+ 0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0, 64, 0, 0,  1000,
+ //snake green
+ 0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0,64, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  1000,
+ 0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0,64, 0,  0, 0, 0,  1000,
+ 0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0,64, 0,  0, 0, 0,  0, 0, 0,  1000,
+ 0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0,64, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  1000,
+ 0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0,64, 0,  1000,
+ 0, 0, 0,  0,64, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  1000,
+ 0, 0, 0,  0, 0, 0,  0, 0, 0,  0,64, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  1000,
+ 0, 0, 0,  0, 0, 0,  0,64, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  1000,
+ 0,64, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  1000,
+ 0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0,64, 0,  1000,
+ //snake blue
+ 0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0,64,  0, 0, 0,  0, 0, 0,  0, 0, 0,  1000,
+ 0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0,64,  0, 0, 0,  1000,
+ 0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0,64,  0, 0, 0,  0, 0, 0,  1000,
+ 0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0,64,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  1000,
+ 0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0,64,  1000,
+ 0, 0, 0,  0, 0,64,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  1000,
+ 0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0,64,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  1000,
+ 0, 0, 0,  0, 0, 0,  0, 0,64,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  1000,
+ 0, 0,64,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  1000,
+ 0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0,64,  1000,
+// dummy to end the pattern
+ 0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0
+  };
+
+
+const PROGMEM prog_int16_t PatternCircle[] = {
+//ledTLF,   ledTLA,   ledTRF,   ledTRA,   ledBLF,   ledBLA,   ledBRF,   ledBRA,   ledMID,  duration
+ 0,20,60,  0,60,20,  0,60,20,  0,20,60,  0,20,60,  0,60,20,  0,60,20,  0,20,60,  0, 0, 0,  150,
+ 0,60,20,  0,20,60,  0,20,60,  0,60,20,  0,60,20,  0,20,60,  0,20,60,  0,60,20,  0, 0, 0,  150,
+// 0,60,20,  0,20,60,  0,20,60,  0,60,20, 30, 0,40, 64,30, 0, 64,30, 0, 30, 0,40,  0, 0, 0,  100,
+ 0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0
+  };
+
+
+bool test = false;  //use serial monitor for testing (slows down update rate)
 
 void setup() {
   if (test) {
@@ -113,45 +165,6 @@ void smooth_color(unsigned long framenr, int frame[27]){
   }
 }
 
-int *PatternTable;
-
-int PatternSnakeRGB[] = {
-//order led:
-//ledTLF,   ledTLA,   ledTRF,   ledTRA,   ledBLF,   ledBLA,   ledBRF,   ledBRA,   ledMID,  duration
-//snake red
- 0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0, 64, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  1000,
- 0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0, 64, 0, 0,  0, 0, 0,  1000,
- 0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0, 64, 0, 0,  0, 0, 0,  0, 0, 0,  1000,
- 0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0, 64, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  1000,
- 0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0, 64, 0, 0,  1000,
- 0, 0, 0, 64, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  1000,
- 0, 0, 0,  0, 0, 0,  0, 0, 0, 64, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  1000,
- 0, 0, 0,  0, 0, 0, 64, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  1000,
-64, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  1000,
- //snake green
- 0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0,64, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  1000,
- 0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0,64, 0,  0, 0, 0,  1000,
- 0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0,64, 0,  0, 0, 0,  0, 0, 0,  1000,
- 0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0,64, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  1000,
- 0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0,64, 0,  1000,
- 0, 0, 0,  0,64, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  1000,
- 0, 0, 0,  0, 0, 0,  0, 0, 0,  0,64, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  1000,
- 0, 0, 0,  0, 0, 0,  0,64, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  1000,
- 0,64, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  1000,
- //snake blue
- 0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0,64,  0, 0, 0,  0, 0, 0,  0, 0, 0,  1000,
- 0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0,64,  0, 0, 0,  1000,
- 0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0,64,  0, 0, 0,  0, 0, 0,  1000,
- 0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0,64,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  1000,
- 0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0,64,  1000,
- 0, 0, 0,  0, 0,64,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  1000,
- 0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0,64,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  1000,
- 0, 0, 0,  0, 0, 0,  0, 0,64,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  1000,
- 0, 0,64,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  1000,
-// dummy to end the pattern
- 0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0
-};
-
 int shotpattern[28] = {0,0,0, 0,0,0, 0,0,0, 0,0,0, 0,0,0, 0,0,0, 0,0,0, 0,0,0, 0,0,0, 0};
 
 void fixed_pattern(unsigned long framenr, int frame[27]){
@@ -165,27 +178,62 @@ float patternscale_start = 1.;        // scale time of pattern with this amount
 float patternscale_speedup = 0.75;   // every repeat, time is multiplied with this
 float patternscale_min = 0.002;      // min value of patternscale
 unsigned int patternrepeatmin = 250; // how many times to repeat min value before restart
+int totalpatterns = 2;               // how many patterns in our movie.
 //internally used variables, don't change:
+boolean PATTERNFINISHED = true;
+int NRPATTERN = 0;
 float patternscale = patternscale_start;
 unsigned int patternrepeat = 0;
 unsigned int curpattern = 0;
 
 void (*moviepattern(unsigned long *shotduration))(unsigned long, int[27]){
   // we obtain the current pattern:
+  if (PATTERNFINISHED) {
+    if (NRPATTERN >= totalpatterns) {NRPATTERN = 0;} //restart
+    switch (NRPATTERN) {
+      case 0:
+        //first call, we load the snake pattern
+        patternscale_speedup = 0.75;
+        patternscale_min = 0.002;
+        patternrepeatmin = 250;
+        break;
+      case 1:
+        //now the circle
+        patternscale_speedup = 1.;  //fixed speed
+        patternscale_min = 1.;
+        patternrepeatmin = 100;     // finished after 500 rotations
+        break;
+    }
+    //reset start in case it changed
+    patternscale = patternscale_start;
+    PATTERNFINISHED = false;
+  }
+  int nextduration = 0;
   for (int ind=0; ind < 28; ind++){
-    shotpattern[ind] = PatternTable[28*curpattern + ind];
+    switch (NRPATTERN) {
+      case 0:
+        shotpattern[ind] = pgm_read_word_near(PatternSnakeRGB +28*curpattern + ind);
+        nextduration = pgm_read_word_near(PatternSnakeRGB +28*(curpattern + 1) - 1);
+        break;
+      case 1:
+        shotpattern[ind] = pgm_read_word_near(PatternCircle + 28*curpattern + ind);
+        nextduration = pgm_read_word_near(PatternCircle + 28*(curpattern + 1) - 1);
+        break;
+    }
   }
   *shotduration = round(shotpattern[27] * patternscale);
   //next time show next pattern
   curpattern += 1;  
   //test if this was not last pattern
-  if (PatternTable[28*(curpattern + 1) - 1] == 0){
+  if (nextduration == 0){
     //pattern table finished, restart table
     curpattern = 0;
     patternscale *= patternscale_speedup;
-    if (patternscale < patternscale_min){
+    if (patternscale <= patternscale_min){
       patternrepeat += 1;
       if (patternrepeat > patternrepeatmin){
+        PATTERNFINISHED = true;
+        NRPATTERN += 1;
         patternscale = patternscale_start;
         patternrepeat = 0;
       } else {
@@ -199,14 +247,9 @@ void (*moviepattern(unsigned long *shotduration))(unsigned long, int[27]){
 void (*movie(unsigned long *shotduration))(unsigned long, int[27]){
   // when a shot is finished, movie() is called to obtain the next shot.
   unsigned long curmovietime = millis();
-  if (curmovietime < 500UL) {
-    //first call, we load the snake pattern
-    PatternTable = PatternSnakeRGB;
-  }
   //we show a pattern:
   return moviepattern(shotduration);
 }
-
 
 
 /***************************************************************************
