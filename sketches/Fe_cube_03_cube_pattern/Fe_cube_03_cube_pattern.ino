@@ -213,11 +213,11 @@ void (*moviepattern(unsigned long *shotduration))(unsigned long, int[27]){
     switch (NRPATTERN) {
       case 0:
         shotpattern[ind] = pgm_read_word_near(PatternSnakeRGB +28*curpattern + ind);
-        nextduration = pgm_read_word_near(PatternSnakeRGB +28*(curpattern + 1) - 1);
+        nextduration = pgm_read_word_near(PatternSnakeRGB +28*(curpattern + 2) - 1);
         break;
       case 1:
         shotpattern[ind] = pgm_read_word_near(PatternCircle + 28*curpattern + ind);
-        nextduration = pgm_read_word_near(PatternCircle + 28*(curpattern + 1) - 1);
+        nextduration = pgm_read_word_near(PatternCircle + 28*(curpattern + 2) - 1);
         break;
     }
   }
