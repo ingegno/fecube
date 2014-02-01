@@ -1,6 +1,7 @@
 /*
 Controlling a FE Cube - intelligent patterns
 */
+#include <avr/pgmspace.h> // allows use of PROGMEM to store patterns in flash
 
 // pins used
 int ledR=10; int ledG=11; int ledB=12;
@@ -12,6 +13,24 @@ int ledBRF=9;
 
 int ledorder[] = {ledTLF,   ledTLA,   ledTRF,   ledTRA,   ledBLF,   ledBLA,   ledBRF,   ledBRA,   ledMID};
 int colorder[] = {ledR, ledG, ledB};
+
+const PROGMEM prog_int16_t PatternSnakeRGB[] = {
+//order led:
+//ledTLF,   ledTLA,   ledTRF,   ledTRA,   ledBLF,   ledBLA,   ledBRF,   ledBRA,   ledMID,  duration
+//snake red
+ 0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0, 64, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  1000,
+ 0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0, 64, 0, 0,  0, 0, 0,  1000,
+ 0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0, 64, 0, 0,  0, 0, 0,  0, 0, 0,  1000,
+ 0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0, 64, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  1000,
+ 0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0, 64, 0, 0,  1000,
+ 0, 0, 0, 64, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  1000,
+ 0, 0, 0,  0, 0, 0,  0, 0, 0, 64, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  1000,
+ 0, 0, 0,  0, 0, 0, 64, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  1000,
+64, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  1000,
+ 0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0, 64, 0, 0,  1000,
+// dummy to end the pattern, with duration the effect for the next repeat, see effect
+ 0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  -11
+};
 
 bool test = false;  //use serial monitor for testing (slows down update rate)
 
@@ -113,26 +132,6 @@ void smooth_color(unsigned long framenr, int frame[27]){
   }
 }
 
-
-int *PatternTable;
-
-int PatternSnakeRGB[] = {
-//order led:
-//ledTLF,   ledTLA,   ledTRF,   ledTRA,   ledBLF,   ledBLA,   ledBRF,   ledBRA,   ledMID,  duration
-//snake red
- 0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0, 64, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  1000,
- 0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0, 64, 0, 0,  0, 0, 0,  1000,
- 0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0, 64, 0, 0,  0, 0, 0,  0, 0, 0,  1000,
- 0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0, 64, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  1000,
- 0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0, 64, 0, 0,  1000,
- 0, 0, 0, 64, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  1000,
- 0, 0, 0,  0, 0, 0,  0, 0, 0, 64, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  1000,
- 0, 0, 0,  0, 0, 0, 64, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  1000,
-64, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  1000,
-// dummy to end the pattern, with duration the effect for the next repeat, see effect
- 0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  -11
-};
-
 int shotpattern[28] = {0,0,0, 0,0,0, 0,0,0, 0,0,0, 0,0,0, 0,0,0, 0,0,0, 0,0,0, 0,0,0, 0};
 
 void fixed_pattern(unsigned long framenr, int frame[27]){
@@ -142,54 +141,85 @@ void fixed_pattern(unsigned long framenr, int frame[27]){
   }
 }
 
-// scale time of pattern with this amount after pattern finishes
-float patternscale_start = 1.;
-// every repeat, time is multiplied with this
-float patternscale_speedup = 0.75;
-// min value of patternscale
-float patternscale_min = 0.002;
-// how many times to repeat min value before restart
-unsigned int patternrepeatmin = 250;
-// extend the pattern this number of times
-int extend_pattern = 2;
+float patternscale_start = 1.;      // scale time of pattern with this amount
+float patternscale_speedup = 0.75;  // every repeat, time is multiplied with this
+float patternscale_min = 0.002;     // min value of patternscale
+unsigned int patternrepeatmin = 250;// how many times to repeat min value before restart
+int totalpatterns = 1;              // how many patterns in our movie.
+int extend_pattern = 2;             // extend the pattern this number of times
 // effect to apply, use as last duration
-//  0: no effect
-// -1: reverse the entire pattern
-//-11: shift colors one right
-//-12: shift colors two right
+//  0: no effect;  -1: reverse the entire pattern
+//-11: shift colors one right; -12: shift colors two right
 int starteffect = 0;
+
 //internally used variables, don't change:
 boolean PATTERNFINISHED = true;
 int NRPATTERN = 0;
 float patternscale = patternscale_start;
 unsigned int patternrepeat = 0;
 unsigned int curpattern = 0;
-int nextdura = 0;
 int nrextends = 0;
 int revert = 1;
 int effect=starteffect;
 
 void (*moviepattern(unsigned long *shotduration))(unsigned long, int[27]){
   // we obtain the current pattern:
-  if (test){
-    Serial.println("moviepattern called");
-  }
   if (PATTERNFINISHED) {
+    if (NRPATTERN > 3) {
+      NRPATTERN = 0;
+    }
+    switch (NRPATTERN) {
+      case 0:
+        //first call, we load the snake pattern
+        // red, green, blue
+        patternscale_speedup = 0.75;
+        patternscale_min = 0.002;
+        patternrepeatmin = 250;
+        extend_pattern = 2;
+        starteffect = 0;
+        break;
+      case 1:
+        // blue and red
+        starteffect = -12;
+        extend_pattern = 1;
+        break;
+      case 2:
+        // green and blue
+        starteffect = -11;
+        break;
+      case 3:
+        // green back - forth
+        starteffect = -11;
+        extend_pattern = 1;
+    }
     //reset start in case it changed
     effect = starteffect;
     patternscale = patternscale_start;
     PATTERNFINISHED = false;
   }
+  int nextduration = 0;
   for (int ind=0; ind < 28; ind++){
-    shotpattern[ind] = PatternTable[28*curpattern + ind];
+    switch (NRPATTERN) {
+      case 0:
+      case 1:
+      case 2:
+        shotpattern[ind] = pgm_read_word_near(PatternSnakeRGB +28*curpattern + ind);
+        nextduration = pgm_read_word_near(PatternSnakeRGB +28*(curpattern + 2) - 1);
+        break;
+      case 3:
+        shotpattern[ind] = pgm_read_word_near(PatternSnakeRGB +28*curpattern + ind);
+        nextduration = pgm_read_word_near(PatternSnakeRGB +28*(curpattern + 2) - 1);
+        // we override the effect as we want reverse!
+        if (nextduration <= 0) {
+          nextduration = -1;
+        }
+    }
   }
   apply_shot_effect();
   *shotduration = round(shotpattern[27] * patternscale);
   //next time show next pattern
-  curpattern += revert;  
-  //test if this was not last pattern
-  nextdura = PatternTable[28*(curpattern + 1) - 1];
-  if (nextdura <= 0 || curpattern == 0){
+  curpattern += revert;
+  if (nextduration <= 0 || curpattern == 0){
     //pattern table finished, restart table with an extend if asked, 
     //otherwise start from start with a speedup if required.
     if (nrextends == extend_pattern){
@@ -214,12 +244,12 @@ void (*moviepattern(unsigned long *shotduration))(unsigned long, int[27]){
     } else {
       //extend the pattern, prepare to do an effect
       nrextends += 1;
-      if (effect == -11 && nextdura == -11){
+      if (effect == -11 && nextduration == -11){
         effect = -12;
-      } else if (effect == -12 && nextdura == -11){
+      } else if (effect == -12 && nextduration == -11){
         effect = 0;
       } else {
-        effect = nextdura;
+        effect = nextduration;
       }
       if (effect == -1 || curpattern == 0){
         //we revert the pattern
@@ -265,38 +295,6 @@ void rotate_shot(){
 
 void (*movie(unsigned long *shotduration))(unsigned long, int[27]){
   // when a shot is finished, movie() is called to obtain the next shot.
-  if (PATTERNFINISHED) {
-    if (NRPATTERN > 3) {
-      NRPATTERN = 0;
-    }
-    switch (NRPATTERN) {
-      case 0:
-        //first call, we load the snake pattern
-        PatternTable = PatternSnakeRGB;
-        PatternTable[279] = -11;
-        // red, green, blue
-        patternscale_speedup = 0.75;
-        patternscale_min = 0.002;
-        patternrepeatmin = 250;
-        extend_pattern = 2;
-        starteffect = 0;
-        break;
-      case 1:
-        // blue and red
-        starteffect = -12;
-        extend_pattern = 1;
-        break;
-      case 2:
-        // green and blue
-        starteffect = -11;
-        break;
-      case 3:
-        // green back - forth
-        starteffect = -11;
-        extend_pattern = 1;
-        PatternTable[279] = -1;        
-    }
-  }
   unsigned long curmovietime = millis();
   //we show a pattern:
   return moviepattern(shotduration);
