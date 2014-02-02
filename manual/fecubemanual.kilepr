@@ -39,20 +39,20 @@ Mode=LaTeX
 
 [item:fecube.tex]
 archive=true
-column=100
+column=60
 encoding=UTF-8
 highlight=LaTeX
-line=9
+line=603
 mode=LaTeX
 open=true
 order=2
 
 [item:fecube_2.tex]
 archive=true
-column=25
+column=78
 encoding=UTF-8
 highlight=LaTeX
-line=150
+line=266
 mode=LaTeX
 open=true
 order=0
@@ -69,28 +69,28 @@ order=-1
 
 [item:manual.tex]
 archive=true
-column=8
+column=0
 encoding=UTF-8
 highlight=LaTeX
-line=92
+line=81
 mode=LaTeX
 open=true
 order=1
 
 [view-settings,view=0,item:fecube.tex]
-CursorColumn=100
-CursorLine=9
+CursorColumn=60
+CursorLine=603
 JumpList=
 ViMarks=.,0,0,[,0,0,],0,0
 
 [view-settings,view=0,item:fecube_2.tex]
-CursorColumn=25
-CursorLine=150
+CursorColumn=78
+CursorLine=266
 JumpList=
-ViMarks=.,150,24,[,150,22,],150,24
+ViMarks=.,266,75,[,266,74,],266,75
 
 [view-settings,view=0,item:manual.tex]
-CursorColumn=8
-CursorLine=92
+CursorColumn=0
+CursorLine=81
 JumpList=
 ViMarks=.,92,8,[,92,8,],92,8

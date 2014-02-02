@@ -128,25 +128,64 @@ If things are not working, you have some extra soldering to do: replace a blown 
 \subsection{\engt{Generic patterns ... and a snake} \nedt{Algemene patronen ... en een slang}}
 
 \eng{
-Let us create a generic shot that can load patterns. Like that we can write down a pattern, and pass it to this shot. The first pattern we want to make is the snake patters: a single light that jumps from LED to LED in the three base colors.
+We have a working cube now, but we can only show single colors with our current code. Let's change that. We want to be able to write some light effects, and show that on our cube. So let us create a movie function that can load patterns we create. Like that we can write down a pattern, and pass it to this function. The first pattern we want to make is the snake pattern: a single light that jumps from LED to LED in the three base colors.
 
 We need to define the data structure of a pattern. What needs to be in a pattern?
 \begin{enumerate}
- \item We need for 9 LED what color they must have. A color is a RGB value like (13,50,2), so in base 64. That is, we need 27 numbers to form a frame now.
- \item We need to know how long to hold a frame before moving to the next frame. So, we need an extra number for the milliseconds to accompany the frame in the pattern.
+ \item We need for 9 LED what color they must have. A color is a RGB value like (13,50,2), assuming we still use values between 0 and 64. That is, we need $3\times 9 = 27$ numbers to form a frame now.
+ \item We need to know how long to hold a frame before moving to the next frame. So, we need an extra number for the milliseconds, for a total of 28 numbers.
 \end{enumerate}
-Therfore, a pattern will look like a list of numbers which indicate the different frames and how long they take. For a single frame this will be:\newline
+Therefore, a pattern will look like a list of numbers which indicate the different frames and how long they take. For a single frame this will be:\newline
 $\{$R1,G1,B1, R2,G2,B2, R3,G3,B3, R4,G4,B4, R5,G5,B5, R6,G6,B6, R7,G7,B7, R8,G8,B8, R9,G9,B9, duration$\}$\newline
 
-The order of the LEDS in the frame will be ledTLF, ledTLA, ledTRF, ledTRA, ledBLF, ledBLA, ledBRF, ledBRA, ledMID. If a shot consists of pattern with 20 fixed frames, we create a single large array with all the frames, one after the other. As Arduino code is not that clever, we need to know somehow what the last pattern is. We could count and pass this number of patterns, but that will quickly lead to an error. Easier is to finish the list with a dummy pattern with duration 0. If we read this 0, we know the pattern is finished. 
+The order of the LEDS in the frame will be ledTLF, ledTLA, ledTRF, ledTRA, ledBLF, ledBLA, ledBRF, ledBRA, ledMID. If a shot consists of pattern with 20 fixed frames, we create a single large array with all the frames, one after the other. As Arduino code is not that clever, we need to know somehow what the last pattern is. We could count and pass this number of patterns, but that will quickly lead to an error. Easier is to finish the list with a fake pattern with duration 0. If we read this 0, we know the pattern is finished. 
 
-In our code, our movie function will use a \ardo{moviepattern} function that will handle a pattern you give it. The function will divide the pattern in shots: one shot per fixed frame. The shot will take as long as the duration you have passed in the pattern. This shot is the analogue of the \ardo{fixed\_color} for the single RGB LED: \ardo{fixed\_pattern}, which is a shot that produces a single fixed image on the cube. 
+In our code, our \ardo{movie} function will use a \ardo{moviepattern} function that will handle a pattern you give it. The function will divide the pattern in shots: one shot per fixed frame. The shot will take as long as the duration you have passed in the pattern. This shot is the analogue of the \ardo{fixed\_color} for the single RGB LED: \ardo{fixed\_pattern}, which is a shot that produces a single fixed image on the cube.
+
+There is an extra complication though. The Arduino does not have a lot of memory to work with. There is the SRAM memory with which the Arduino works, and there is Flash memory where your program will be stored. All general variables in your code need to be available at all times, so they need to be stored in SRAM memory. Our patterns can be large though, and the memory would fill up, causing the Arduino to just not produce anything anymore. To avoid this, we will store the patterns in flash memory, and only obtain the frame of the pattern we need. Because of this, you will find in the code:
+
+\textbullet \ \textbf{\#include $<$avr/pgmspace.h$>$}\newline
+This will define the functions we need to move data from flash memory to SRAM.
+
+\textbullet \  \textbf{const PROGMEM prog\_int16\_t PatternSnakeRGB{$\lbrack$} {$\rbrack$} = \{ ... \};}\newline
+
+This replaces a normal \textbf{int array{$\lbrack$} {$\rbrack$}} which defines an array of integers. It indicates we want an array of integers, but we want it in \ardo{PROGMEM}, so in the memory that stores our program, the flash memory.
+
+\textbullet You call in the \ardo{movie} function the new \ardo{moviepattern} function if you want to send a pattern to the LED cube. We cannot pass a variable with the moviepattern we want to use because this is now in \ardo{PROGMEM}. You will need to edit \ardo{moviepattern} to load the correct pattern.
+
+\textbullet In the function \ardo{moviepattern} you see twice the appearance of the \ardo{switch} structure. This is a programming structure that works like a switch based on a variable. The syntax is:\newline
+ %
+\textbf{switch (var) \{ \newline
+\ \  case label1:\newline
+\ \ \ \     // statements for when var==label1\newline
+\ \ \ \     break;\newline
+\ \   case label2:\newline
+\ \ \ \     // statements for when var==label2\newline
+\ \ \ \     break;\newline
+  default: \newline
+    // statements for if var was something different\newline
+\}}\newline
+In this switch structure, the commands for which the var is equal to one of the labels are executed from that point onwards, up to a \ardo{break;} command.
+
+In the first switch structure you need to add the start conditions of the patterns you want to show. In the second switch structure you need to copy the pattern you want into the \ardo{shotpattern} variable, as well set the \ardo{nextduration} variable to the duration of the next shot. The function \ardo{pgm_read_word_near} is the function that will copy from the program memory (flash) to SRAM. The only thing needed to change there is the name of the pattern, or add a case with your pattern.
+
+\textbullet \  The start conditions for a pattern are:
+\begin{enumerate}
+ \item \textbf{patternscale\_start}: with what time scaling to start? This is multiplied with the duration of a frame.
+ \item \textbf{patternscale\_speedup}: a value larger than 0 and less than 1. Every time the pattern is finished, you can make it go faster. This speedup is multiplied with the duration of the frames
+ \item \textbf{patternscale\_min}: it has no use to go always faster, you need to stop some time. This indicates the minimum scale, after which we assume the pattern can be completely stopped.
+ \item \textbf{patternrepeatmin}: as the fastest presentation at patternscale\_min will be so fast you can hardly see it, you can set with this variable how many times to repeat this fastest pattern before we really consider the pattern as finished. When the pattern is finished in this way, the label of the switch command, NRPATTERN in the sketch, is increased by one, causing a next pattern to be loaded if that is present.
+ \item \textbf{totalpatterns}: we use the switch command to select the pattern. Give with this variable how many patterns in total you use. 
+\end{enumerate}
+To show the influence of changing these parameters, the code has an extra pattern called PatternCircle, which uses different starting values.
+
+\textbullet \ The rest of the extra code is to compute the correct speedup of the shots in the pattern, and to determine correctly when a pattern is finished and the next pattern can begin.
 }
 
 \ned{TODO}
 
 \eng{
-The code is given in Code \ref{c:ledcube_snake}.
+The entire code is given in Code \ref{c:ledcube_snake}.
 }
 
 \ned{TODO}
@@ -156,9 +195,74 @@ The code is given in Code \ref{c:ledcube_snake}.
 \inputardfull{\string"../sketches/Fe_cube_03_cube_pattern/Fe_cube_03_cube_pattern.ino\string"}
 \end{code}
 
-%\begin{code}\label{c:ledcube_smooth}
+
+\engo{\begin{doE}
+      \textbf{Your pattern}. Time to make your own pattern. How about a rotating emergency vehicle light? Or christmass twinkle? Or ....
+     \end{doE}
+}
+\nedo{\begin{doN}
+      \textbf{Jouw patroon}. Tijd om je eigen patroon te maken. Wat denk je van een zwaailicht? Of kerstboom flikkering? Of ...
+     \end{doN}
+}
+
+\subsection{\engt{Intelligent patterns ... and a beating heart} \nedt{Intelligente patronen ... en een kloppend hart}}
+
+\eng{We can do patterns, which is nice, but patterns are a lot of work to create. This is no different in animation movies or with special effects. They take a lot of time to make. So, people use programming instead to do as much of the work as possible. 
+
+For example, if you look at our snake pattern, we essentially repeat 3 times the same pattern but for a different color. It would be easier to write the pattern once, and then in the code shift the pattern one color. As another example, consider writing a pattern for a beating heart. We would go from no light, to always more red. When all if fully red, we would invert it. In essence, we would need to repeat the pattern in reverse order. Again, with software this would be easier and avoid us writing a long pattern. 
+
+Before writing more software, it is important to design it somewhat. We now end a pattern with a dummy line which has duration 0. As a duration smaller than zero makes no sense, we can use a negative duration to indicate performing a specific operation on the pattern, for example reverse it as in the beating heart, or shift the colors as in the snake. Apart from this, we would need a counter also to indicate how often to extend the pattern once the end is reached. 
+
+We will use following definitions: the variable \ardo{extend_pattern} will contain how often the pattern must be extended when the end is reached. The final duration will indicate how the pattern must be repeated. We will consider as durations
+\begin{itemize}
+ \item[0]: the pattern does not change. This is the end
+ \item[-1]: reverse the pattern in the next repeat
+ \item[-11]: shift the colors one to the right: R$\rightarrow$G, G$\rightarrow$B, B$\rightarrow$R
+ \item[-12]: shift the colors two to the right: R$\rightarrow$B, G$\rightarrow$R, B$\rightarrow$G
+ \item[-90]: rotate the shot over -90 degrees. Ideal to create rotating animations.
+ \item[-180]: flip the shot, so TLF becomes TRA
+ \item[-270]: rotate the shot over 90 degrees
+\end{itemize}
+
+Doing all these changes will increase the amount of code. As our patterns are smaller however, we will be able to do more with less memory.
+}
+
+\ned{TODO}
+
+\eng{First, the patterns can be shorter. Here are the two patterns we consider, our snake of before, and the beating heart.}
+
+\ned{TODO}
+
+\inputard{\string"../sketches/Fe_cube_03_cube_intpattern/Fe_cube_03_cube_intpattern.ino\string"}{17}{33}
+
+%\begin{code}\label{c:ledcube_heart}
 % \ \newline
-%\inputardfull{\string"sketches/Fe_cube_04_common_kathodeRGB_cube_smoothrandom/Fe_cube_04_common_kathodeRGB_cube_smoothrandom.ino\string"}
+%\inputardfull{\string"../sketches/Fe_cube_03_cube_intpattern/Fe_cube_03_cube_intpattern.ino\string"}
 %\end{code}
 
+\eng{All the other changes are in our \ardo{moviepattern} function. We have two extra control variables: \ardo{extend_pattern} indicating how many times a single pattern is extended by a copy with some effects on. So, for the original snake, we reduced the 3 loops to one loop in red, so we need to extend it twice to obtain the original length.
+
+The other new variable is \ardo{starteffect}. That is, we need not wait for an extend to apply an effect, we can do it from the start. To show what is possible with effects, we manipulate the red snake pattern in 4 different ways, as well as adding a beating heart pattern. The adapted \ardo{moviepattern} function is
+}
+\ned{}
+
+\inputard{\string"../sketches/Fe_cube_03_cube_intpattern/Fe_cube_03_cube_intpattern.ino\string"}{147}{297}
+
+
+\engo{\begin{doE}
+      \textbf{More patterns}. The effects are working? Add another effect, eg a color change. Or just write a new pattern using some of the effects.
+     \end{doE}
+}
+\nedo{\begin{doN}
+      \textbf{Meer patronen}. De effecten werken op je Fe Kubus? Voeg een nieuw effect toe, bevoorbeeld een kleurverandering. Of schrijf gewoon een nieuw patroon dat van enkele effecten gebruik maakt.
+     \end{doN}
+}
+
+
+\section{\engt{Lesson 4: Interaction with a push button: Dices} \nedt{Les 4: Interactie met een drukknop: Dobbelstenen}}
+
+\eng{TODO}
+\ned{Je kan prachtige dingen doen met je kubus. Maar we kunnen het nog wat gebruiksvriendelijker maken. Ware het niet super als je kon interageren met je kubus. Bevoorbeeld van effect veranderen als je een knop drukt? Of je kubus omtoveren in een dobbelsteen die je rolt als je op de knop drukt.}
+
+\subsection{\engt{How does a pushbutton work?} \nedt{Hoe werkt een drukknop?}}
 

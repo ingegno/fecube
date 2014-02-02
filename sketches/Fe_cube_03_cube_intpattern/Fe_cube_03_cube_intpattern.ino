@@ -67,6 +67,8 @@ General outline animation architecture
    The cycle is repeated for the duration of the frame.
 ***************************************************************************/
 unsigned long movietime = 0UL;
+
+/** FIRST FUNCTIONS BASED ON EQUAL COLORS FOR ALL LED **/
 long random_colorR = 0; // global variables
 long random_colorG = 0;
 long random_colorB = 0;
@@ -132,6 +134,7 @@ void smooth_color(unsigned long framenr, int frame[27]){
   }
 }
 
+/** NEXT FUNCTIONS BASED ON ALL LED DIFFERENT **/
 int shotpattern[28] = {0,0,0, 0,0,0, 0,0,0, 0,0,0, 0,0,0, 0,0,0, 0,0,0, 0,0,0, 0,0,0, 0};
 
 void fixed_pattern(unsigned long framenr, int frame[27]){
