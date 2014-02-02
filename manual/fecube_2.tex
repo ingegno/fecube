@@ -142,34 +142,28 @@ The order of the LEDS in the frame will be ledTLF, ledTLA, ledTRF, ledTRA, ledBL
 
 In our code, our \ardo{movie} function will use a \ardo{moviepattern} function that will handle a pattern you give it. The function will divide the pattern in shots: one shot per fixed frame. The shot will take as long as the duration you have passed in the pattern. This shot is the analogue of the \ardo{fixed\_color} for the single RGB LED: \ardo{fixed\_pattern}, which is a shot that produces a single fixed image on the cube.
 
-There is an extra complication though. The Arduino does not have a lot of memory to work with. There is the SRAM memory with which the Arduino works, and there is Flash memory where your program will be stored. All general variables in your code need to be available at all times, so they need to be stored in SRAM memory. Our patterns can be large though, and the memory would fill up, causing the Arduino to just not produce anything anymore. To avoid this, we will store the patterns in flash memory, and only obtain the frame of the pattern we need. Because of this, you will find in the code:
+There is an extra complication though. The Arduino does not have a lot of memory to work with. There is the SRAM memory with which the Arduino works, and there is Flash memory where your program will be stored. All general variables in your code need to be available at all times, so they need to be stored in SRAM memory. Our patterns can be large though, and the memory would fill up, causing the Arduino to just not produce anything anymore. To avoid this, we will store the patterns in flash memory, and only obtain the frame of the pattern we need. Because of this, you will find in the code:}
+\ned{TODO}
 
-\textbullet \ \textbf{\#include $<$avr/pgmspace.h$>$}\newline
+\inputard{\string"codefrag/defavr.ino\string"}{1}{3}
+
+\eng{
 This will define the functions we need to move data from flash memory to SRAM.
+The \ardo{PROGMEM} part replaces a normal \ardo{array} construction and defines an array of integers. It indicates we want an array of integers, but we want it in \ardo{PROGMEM}, so in the memory that stores our program, the flash memory.
 
-\textbullet \  \textbf{const PROGMEM prog\_int16\_t PatternSnakeRGB{$\lbrack$} {$\rbrack$} = \{ ... \};}\newline
+You call in the \ardo{movie} function the new \ardo{moviepattern} function if you want to send a pattern to the LED cube. We cannot pass a variable with the moviepattern we want to use because this is now in \ardo{PROGMEM}. You will need to edit \ardo{moviepattern} to load the correct pattern.
 
-This replaces a normal \textbf{int array{$\lbrack$} {$\rbrack$}} which defines an array of integers. It indicates we want an array of integers, but we want it in \ardo{PROGMEM}, so in the memory that stores our program, the flash memory.
+In the function \ardo{moviepattern} you see twice the appearance of the \ardo{switch} structure. This is a programming structure that works like a switch based on a variable. The syntax is:}
 
-\textbullet You call in the \ardo{movie} function the new \ardo{moviepattern} function if you want to send a pattern to the LED cube. We cannot pass a variable with the moviepattern we want to use because this is now in \ardo{PROGMEM}. You will need to edit \ardo{moviepattern} to load the correct pattern.
+\ned{TODO}
 
-\textbullet In the function \ardo{moviepattern} you see twice the appearance of the \ardo{switch} structure. This is a programming structure that works like a switch based on a variable. The syntax is:\newline
- %
-\textbf{switch (var) \{ \newline
-\ \  case label1:\newline
-\ \ \ \     // statements for when var==label1\newline
-\ \ \ \     break;\newline
-\ \   case label2:\newline
-\ \ \ \     // statements for when var==label2\newline
-\ \ \ \     break;\newline
-  default: \newline
-    // statements for if var was something different\newline
-\}}\newline
-In this switch structure, the commands for which the var is equal to one of the labels are executed from that point onwards, up to a \ardo{break;} command.
+\inputard{\string"codefrag/switch.ino\string"}{1}{10}
+
+\eng{In this switch structure, the commands for which the var is equal to one of the labels are executed from that point onwards, up to a \ardo{break;} command.
 
 In the first switch structure you need to add the start conditions of the patterns you want to show. In the second switch structure you need to copy the pattern you want into the \ardo{shotpattern} variable, as well set the \ardo{nextduration} variable to the duration of the next shot. The function \ardo{pgm_read_word_near} is the function that will copy from the program memory (flash) to SRAM. The only thing needed to change there is the name of the pattern, or add a case with your pattern.
 
-\textbullet \  The start conditions for a pattern are:
+The start conditions for a pattern are:
 \begin{enumerate}
  \item \textbf{patternscale\_start}: with what time scaling to start? This is multiplied with the duration of a frame.
  \item \textbf{patternscale\_speedup}: a value larger than 0 and less than 1. Every time the pattern is finished, you can make it go faster. This speedup is multiplied with the duration of the frames
@@ -179,7 +173,7 @@ In the first switch structure you need to add the start conditions of the patter
 \end{enumerate}
 To show the influence of changing these parameters, the code has an extra pattern called PatternCircle, which uses different starting values.
 
-\textbullet \ The rest of the extra code is to compute the correct speedup of the shots in the pattern, and to determine correctly when a pattern is finished and the next pattern can begin.
+The rest of the extra code is to compute the correct speedup of the shots in the pattern, and to determine correctly when a pattern is finished and the next pattern can begin.
 }
 
 \ned{TODO}
@@ -242,11 +236,15 @@ Doing all these changes will increase the amount of code. As our patterns are sm
 
 \eng{All the other changes are in our \ardo{moviepattern} function. We have two extra control variables: \ardo{extend_pattern} indicating how many times a single pattern is extended by a copy with some effects on. So, for the original snake, we reduced the 3 loops to one loop in red, so we need to extend it twice to obtain the original length.
 
-The other new variable is \ardo{starteffect}. That is, we need not wait for an extend to apply an effect, we can do it from the start. To show what is possible with effects, we manipulate the red snake pattern in 4 different ways, as well as adding a beating heart pattern. The full code is in \url{https://github.com/ingegno/fecube/blob/master/sketches/Fe_cube_03_cube_intpattern/Fe_cube_03_cube_intpattern.ino}
-}
-\ned{}
+The other new variable is \ardo{starteffect}. That is, we need not wait for an extend to apply an effect, we can do it from the start. To show what is possible with effects, we manipulate the red snake pattern in 4 different ways, as well as adding a beating heart pattern. The full code is in \url{https://github.com/ingegno/fecube/blob/master/sketches/Fe_cube_03_cube_intpattern/Fe_cube_03_cube_intpattern.ino}. Only the start of the moviepattern function with the two switch statements is something you would want to change for your own patterns. See Code
+\ref{c:int_pat} for this start.}
+\ned{TODO}
 
-\inputard{\string"../sketches/Fe_cube_03_cube_intpattern/Fe_cube_03_cube_intpattern.ino\string"}{203}{297}
+
+\begin{code}\label{c:int_pat}
+ \ \newline
+\inputard{\string"../sketches/Fe_cube_03_cube_intpattern/Fe_cube_03_cube_intpattern.ino\string"}{211}{293}
+\end{code}
 
 
 \engo{\begin{doE}

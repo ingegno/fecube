@@ -1,6 +1,7 @@
 /*
 Controlling a FE Cube - patterns
 */
+#define __PROG_TYPES_COMPAT__   // define needed for older arduino avr !
 #include <avr/pgmspace.h> // allows use of PROGMEM to store patterns in flash
 
 // pins used
