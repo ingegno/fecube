@@ -86,11 +86,11 @@ Open Code \ref{c:l2_d}, and save it under a new name. The changes needed are fir
 \eng{We test the cube as a single LED, so all LED are on, or all LED are off. Hence, instead of setting only led1 on, we write a function to put all LED on, and put that in \ardo{show\_subframe\_color}}
 \ned{TODO}
 
-\inputard{\string"../sketches/Fe_cube_03_cube_test1/Fe_cube_03_cube_test1.ino\string"}{215}{216}
+\inputard{\string"../sketches/Fe_cube_03_cube_test1/Fe_cube_03_cube_test1.ino\string"}{217}{221}
 
 \eng{This new function for setting the pins \textbf{on} sends a LOW signal to the pins, as we are connected to the LED cathode (-)}
 \ned{TODO}
-\inputard{\string"../sketches/Fe_cube_03_cube_test1/Fe_cube_03_cube_test1.ino\string"}{242}{248}
+\inputard{\string"../sketches/Fe_cube_03_cube_test1/Fe_cube_03_cube_test1.ino\string"}{245}{251}
 
 \eng{Finally, we need to update the \ardo{movie} function so that it would do what we want. So this function needs to be}
 \ned{TODO}
@@ -185,15 +185,15 @@ To show the influence of changing these parameters, the code has an extra patter
 \ned{TODO}
 
 \eng{
-The entire code is given in Code \ref{c:ledcube_snake}.
+The entire code is given in Code \url{https://github.com/ingegno/fecube/blob/master/sketches/Fe_cube_03_cube_pattern/Fe_cube_03_cube_pattern.ino} %\ref{c:ledcube_snake}.
 }
 
 \ned{TODO}
 
-\begin{code}\label{c:ledcube_snake}
- \ \newline
-\inputardfull{\string"../sketches/Fe_cube_03_cube_pattern/Fe_cube_03_cube_pattern.ino\string"}
-\end{code}
+% \begin{code}\label{c:ledcube_snake}
+%  \ \newline
+% \inputardfull{\string"../sketches/Fe_cube_03_cube_pattern/Fe_cube_03_cube_pattern.ino\string"}
+% \end{code}
 
 
 \engo{\begin{doE}
@@ -233,7 +233,7 @@ Doing all these changes will increase the amount of code. As our patterns are sm
 
 \ned{TODO}
 
-\inputard{\string"../sketches/Fe_cube_03_cube_intpattern/Fe_cube_03_cube_intpattern.ino\string"}{17}{33}
+\inputard{\string"../sketches/Fe_cube_03_cube_intpattern/Fe_cube_03_cube_intpattern.ino\string"}{18}{67}
 
 %\begin{code}\label{c:ledcube_heart}
 % \ \newline
@@ -242,11 +242,11 @@ Doing all these changes will increase the amount of code. As our patterns are sm
 
 \eng{All the other changes are in our \ardo{moviepattern} function. We have two extra control variables: \ardo{extend_pattern} indicating how many times a single pattern is extended by a copy with some effects on. So, for the original snake, we reduced the 3 loops to one loop in red, so we need to extend it twice to obtain the original length.
 
-The other new variable is \ardo{starteffect}. That is, we need not wait for an extend to apply an effect, we can do it from the start. To show what is possible with effects, we manipulate the red snake pattern in 4 different ways, as well as adding a beating heart pattern. The adapted \ardo{moviepattern} function is
+The other new variable is \ardo{starteffect}. That is, we need not wait for an extend to apply an effect, we can do it from the start. To show what is possible with effects, we manipulate the red snake pattern in 4 different ways, as well as adding a beating heart pattern. The full code is in \url{https://github.com/ingegno/fecube/blob/master/sketches/Fe_cube_03_cube_intpattern/Fe_cube_03_cube_intpattern.ino}
 }
 \ned{}
 
-\inputard{\string"../sketches/Fe_cube_03_cube_intpattern/Fe_cube_03_cube_intpattern.ino\string"}{147}{297}
+\inputard{\string"../sketches/Fe_cube_03_cube_intpattern/Fe_cube_03_cube_intpattern.ino\string"}{203}{297}
 
 
 \engo{\begin{doE}
