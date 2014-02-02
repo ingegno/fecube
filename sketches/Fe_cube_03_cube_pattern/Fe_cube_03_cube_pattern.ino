@@ -72,7 +72,7 @@ void setup() {
     Serial.begin(9600);
   }
  randomSeed(analogRead(0));
- pinMode(ledB,OUTPUT); pinMode(ledG,OUTPUT); pinMode(ledB,OUTPUT);
+ pinMode(ledR,OUTPUT); pinMode(ledG,OUTPUT); pinMode(ledB,OUTPUT);
  pinMode(ledBLA,OUTPUT);  pinMode(ledBLF,OUTPUT); pinMode(ledBRA,OUTPUT);
  pinMode(ledBRF,OUTPUT); pinMode(ledMID,OUTPUT); pinMode(ledTLA,OUTPUT);
  pinMode(ledTLF,OUTPUT); pinMode(ledTRA,OUTPUT); pinMode(ledTRF,OUTPUT);
@@ -267,9 +267,9 @@ unsigned long shotduration = 0UL;
 //shotptr       curshot;
 void (*curshot)(long unsigned int, int*);
 int           curframe[27];
-unsigned long framenr = 0UL;
 unsigned long curframenr = 1UL;
-bool          newframe = true;
+boolean       newframe = true;
+unsigned long starttimeframe = 0UL;
 int           subframecolor;
 unsigned long subframecycle, cursubframecycle;
 unsigned long subframestarttime;
@@ -291,11 +291,13 @@ void loop(){
     //a new frame to show, obtain it
     curshot(framenr, curframe);
     newframe = true;
+    starttimeframe = micros();
     curframenr = framenr;
   } else {
     newframe = false;
   }
   // we continue showing a cycle of subframes as needed for the current frame
+  unsigned long subfrcycleduration = 30UL; //tweak this for best behavior,60 to 150UL, in 1/64ths
   curmicrotime = micros();
   if (newframe) {
     //reinit the subframes
@@ -305,7 +307,7 @@ void loop(){
     cursubframecycle = 0UL;
   } else {
     // determine if a new subframecolor is needed
-    cursubframecycle = (curmicrotime - startTime) / 960UL; //960=3*5*64
+    cursubframecycle = (curmicrotime - starttimeframe) / (subfrcycleduration * 64UL); //960=3*5*64
     if (cursubframecycle != subframecycle){
       //new subframecycle
       subframecycle = cursubframecycle;
@@ -317,11 +319,10 @@ void loop(){
     }
   }
   //we know the frame, the color, and how far in the subframe we are
-  show_subframe_color(subframecolor, curmicrotime - subframestarttime);
+  show_subframe_color(subframecolor, curmicrotime - subframestarttime, subfrcycleduration);
 }
 
-int ledind;
-void show_subframe_color(int color, long microtime){
+void show_subframe_color(int color, long microtime, unsigned long subfrcycleduration){
   digitalWrite(ledR, LOW);
   digitalWrite(ledG, LOW);
   digitalWrite(ledB, LOW);
@@ -330,8 +331,8 @@ void show_subframe_color(int color, long microtime){
   digitalWrite(colorder[color], HIGH);
   //see which led on and which not in order 
   //ledTLF,   ledTLA,   ledTRF,   ledTRA,   ledBLF,   ledBLA,   ledBRF,   ledBRA,   ledMID
-  for (ledind=0; ledind<9; ledind++){
-    if (microtime < 15 * curframe[3*ledind + color]) {
+  for (int ledind=0; ledind<9; ledind++){
+    if (microtime < subfrcycleduration * curframe[3*ledind + color]) {
       digitalWrite(ledorder[ledind], LOW);
     }
   }

@@ -1,6 +1,7 @@
 /*
 Controlling a FE Cube - intelligent patterns
 */
+#define __PROG_TYPES_COMPAT__   // define needed for older arduino avr !
 #include <avr/pgmspace.h> // allows use of PROGMEM to store patterns in flash
 
 // pins used
@@ -32,6 +33,26 @@ const PROGMEM prog_int16_t PatternSnakeRGB[] = {
  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  -11
 };
 
+
+const PROGMEM prog_int16_t PatternHeart[] = {
+//order led:
+//ledTLF,   ledTLA,   ledTRF,   ledTRA,   ledBLF,   ledBLA,   ledBRF,   ledBRA,   ledMID,  duration
+ 0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  5, 0, 0,  1000,
+ 0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0, 15, 0, 0,  1000,
+ 0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0, 25, 0, 0,  1000,
+ 0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0, 35, 0, 0,  1000,
+ 5, 0, 0,  5, 0, 0,  5, 0, 0,  5, 0, 0,  5, 0, 0,  5, 0, 0,  5, 0, 0,  5, 0, 0, 45, 0, 0,  1000,
+15, 0, 0, 15, 0, 0, 15, 0, 0, 15, 0, 0, 15, 0, 0, 15, 0, 0, 15, 0, 0, 15, 0, 0, 55, 0, 0,  1000,
+25, 0, 0, 25, 0, 0, 25, 0, 0, 25, 0, 0, 25, 0, 0, 25, 0, 0, 25, 0, 0, 25, 0, 0, 64, 0, 0,  1000,
+35, 0, 0, 35, 0, 0, 35, 0, 0, 35, 0, 0, 35, 0, 0, 35, 0, 0, 35, 0, 0, 35, 0, 0, 64, 0, 0,  1000,
+45, 0, 0, 45, 0, 0, 45, 0, 0, 45, 0, 0, 45, 0, 0, 45, 0, 0, 45, 0, 0, 45, 0, 0, 64, 0, 0,  1000,
+55, 0, 0, 55, 0, 0, 55, 0, 0, 55, 0, 0, 55, 0, 0, 55, 0, 0, 55, 0, 0, 55, 0, 0, 64, 0, 0,  1000,
+64, 0, 0, 64, 0, 0, 64, 0, 0, 64, 0, 0, 64, 0, 0, 64, 0, 0, 64, 0, 0, 64, 0, 0, 64, 0, 0,  1000,
+// dummy to end the pattern, with duration the effect for the next repeat, see effect
+ 0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  -1
+};
+
+
 bool test = false;  //use serial monitor for testing (slows down update rate)
 
 void setup() {
@@ -39,7 +60,7 @@ void setup() {
     Serial.begin(9600);
   }
  randomSeed(analogRead(0));
- pinMode(ledB,OUTPUT); pinMode(ledG,OUTPUT); pinMode(ledB,OUTPUT);
+ pinMode(ledR,OUTPUT); pinMode(ledG,OUTPUT); pinMode(ledB,OUTPUT);
  pinMode(ledBLA,OUTPUT);  pinMode(ledBLF,OUTPUT); pinMode(ledBRA,OUTPUT);
  pinMode(ledBRF,OUTPUT); pinMode(ledMID,OUTPUT); pinMode(ledTLA,OUTPUT);
  pinMode(ledTLF,OUTPUT); pinMode(ledTRA,OUTPUT); pinMode(ledTRF,OUTPUT);
@@ -157,7 +178,7 @@ int starteffect = 0;
 
 //internally used variables, don't change:
 boolean PATTERNFINISHED = true;
-int NRPATTERN = 0;
+int NRPATTERN = 4;
 float patternscale = patternscale_start;
 unsigned int patternrepeat = 0;
 unsigned int curpattern = 0;
@@ -168,7 +189,7 @@ int effect=starteffect;
 void (*moviepattern(unsigned long *shotduration))(unsigned long, int[27]){
   // we obtain the current pattern:
   if (PATTERNFINISHED) {
-    if (NRPATTERN > 3) {
+    if (NRPATTERN > 4) {
       NRPATTERN = 0;
     }
     switch (NRPATTERN) {
@@ -194,6 +215,14 @@ void (*moviepattern(unsigned long *shotduration))(unsigned long, int[27]){
         // green back - forth
         starteffect = -11;
         extend_pattern = 1;
+        break;
+      case 4:
+        // beating heart
+        starteffect = -12;
+        extend_pattern = 1;
+        patternscale_speedup = 0.9;
+        patternscale_min = 0.1;
+        patternrepeatmin = 40;
     }
     //reset start in case it changed
     effect = starteffect;
@@ -216,6 +245,11 @@ void (*moviepattern(unsigned long *shotduration))(unsigned long, int[27]){
         if (nextduration <= 0) {
           nextduration = -1;
         }
+        break;
+      case 4:
+        shotpattern[ind] = pgm_read_word_near(PatternHeart +28*curpattern + ind);
+        nextduration = pgm_read_word_near(PatternHeart +28*(curpattern + 2) - 1);
+      
     }
   }
   apply_shot_effect();
@@ -315,9 +349,9 @@ unsigned long shotduration = 0UL;
 //shotptr       curshot;
 void (*curshot)(long unsigned int, int*);
 int           curframe[27];
-unsigned long framenr = 0UL;
 unsigned long curframenr = 1UL;
-bool          newframe = true;
+boolean       newframe = true;
+unsigned long starttimeframe = 0UL;
 int           subframecolor;
 unsigned long subframecycle, cursubframecycle;
 unsigned long subframestarttime;
@@ -339,11 +373,13 @@ void loop(){
     //a new frame to show, obtain it
     curshot(framenr, curframe);
     newframe = true;
+    starttimeframe = micros();
     curframenr = framenr;
   } else {
     newframe = false;
   }
   // we continue showing a cycle of subframes as needed for the current frame
+  unsigned long subfrcycleduration = 30UL; //tweak this for best behavior,60 to 150UL, in 1/64ths
   curmicrotime = micros();
   if (newframe) {
     //reinit the subframes
@@ -353,7 +389,7 @@ void loop(){
     cursubframecycle = 0UL;
   } else {
     // determine if a new subframecolor is needed
-    cursubframecycle = (curmicrotime - startTime) / 960UL; //960=3*5*64
+    cursubframecycle = (curmicrotime - starttimeframe) / (subfrcycleduration * 64UL); //960=3*5*64
     if (cursubframecycle != subframecycle){
       //new subframecycle
       subframecycle = cursubframecycle;
@@ -365,11 +401,10 @@ void loop(){
     }
   }
   //we know the frame, the color, and how far in the subframe we are
-  show_subframe_color(subframecolor, curmicrotime - subframestarttime);
+  show_subframe_color(subframecolor, curmicrotime - subframestarttime, subfrcycleduration);
 }
 
-int ledind;
-void show_subframe_color(int color, long microtime){
+void show_subframe_color(int color, long microtime, unsigned long subfrcycleduration){
   digitalWrite(ledR, LOW);
   digitalWrite(ledG, LOW);
   digitalWrite(ledB, LOW);
@@ -378,8 +413,8 @@ void show_subframe_color(int color, long microtime){
   digitalWrite(colorder[color], HIGH);
   //see which led on and which not in order 
   //ledTLF,   ledTLA,   ledTRF,   ledTRA,   ledBLF,   ledBLA,   ledBRF,   ledBRA,   ledMID
-  for (ledind=0; ledind<9; ledind++){
-    if (microtime < 15 * curframe[3*ledind + color]) {
+  for (int ledind=0; ledind<9; ledind++){
+    if (microtime < subfrcycleduration * curframe[3*ledind + color]) {
       digitalWrite(ledorder[ledind], LOW);
     }
   }
