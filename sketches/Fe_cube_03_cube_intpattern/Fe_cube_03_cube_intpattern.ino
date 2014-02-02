@@ -12,8 +12,8 @@ int ledBLA=1; int ledTLA=4; int ledBLF=3; int ledTLF=2;
 int ledMID=5; int ledTRF=8; int ledBRA=7; int ledTRA=6;
 int ledBRF=9;
 
-int ledorder[] = {ledTLF,   ledTLA,   ledTRF,   ledTRA,   ledBLF,   ledBLA,   ledBRF,   ledBRA,   ledMID};
-int colorder[] = {ledR, ledG, ledB};
+const int ledorder[] = {ledTLF,   ledTLA,   ledTRF,   ledTRA,   ledBLF,   ledBLA,   ledBRF,   ledBRA,   ledMID};
+const int colorder[] = {ledR, ledG, ledB};
 
 const PROGMEM prog_int16_t PatternSnakeRGB[] = {
 //order led:
@@ -37,10 +37,14 @@ const PROGMEM prog_int16_t PatternSnakeRGB[] = {
 const PROGMEM prog_int16_t PatternHeart[] = {
 //order led:
 //ledTLF,   ledTLA,   ledTRF,   ledTRA,   ledBLF,   ledBLA,   ledBRF,   ledBRA,   ledMID,  duration
+ 0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  1000,
+ 0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  1, 0, 0,  1000,
  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  5, 0, 0,  1000,
  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0, 15, 0, 0,  1000,
+ 0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0, 20, 0, 0,  1000,
  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0, 25, 0, 0,  1000,
  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0, 35, 0, 0,  1000,
+ 1, 0, 0,  1, 0, 0,  1, 0, 0,  1, 0, 0,  1, 0, 0,  1, 0, 0,  1, 0, 0,  1, 0, 0, 45, 0, 0,  1000,
  5, 0, 0,  5, 0, 0,  5, 0, 0,  5, 0, 0,  5, 0, 0,  5, 0, 0,  5, 0, 0,  5, 0, 0, 45, 0, 0,  1000,
 15, 0, 0, 15, 0, 0, 15, 0, 0, 15, 0, 0, 15, 0, 0, 15, 0, 0, 15, 0, 0, 15, 0, 0, 55, 0, 0,  1000,
 25, 0, 0, 25, 0, 0, 25, 0, 0, 25, 0, 0, 25, 0, 0, 25, 0, 0, 25, 0, 0, 25, 0, 0, 64, 0, 0,  1000,
@@ -48,10 +52,19 @@ const PROGMEM prog_int16_t PatternHeart[] = {
 45, 0, 0, 45, 0, 0, 45, 0, 0, 45, 0, 0, 45, 0, 0, 45, 0, 0, 45, 0, 0, 45, 0, 0, 64, 0, 0,  1000,
 55, 0, 0, 55, 0, 0, 55, 0, 0, 55, 0, 0, 55, 0, 0, 55, 0, 0, 55, 0, 0, 55, 0, 0, 64, 0, 0,  1000,
 64, 0, 0, 64, 0, 0, 64, 0, 0, 64, 0, 0, 64, 0, 0, 64, 0, 0, 64, 0, 0, 64, 0, 0, 64, 0, 0,  1000,
+64, 0, 0, 64, 0, 0, 64, 0, 0, 64, 0, 0, 64, 0, 0, 64, 0, 0, 64, 0, 0, 64, 0, 0, 64, 0, 0,  1000,
 // dummy to end the pattern, with duration the effect for the next repeat, see effect
  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  -1
 };
 
+
+const PROGMEM prog_int16_t PatternSiren[] = {
+//order led:
+//ledTLF,   ledTLA,   ledTRF,   ledTRA,   ledBLF,   ledBLA,   ledBRF,   ledBRA,   ledMID,  duration
+ 0, 0, 7,  0, 0, 0,  0, 0,64,  0, 0, 0,  0, 0, 7,  0, 0, 0,  0, 0,64,  0, 0, 0,  0, 0, 0,   100,
+// dummy to end the pattern, with duration the effect for the next repeat, see effect
+ 0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  0, 0, 0,  -90
+};
 
 bool test = false;  //use serial monitor for testing (slows down update rate)
 
@@ -174,11 +187,12 @@ int extend_pattern = 2;             // extend the pattern this number of times
 // effect to apply, use as last duration
 //  0: no effect;  -1: reverse the entire pattern
 //-11: shift colors one right; -12: shift colors two right
+//-90, -180, -270: rotate over those angles
 int starteffect = 0;
 
 //internally used variables, don't change:
 boolean PATTERNFINISHED = true;
-int NRPATTERN = 4;
+int NRPATTERN = 5;
 float patternscale = patternscale_start;
 unsigned int patternrepeat = 0;
 unsigned int curpattern = 0;
@@ -189,13 +203,14 @@ int effect=starteffect;
 void (*moviepattern(unsigned long *shotduration))(unsigned long, int[27]){
   // we obtain the current pattern:
   if (PATTERNFINISHED) {
-    if (NRPATTERN > 4) {
+    if (NRPATTERN > 5) {
       NRPATTERN = 0;
     }
     switch (NRPATTERN) {
       case 0:
         //first call, we load the snake pattern
         // red, green, blue
+        patternscale_start = 1.;
         patternscale_speedup = 0.75;
         patternscale_min = 0.002;
         patternrepeatmin = 250;
@@ -218,11 +233,22 @@ void (*moviepattern(unsigned long *shotduration))(unsigned long, int[27]){
         break;
       case 4:
         // beating heart
-        starteffect = -12;
+        patternscale_start = 0.15;
+        starteffect = 0;
         extend_pattern = 1;
         patternscale_speedup = 0.9;
-        patternscale_min = 0.1;
-        patternrepeatmin = 40;
+        patternscale_min = 0.01;
+        patternrepeatmin = 200;
+        break;
+      case 5:
+        patternscale_start = 1.;
+        starteffect = 0;
+        extend_pattern = 3;
+        patternscale_speedup = 1.;
+        patternscale_min = 1.;
+        patternrepeatmin = 50;
+        break;
+      
     }
     //reset start in case it changed
     effect = starteffect;
@@ -249,7 +275,11 @@ void (*moviepattern(unsigned long *shotduration))(unsigned long, int[27]){
       case 4:
         shotpattern[ind] = pgm_read_word_near(PatternHeart +28*curpattern + ind);
         nextduration = pgm_read_word_near(PatternHeart +28*(curpattern + 2) - 1);
-      
+        break;
+      case 5:
+        shotpattern[ind] = pgm_read_word_near(PatternSiren +28*curpattern + ind);
+        nextduration = pgm_read_word_near(PatternSiren +28*(curpattern + 2) - 1);
+        break;
     }
   }
   apply_shot_effect();
@@ -285,6 +315,36 @@ void (*moviepattern(unsigned long *shotduration))(unsigned long, int[27]){
         effect = -12;
       } else if (effect == -12 && nextduration == -11){
         effect = 0;
+      } else if (effect == -90) {
+        if (nextduration == -90){
+         effect = -180;
+        } else if (nextduration == -180) {
+          effect = -270;
+        } else if (nextduration == -270) {
+          effect = 0;
+        } else {
+          effect = nextduration;
+        }
+      } else if (effect == -180) {
+        if (nextduration == -90){
+         effect = -270;
+        } else if (nextduration == -180) {
+          effect = 0;
+        } else if (nextduration == -270) {
+          effect = -90;
+        } else {
+          effect = nextduration;
+        }
+      } else if (effect == -270) {
+        if (nextduration == -90){
+         effect = 0;
+        } else if (nextduration == -180) {
+          effect = -90;
+        } else if (nextduration == -270) {
+          effect = -180;
+        } else {
+          effect = nextduration;
+        }
       } else {
         effect = nextduration;
       }
@@ -306,14 +366,23 @@ void (*moviepattern(unsigned long *shotduration))(unsigned long, int[27]){
 void apply_shot_effect(){
   //apply an effect on the shot
   if (effect == -11){
-    rotate_shot();
+    rotateRGB_shot();
   } else if (effect == -12){
+    rotateRGB_shot();
+    rotateRGB_shot();
+  } else if (effect == -90){
+    rotate_shot();
+  } else if (effect == -180){
     rotate_shot();
     rotate_shot();
-  }
+  } else if (effect == -270){
+    rotate_shot();
+    rotate_shot();
+    rotate_shot();
+  } 
 }
 
-void rotate_shot(){
+void rotateRGB_shot(){
   int tmp;
   for (int indsh=0; indsh < 9; indsh++){
     tmp = shotpattern[3*indsh+2];
@@ -321,12 +390,22 @@ void rotate_shot(){
     shotpattern[3*indsh+1] = shotpattern[3*indsh];
     shotpattern[3*indsh] = tmp;
   }
-  if (test) {
-    Serial.print("rotating shot" );
-    Serial.print(shotpattern[0]);Serial.print(" "); 
-    Serial.print(shotpattern[1]);Serial.print(" ");
-    Serial.println(shotpattern[2]);
-    Serial.flush();
+}
+
+void rotate_shot(){
+  //map ledorder is {0, 1, 2, 3, 4, 5, 6, 7, 8} in shotpattern:
+  //ledTLF, ledTLA, ledTRF, ledTRA, ledBLF, ledBLA, ledBRF, ledBRA, ledMID
+  //goes to rotatemap with the new positions in shotpattern
+  //ledTRF, ledTLF, ledTRA, ledTLA, ledBRF, ledBLF, ledBRA, ledBLA, ledMID
+  const int rotatemap[9] = {2, 0, 3, 1, 6, 4, 7, 5, 8};
+  int shotcopy[27];
+  for (int indsh=0; indsh < 27; indsh++){
+    shotcopy[indsh] = shotpattern[indsh];
+  }
+  for (int indsh=0; indsh < 9; indsh++){
+    shotpattern[3*rotatemap[indsh]]   = shotcopy[3*indsh];
+    shotpattern[3*rotatemap[indsh]+1] = shotcopy[3*indsh+1];
+    shotpattern[3*rotatemap[indsh]+2] = shotcopy[3*indsh+2];
   }
 }
 
@@ -379,7 +458,7 @@ void loop(){
     newframe = false;
   }
   // we continue showing a cycle of subframes as needed for the current frame
-  unsigned long subfrcycleduration = 30UL; //tweak this for best behavior,60 to 150UL, in 1/64ths
+  unsigned long subfrcycleduration = 70UL; //tweak this for best behavior,60 to 150UL, in 1/64ths
   curmicrotime = micros();
   if (newframe) {
     //reinit the subframes
