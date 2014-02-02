@@ -4,13 +4,21 @@ Controlling a FE Cube - intelligent patterns
 #define __PROG_TYPES_COMPAT__   // define needed for older arduino avr !
 #include <avr/pgmspace.h> // allows use of PROGMEM to store patterns in flash
 
-// pins used
-int ledR=10; int ledG=11; int ledB=12;
+// pins used, avoid use of memory to store it:
+#define ledR 10
+#define ledG 11
+#define ledB 12
 // led anodes are connected to pins via a resistor
 // Bottom/Top - Left/Right - Aft/Front
-int ledBLA=1; int ledTLA=4; int ledBLF=3; int ledTLF=2;
-int ledMID=5; int ledTRF=8; int ledBRA=7; int ledTRA=6;
-int ledBRF=9;
+#define ledBLA 1
+#define ledTLA 4
+#define ledBLF 3
+#define ledTLF 2
+#define ledMID 5
+#define ledTRF 8
+#define ledBRA 7
+#define ledTRA 6
+#define ledBRF 9
 
 const int ledorder[] = {ledTLF,   ledTLA,   ledTRF,   ledTRA,   ledBLF,   ledBLA,   ledBRF,   ledBRA,   ledMID};
 const int colorder[] = {ledR, ledG, ledB};
