@@ -107,7 +107,8 @@ void (*curshot)(long unsigned int, int*);
 int           curframe[3];
 unsigned long framenr = 0UL;
 unsigned long curframenr = 1UL;
-bool          newframe = true;
+boolean       newframe = true;
+unsigned long starttimeframe = 0UL;
 int           subframecolor;
 unsigned long subframecycle, cursubframecycle;
 unsigned long subframestarttime;
@@ -129,6 +130,7 @@ void loop(){
     //a new frame to show, obtain it
     curshot(framenr, curframe);
     newframe = true;
+    starttimeframe = micros();
     curframenr = framenr;
   } else {
     newframe = false;
@@ -143,7 +145,7 @@ void loop(){
     cursubframecycle = 0UL;
   } else {
     // determine if a new subframecolor is needed
-    cursubframecycle = (curmicrotime - startTime) / 960UL; //960=3*5*64
+    cursubframecycle = (curmicrotime - starttimeframe) / 960UL; //960=3*5*64
     if (cursubframecycle != subframecycle){
       //new subframecycle
       subframecycle = cursubframecycle;
