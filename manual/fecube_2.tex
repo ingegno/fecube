@@ -57,7 +57,7 @@ Het Basis been van de NPN zal bepalen of de NPN junctie open is of niet. We zull
 
 This means we need all the shots we created for the RGB LED in the previous lesson, and need to create an adapted \ardo{movie} function to connect the shots as we want. We also need to change the start so that instead of only one led pin, we start up 9 led pins. 
 
-In our previous script, we had ledR, ledG, ledB, which are easy to understand names. The led was called led1, so we could use led1 to led9. This is not very helpfull if you want to program certain light effects. So, let's give them better names. We have a top layer (T), and a bottom (B) layer, and a single LED in the middle. Then we can divide the cube in a left (L) and right (R), and in a front (F) and an aft (A). So, let's call the LEDs:
+In our previous script, we had ledR, ledG, ledB, which are easy to understand names. The LED was called led1, so we could use led1 to led9. This is not very helpfull if you want to program certain light effects. So, let's give them better names. We have a top layer (T), and a bottom (B) layer, and a single LED in the middle. Then we can divide the cube in a left (L) and right (R), and in a front (F) and an aft (A). So, let's call the LEDs:
 \begin{enumerate}
 \item ledTLF
 \item ledTLA
@@ -72,28 +72,48 @@ In our previous script, we had ledR, ledG, ledB, which are easy to understand na
 Open Code \ref{c:l2_d}, and save it under a new name. The changes needed are first defining all the pins:
 }
 
-\ned{TODO}
+\ned{We zullen enkel controleren dat we deze schakelbord variant van de Fe kubus kunnen doen werken. Hiertoe passen we onze RGB schets aan. We zullen een film maken die eerst 4 sekonden rood toont, dan 4s groen, dan 4s blauw, dan 1 minuut een willekeurige kleur, en uiteindelijk gladde overgangen voor een minuut.
+
+Dit betekent dat we al de shots die we gemaakt hebben voor de RGB LED in de vorige lessen zullen gebruiken en aanpassen. De \ardo{movie} functie zullen we zo maken dat al deze shots elkaar opvolgen. In plaats van \'e\'en RGB led hebben we er nu 9, dus dienen we deze 9 nu samen aan of af schakelen. 
+
+In de vorige schetsen hadden we ledR, ledG en ledB, welke gemakkelijk te verstaan zijn. De LED noemden we led1. We zouden nu led1 tot led9 kunnen gebruiken, maar dat is niet handig als we later lichteffecten maken. Laat ons ze dus betere namen geven. We hebben een top (T) en een bodem (B) laag, en een enkele LED in het midden. Dan kunnen we de kubus opdelen in een links (L) en een rechts (R), en in een frontaal (F) en een achter (A). Daarom noemen we de LEDs:\begin{enumerate}
+\item ledTLF
+\item ledTLA
+\item ledTRF
+\item ledTRA
+\item ledBLF
+\item ledBLA
+\item ledBRF
+\item ledBRA
+\item ledMID
+\end{enumerate}
+Open Code \ref{c:l2_d}, en sla het op onder een andere naam. De eerste wijziging is alle pinnen defini\"eren:
+}
 
 \inputard{\string"../sketches/Fe_cube_03_cube_test1/Fe_cube_03_cube_test1.ino\string"}{5}{11}
 
 \eng{Next we need to define in \ardo{setup} that these are digital output pins, so:}
 
 
-\ned{TODO}
+\ned{Vervolgens dienen we in \ardo{setup} deze pinnen als digitale output pinnen te initializeren:}
 
 \inputard{\string"../sketches/Fe_cube_03_cube_test1/Fe_cube_03_cube_test1.ino\string"}{15}{24}
 
 \eng{We test the cube as a single LED, so all LED are on, or all LED are off. Hence, instead of setting only led1 on, we write a function to put all LED on, and put that in \ardo{show\_subframe\_color}}
-\ned{TODO}
+
+\ned{We testen de kubus als een enkele LED, dus alle LED zijn aan, of allemaal af. Bijgevolg zullen we led1 aanzetten vervangen door een functie die alle LED aan zet, welke we plaatsen in de functie \ardo{show\_subframe\_color}
+}
 
 \inputard{\string"../sketches/Fe_cube_03_cube_test1/Fe_cube_03_cube_test1.ino\string"}{217}{221}
 
-\eng{This new function for setting the pins \textbf{on} sends a LOW signal to the pins, as we are connected to the LED cathode (-)}
-\ned{TODO}
+\eng{This new function for setting the pins \textbf{on} sends a \ardo{LOW} signal to the pins, as we are connected to the LED cathode (-)}
+
+\ned{Deze nieuwe functie om de pinnen \textbf{aan} te zetten stuurt \ardo{LOW} signalen naar de pinnen, gezien ze verbonden zijn aan de LED kathode (-)}
+
 \inputard{\string"../sketches/Fe_cube_03_cube_test1/Fe_cube_03_cube_test1.ino\string"}{245}{251}
 
 \eng{Finally, we need to update the \ardo{movie} function so that it would do what we want. So this function needs to be}
-\ned{TODO}
+\ned{Als laatste dienen we de \ardo{movie} functie aan te passen zodat het zou doen wat we willen. Deze functie dient te zijn}
 
 \inputard{\string"../sketches/Fe_cube_03_cube_test1/Fe_cube_03_cube_test1.ino\string"}{109}{149}
 
@@ -110,25 +130,40 @@ Open Code \ref{c:l2_d}, and save it under a new name. The changes needed are fir
 
 \subsection{\engt{Construction}  \nedt{Constructie}}
 \eng{We verified all is working, time to construct the cube. For this we will take components of our breadboard, and solder the connections in a FE Cube form.
-We call our cube the Fe Cube because it is organized as the Iron (Fe) metal lattice. Solid iron has a specific structure which is depicted in the \href{http://en.wikipedia.org/wiki/Atomium}{Atomium building} in Brussels. We call it a \href{http://en.wikipedia.org/wiki/Cubic_crystal_system}{Body-centered cubic crystal system}, short \textbf{bcc}.  This is a cube with an extra node in the center. 
+We call our cube the Fe Cube because it is organized as the Iron (Fe) metal lattice. Solid iron has a specific structure which is depicted in the \href{http://en.wikipedia.org/wiki/Atomium}{Atomium building} in Brussels, see Figure \ref{f:atomium}. 
 
-
+We call this structure a \href{http://en.wikipedia.org/wiki/Cubic_crystal_system}{Body-centered cubic crystal system}, short \textbf{bcc}.  This is a cube with an extra node in the center. 
 }
 
-\ned{TODO}
+\ned{De schakeling werkt, tijd om de kubus te construeren. Om dit te doen zullen we de componenten van ons schakelbord een voor een nemen en solderen in de vorm van een Fe Cubus. 
+
+We noemen onze kubus een Fe Cubus omdat het georganizeerd is zoals het Ijzer (Fe) metaal kristalrooster. Ijzermetaal heeft een specifieke structuur welke uitgebeeld wordt in het  \href{http://nl.wikipedia.org/wiki/Atomium}{Atomium gebouw} in Brussel, zie Figuur \ref{f:atomium}.
+
+We noemen deze structuur een \href{http://en.wikipedia.org/wiki/Cubic_crystal_system}{Lichaams-gecentreerd kubisch kristalrooster}, in het kort \textbf{bcc}. 
+}
+
+\begin{figure}
+  \centering
+  \includegraphics[width=6cm]{png/atomium.png}
+\caption{\engt{Road sign depicting the Atomium building} \nedt{Wegmarkering in Brussel voor het atomium gebouw.}}
+\label{f:atomium}
+\end{figure}
 
 \section{\engt{Lesson 4: Fire up the LED Cube} \nedt{Les 4: De LED Cube gebruiken}}
 
 \subsection{\engt{Testing the Fe Cube} \nedt{De Fe Cube testen}}
 \eng{You finished now constructing the cube. We need to test if all lights are working. Start with the same sketch you used for the breadboard cube. If you connect everything correctly, it should just work. 
 
-If things are not working, you have some extra soldering to do: replace a blown out LED, make connections stronger, ... . Don't give up now. These are the last construction problems of your led cube.}
-\ned{TODO}
+If things are not working, you have some extra soldering to do: replace a blown out LED, make connections stronger, ... . Don't give up now. These are the last construction problems of your LED cube.}
+
+\ned{De constructie is af. We dienen nu te teseten of alle lichten correct werken. Start met dezelfde schets die je gebruikte voor de schakelbord kubus. Als je alles correct verbindt zou het moeten werken!
+
+Als er dingen niet werken heb je extra soldeerwerk voor de boeg: vervang een gesprongen LED, maak verbindingen sterker, ... . Nu niet opgeven! Dit zijn de laatste constructieproblemen voor je LED kubus.}
 
 \subsection{\engt{Generic patterns ... and a snake} \nedt{Algemene patronen ... en een slang}}
 
 \eng{
-We have a working cube now, but we can only show single colors with our current code. Let's change that. We want to be able to write some light effects, and show that on our cube. So let us create a movie function that can load patterns we create. Like that we can write down a pattern, and pass it to this function. The first pattern we want to make is the snake pattern: a single light that jumps from LED to LED in the three base colors.
+We have a working cube now, but we can only show single colors with our current code. Let's change that. We want to be able to write some light effects, and show that on our cube. So let us create a \ardo{movie} function that can load patterns we create. Like that we can write down a pattern, and pass it to this function. The first pattern we want to make is the snake pattern: a single light that jumps from LED to LED in the three base colors.
 
 We need to define the data structure of a pattern. What needs to be in a pattern?
 \begin{enumerate}
@@ -143,7 +178,22 @@ The order of the LEDS in the frame will be ledTLF, ledTLA, ledTRF, ledTRA, ledBL
 In our code, our \ardo{movie} function will use a \ardo{moviepattern} function that will handle a pattern you give it. The function will divide the pattern in shots: one shot per fixed frame. The shot will take as long as the duration you have passed in the pattern. This shot is the analogue of the \ardo{fixed\_color} for the single RGB LED: \ardo{fixed\_pattern}, which is a shot that produces a single fixed image on the cube.
 
 There is an extra complication though. The Arduino does not have a lot of memory to work with. There is the SRAM memory with which the Arduino works, and there is Flash memory where your program will be stored. All general variables in your code need to be available at all times, so they need to be stored in SRAM memory. Our patterns can be large though, and the memory would fill up, causing the Arduino to just not produce anything anymore. To avoid this, we will store the patterns in flash memory, and only obtain the frame of the pattern we need. Because of this, you will find in the code:}
-\ned{TODO}
+\ned{We hebben een werkende LED kubus, maar we kunnen enkel maar vaste kleuren tonen met de huidige code. Laten we dat veranderen. We willen lichteffecten kunnen programmeren. Laat ons dus een \ardo{movie} functie maken die patronen kan laden. Op deze manier kunnen we een lichtpatroon opschrijven en dat door deze functie laten laden op de kubus. Het eerste patroon die we willen maken is een slangenparoon: een enkel lichtje dat springt van LED naar LED in de 3 basiskleuren.
+
+We moeten een data structuur maken voor het patroon. Waaruit moet een patroon bestaan?
+\begin{enumerate}
+ \item We dienen voor de 9 LED te weten welke kleur ze moeten hebben. Een kleur is een RGB waarde zoals  (13,50,2), ervanuit gaande dat we nog steeds waarden tussen 0 en 64 gebruiken. We hebben nu dus $3\times 9 = 27$ nummers nodig om een frame van een shot te maken.
+ \item We moeten dan ook nog weten hoe lang we een enkel frame moeten aanhouden vooraleer naar het volgende frame in het patroon te schakelen. We hebben dus nog een extra nummer nodig voor het aantal milliseconden dat een frame moet getoond worden, voo een totaal van 28 nummers.
+\end{enumerate}
+Een patroon zal dus lijken op een lijst van nummers welke aanduiden welk frame te tonen en voor hoe lang. Voor een enkele frame zal dit zijn:\newline
+$\{$R1,G1,B1, R2,G2,B2, R3,G3,B3, R4,G4,B4, R5,G5,B5, R6,G6,B6, R7,G7,B7, R8,G8,B8, R9,G9,B9, duurtijd$\}$\newline
+
+De orde van de LEDs in het frame zal ledTLF, ledTLA, ledTRF, ledTRA, ledBLF, ledBLA, ledBRF, ledBRA, ledMID zijn. Als een shot bestaat uit een patroon met 20 vaste frames, dan zullen we een enkele grote lijst maken met alle frames, de ene na de andere. Gezien Arduino code niet zo slim is moeten we op een of andere manier doorgeven welke het laatste frame is. We zouden dit zelf kunnen tellen en doorgeven, maar dat leidt vlug tot fouten. Gemakkelijker is om te eindigen met een vals patroon met duurtijd 0. Als we deze 0 lezen weten we dat het patroon gedaan is.
+
+In onze code zal de  \ardo{movie} functie nu een \ardo{moviepattern} functie oproepen. Deze zal het patroon afspelen die je doorgeeft. De functie zal het patroon intern verdelen in een shot per gegeven frame. Dit shot zal dan zo lang duren als de duurtijd die je opgegeven hebt in het patroon. Dit shot is de tegenhanger van de functie \ardo{fixed\_color} bij de enkele RGB LED: \ardo{fixed\_pattern}, welke een shot is dat een enkel vast beeld op de kubus toont.
+
+Er is evenwel nog een complicatie. De Arduino heeft niet veel geheugen om mee te werken. Er is SRAM geheugen welke de Arduino mee werkt, en Flash geheugen waar het programma opgeslagen wordt. Alle globale variabelen moeten altijd beschikbaar zijn en bevinden zich dus in SRAM. Onze patronen kunnen evenwel groot zijn, en het geheugen zal dat vol geraken, waarna de Arduino stopt met werken. Om dit te vermijden zullen we de patronen opslaan in flash geheugen, en enkel het frame dat we nodig hebben laden in SRAM geheugen. Daarom zul je het volgende terugvinden in de code:
+}
 
 \inputard{\string"codefrag/defavr.ino\string"}{1}{3}
 
@@ -153,15 +203,19 @@ The \ardo{PROGMEM} part replaces a normal \ardo{array} construction and defines 
 
 You call in the \ardo{movie} function the new \ardo{moviepattern} function if you want to send a pattern to the LED cube. We cannot pass a variable with the moviepattern we want to use because this is now in \ardo{PROGMEM}. You will need to edit \ardo{moviepattern} to load the correct pattern.
 
-In the function \ardo{moviepattern} you see twice the appearance of the \ardo{switch} structure. This is a programming structure that works like a switch based on a variable. The syntax is:}
+In the function \ardo{moviepattern} you see twice the appearance of the \ardo{switch} structure. This is a programming structure that works like a switch based on a variable. The syntax is:
+}
 
-\ned{TODO}
+\ned{Dit definieert de functies die we nodig hebben om data te verplaatsen van flash naar SRAM.  Het  \ardo{PROGMEM} gedeelte vervangt een gewone lijst (\ardo{array}) constructie en maakt voor ons een lijst van integers (gehele getallen, ons patroon dus). Het duidt aan dat we een lijst integers willen, maar dat we die in \ardo{PROGMEM} willen, dus in flash.
+
+In de functie \ardo{moviepattern} zie je twee keer een \ardo{switch} structuur. Dit is een programmeerstructuur die werkt als een test van een variabele. De syntax is:
+}
 
 \inputard{\string"codefrag/switch.ino\string"}{1}{10}
 
 \eng{In this switch structure, the commands for which the var is equal to one of the labels are executed from that point onwards, up to a \ardo{break;} command.
 
-In the first switch structure you need to add the start conditions of the patterns you want to show. In the second switch structure you need to copy the pattern you want into the \ardo{shotpattern} variable, as well set the \ardo{nextduration} variable to the duration of the next shot. The function \ardo{pgm_read_word_near} is the function that will copy from the program memory (flash) to SRAM. The only thing needed to change there is the name of the pattern, or add a case with your pattern.
+In the first switch structure you need to add the start conditions of the patterns you want to show. In the second switch structure you need to copy the pattern you want into the \ardo{shotpattern} variable, as well set the \ardo{nextduration} variable to the duration of the \textit{next} shot. The function \ardo{pgm_read_word_near} is the function that will copy from the program memory (flash) to SRAM. The only thing needed to change there is the name of the pattern, or add a case with your pattern.
 
 The start conditions for a pattern are:
 \begin{enumerate}
@@ -176,13 +230,30 @@ To show the influence of changing these parameters, the code has an extra patter
 The rest of the extra code is to compute the correct speedup of the shots in the pattern, and to determine correctly when a pattern is finished and the next pattern can begin.
 }
 
-\ned{TODO}
+\ned{In deze switch structuur worden de commando's voor dewelke de variabele gelijk is aan een label uitgevoerd vanaf dat label, en dit tot op het \ardo{break;} commando.
+
+In de eerste switch structuur dien je de startcondities vn je patroon te schrijven. In de tweede switch structuur dien je je patroon te copi\"eren in de \ardo{shotpattern} variabele, alsookde \ardo{nextduration} variabele opvullen met de duur van het \textit{volgende} shot. De functie \ardo{pgm_read_word_near}  is de functie die zal copi\"eren van programma geheugen (flash) naar SRAM. Het enige dat je hier normaal moet wijzigen is de naam van je patroon, of het toevoegen van een switch case voor jouw patroon.
+
+De startcondities van een patroon zijn:
+\begin{enumerate}
+ \item \textbf{patternscale\_start}: met welke tijdsschaling wil je beginnen. deze schaal wordt vermenigvuldigd met de duur van een frame.
+ \item \textbf{patternscale\_speedup}: een waarde tussen 0 en 1. Elke keer een patroon gedaan is kun je het hiermee vlugger doen gaan. Deze speeup wordt ook vermenigvuldigd met de duur van een frame.
+ \item \textbf{patternscale\_min}: je kan niet altijd maar sneller gaan, je moet ook eens stoppen. Deze parameter bepaald de minimum tijdsschaling, na dewelke het patroon volledig kan stoppen.
+ \item \textbf{patternrepeatmin}: gezien de snelste weergave met patternscale\_min vaak zo vlug gaat dat je het niet kunt zien, kun je hier opgeven hoe vaak deze snelste weergave moet herhaald worden. Daarna zullen we het patroon defenitief als gedaan beschouwen, en wordt NRPATTERN met 1 verhoogd. NRPATTERN is de variabele die in de switch structuren gebruikt wordt. Het verhogen met een zal dus zorgen dat een volgend patroon uitgevoerd wordt.
+ \item \textbf{totalpatterns}: gebruik deze variabele om aan te duiden hoeveel patronen er in totaal zijn. 
+\end{enumerate}
+Om te tonen wat de invloed van deze parameters is bevat de code een extra patroon: PatternCircle. Deze heeft andere startwaarden en gedraagd zich dus anders.
+
+De rest van de extra code is dan om de correcte versnelling van de shots in een patroon te berekenen, en om te bepalen of een patroon gedaan is en een nieuwe kan beginnen.
+}
 
 \eng{
 The entire code is given in Code \url{https://github.com/ingegno/fecube/blob/master/sketches/Fe_cube_03_cube_pattern/Fe_cube_03_cube_pattern.ino} %\ref{c:ledcube_snake}.
 }
 
-\ned{TODO}
+\ned{
+De vollige code kun je vinden op \url{https://github.com/ingegno/fecube/blob/master/sketches/Fe_cube_03_cube_pattern/Fe_cube_03_cube_pattern.ino} %\ref{c:ledcube_snake}.
+}
 
 % \begin{code}\label{c:ledcube_snake}
 %  \ \newline
@@ -207,9 +278,9 @@ For example, if you look at our snake pattern, we essentially repeat 3 times the
 
 Before writing more software, it is important to design it somewhat. We now end a pattern with a dummy line which has duration 0. As a duration smaller than zero makes no sense, we can use a negative duration to indicate performing a specific operation on the pattern, for example reverse it as in the beating heart, or shift the colors as in the snake. Apart from this, we would need a counter also to indicate how often to extend the pattern once the end is reached. 
 
-We will use following definitions: the variable \ardo{extend_pattern} will contain how often the pattern must be extended when the end is reached. The final duration will indicate how the pattern must be repeated. We will consider as durations
+We will use following definitions: the variable \ardo{extend\_pattern} will contain how often the pattern must be extended when the end is reached. The final duration will indicate how the pattern must be repeated. We will consider as durations
 \begin{itemize}
- \item[0]: the pattern does not change. This is the end
+ \item[0]: the pattern does not change.
  \item[-1]: reverse the pattern in the next repeat
  \item[-11]: shift the colors one to the right: R$\rightarrow$G, G$\rightarrow$B, B$\rightarrow$R
  \item[-12]: shift the colors two to the right: R$\rightarrow$B, G$\rightarrow$R, B$\rightarrow$G
@@ -221,11 +292,30 @@ We will use following definitions: the variable \ardo{extend_pattern} will conta
 Doing all these changes will increase the amount of code. As our patterns are smaller however, we will be able to do more with less memory.
 }
 
-\ned{TODO}
+\ned{We kunnen nu patronen maken, maar dat is wel veel werk. Dit is niet verschillend van animatiefilms met speciale effecten. Veel tijd is nodig om die te maken. Om dit te versnellen zullen ontwikkelaars zoveel mogelijk programmeren, om zo manueel werk te besparen.
 
-\eng{First, the patterns can be shorter. Here are the two patterns we consider, our snake of before, and the beating heart.}
+Bevoorbeeld, als we ons slangenparoon bekijken zien we in essentie hetzelfde patroon 3 keer herhaald, maar wel voor een andere kleur. Het zou makkelijker zijn het patroon \'e\'en keer schrijven, en dan met een programma het op een andere kleur toe te passen. Als een ander voorbeeld, stel dat je een kloppend hart patroon wil maken. Dan ga je van geen licht naar alle LED die rood worden. Zodra alles rood gaan we opnieuw naar geen licht, we moeten dus het patroon omdraaien. Als we dit omdraaien gewoon kunnen programmeren dan kunnen we vermijden een lang patroon te schrijven!
 
-\ned{TODO}
+Vooraleer nieuwe code te schrijven is het belangrijk eerst over het ontwerp na te denken. We eindigen nu een patroon met een valse lijn met duur 0. Gezien een duur kleiner dan 0 geen zin heeft, kunnen we een negatieve duur gebruiken om een effect aan te duiden om het patroon voort te zetten. Bevoorbeeld, het patroon herhalen met een andere kleur. We zullen dan wel moeten bijhouden hoeveel keer we het patroon moeten uitbreiden met een effect, zodat we zouden weten wanneer het echte einde bereikt is. 
+
+Laat ons volgende defenities invoeren: met de variabele \ardo{extend\_pattern} duiden we aan hoeveel keer we het patroon uitbreiden. De duurtijd van de valse eindlijn zal aanduiden hoe het patroon moet herhaald worden. We beschouwen als mogelijke duurtijden
+\begin{itemize}
+ \item[0]: Het patroon wijzigt niet.
+ \item[-1]: keer het patroon om voor de volgende herhaling (dus van achter naar voor het patroon lezen)
+ \item[-11]: wijzig de basiskleuren naar rechts, dus: R$\rightarrow$G, G$\rightarrow$B, B$\rightarrow$R
+ \item[-12]: wijzig de basiskleuren naar links, dus : R$\rightarrow$B, G$\rightarrow$R, B$\rightarrow$G
+ \item[-90]: roteer het shot over -90 degrees. Ideaal om roterende animaties te maken.
+ \item[-180]: flip het shot, dus TLF wordt TRA
+ \item[-270]: roteer het shot over 90 graden
+\end{itemize}
+
+Al deze wijzigingen zullen de hoeveelheid code doen toenemen. Onze patronen kunnen evenwel kleiner zijn, waardoor we minder geheugen moeten gebruiken.
+
+}
+
+\eng{So, the patterns can be shorter. Here are the two patterns we consider, our snake of before, and the beating heart.}
+
+\ned{De patronen kunnen dus korter zijn. Hier zijn de twee patronen die we beschouwen, onze slang van eerder, en een kloppend hart.}
 
 \inputard{\string"../sketches/Fe_cube_03_cube_intpattern/Fe_cube_03_cube_intpattern.ino\string"}{18}{67}
 
@@ -234,11 +324,17 @@ Doing all these changes will increase the amount of code. As our patterns are sm
 %\inputardfull{\string"../sketches/Fe_cube_03_cube_intpattern/Fe_cube_03_cube_intpattern.ino\string"}
 %\end{code}
 
-\eng{All the other changes are in our \ardo{moviepattern} function. We have two extra control variables: \ardo{extend_pattern} indicating how many times a single pattern is extended by a copy with some effects on. So, for the original snake, we reduced the 3 loops to one loop in red, so we need to extend it twice to obtain the original length.
+\eng{All the other changes are in our \ardo{moviepattern} function. We have two extra control variables: \ardo{extend\_pattern} indicating how many times a single pattern is extended by a copy with some effects on. So, for the original snake, we reduced the 3 loops to one loop in red, so we need to extend it twice to obtain the original length.
 
-The other new variable is \ardo{starteffect}. That is, we need not wait for an extend to apply an effect, we can do it from the start. To show what is possible with effects, we manipulate the red snake pattern in 4 different ways, as well as adding a beating heart pattern. The full code is in \url{https://github.com/ingegno/fecube/blob/master/sketches/Fe_cube_03_cube_intpattern/Fe_cube_03_cube_intpattern.ino}. Only the start of the moviepattern function with the two switch statements is something you would want to change for your own patterns. See Code
-\ref{c:int_pat} for this start.}
-\ned{TODO}
+The other new variable is \ardo{starteffect}. That is, we need not wait for an extend to apply an effect, we can do it from the start. To show what is possible with effects, we manipulate the red snake pattern in 4 different ways, as well as adding a beating heart pattern. The full code is in \url{https://github.com/ingegno/fecube/blob/master/sketches/Fe_cube_03_cube_intpattern/Fe_cube_03_cube_intpattern.ino}. Only the start of the \ardo{moviepattern} function with the two switch statements is something you would want to change for your own patterns. See Code
+\ref{c:int_pat} for this start.
+}
+
+\ned{Al de andere veranderingen zijn in onze \ardo{moviepattern} functie. We hebben twee nieuwe controle variabelen: \ardo{extend\_pattern} duidt aan hoe vaak we het patroon uitbreiden met een copie met effecten toegepast. Dus, voor de originele slang reduceren we de 3 gekleurde slangen door een enkele rode, en breiden we het twee keer uit.
+
+De andere nieuwe variabele is \ardo{starteffect}. Dit is het effect die we vanaf de start toepassen. Om te tonen wat mogelijk is met de effecten manipuleren we de rode slang op 4 verschillende manier, en voegen we het kloppend hart shot toe. De volledige code is in \url{https://github.com/ingegno/fecube/blob/master/sketches/Fe_cube_03_cube_intpattern/Fe_cube_03_cube_intpattern.ino}.
+Enkel de start van de \ardo{moviepattern} functie met de twee \ardo{switch} structuren zou je moeten wijzigen om je eigen patronen te gebruiken. Zie Code \ref{c:int_pat} voor deze start.
+}
 
 
 \begin{code}\label{c:int_pat}
@@ -257,10 +353,47 @@ The other new variable is \ardo{starteffect}. That is, we need not wait for an e
 }
 
 
-\section{\engt{Lesson 4: Interaction with a push button: Dices} \nedt{Les 4: Interactie met een drukknop: Dobbelstenen}}
+\section{\engt{Lesson 5: Interaction with a push button: Dices} \nedt{Les 5: Interactie met een drukknop: Dobbelstenen}}
 
 \eng{TODO}
 \ned{Je kan prachtige dingen doen met je kubus. Maar we kunnen het nog wat gebruiksvriendelijker maken. Ware het niet super als je kon interageren met je kubus. Bevoorbeeld van effect veranderen als je een knop drukt? Of je kubus omtoveren in een dobbelsteen die je rolt als je op de knop drukt.}
 
 \subsection{\engt{How does a pushbutton work?} \nedt{Hoe werkt een drukknop?}}
 
+
+\begin{figure}
+  \centering
+  \includegraphics[width=6cm]{img/05_pushbutton_01_bb} \ \ 
+  \includegraphics[width=6cm]{img/05_pushbutton_01_schem}
+\caption{\engt{Power, a pushbutton and a LED, and you can control the LED. No Arduino needed!}
+\nedt{Stroom, een drukknop en een LED, en je can de LED sturen. Geen Arduino nodig!}}
+\label{f:lesson5_pbtn1}       % Give a unique label
+\end{figure}
+
+\subsection{\engt{Reading pushbutton state} \nedt{Drukknop status lezen}}
+
+\begin{figure}
+  \centering
+  \includegraphics[width=6cm]{img/05_pushbutton_02_bb} \ \ 
+  \includegraphics[width=6cm]{img/05_pushbutton_02_schem}
+\caption{\engt{Reading the state of a pushbutton to control a LEDs state.}
+\nedt{De status van een drukknop lezen om de staat van een LED te beheren.}}
+\label{f:lesson5_pbtn2}       % Give a unique label
+\end{figure}
+
+\begin{code}\label{c:pbtn}
+ \ \newline
+\inputardfull{\string"../sketches/Fe_cube_05_pbtn/Fe_cube_05_pbtn.ino\string"}
+\end{code}
+
+\subsection{\engt{Fe Cube + pushbutton = control} \nedt{Fe Cube + Drukknop = sturing}}
+
+\begin{figure}
+  \centering
+  \includegraphics[width=6cm]{img/05_pushbutton_03_cube_bb} \ \ 
+  \includegraphics[width=6cm]{img/05_pushbutton_03_cube_schem}
+\caption{\engt{The same pushbutton wiring can be used with the Fe Cube as we still have
+a digital pin free}
+\nedt{Dezelfde drukknop bekabeling kan gebruikt worden met de Fe Kubus gezien we nog een vrije digitale pin hebben}}
+\label{f:lesson5_pbtn3}
+\end{figure}

@@ -1,9 +1,11 @@
-\documentclass[11pt]{article}
+\documentclass[11pt,a4paper]{article}
 \usepackage{a4wide}
 
 \usepackage[english,dutch]{babel}
 % better color management than parallel:
 \usepackage{pdfcolparallel}
+
+\setlength{\columnsep}{0.5cm}
 
 %\usepackage{parallel}
 \usepackage{color}
@@ -56,21 +58,25 @@
 % \newcommand{\nedo}[1]{\ned {#1}}
 
 %% Use following for book in English language
-\newcommand{\eng}[1]{\selectlanguage{english} {#1}}
-\newcommand{\ned}[1]{\selectlanguage{dutch} }
-\newcommand{\nedt}[1]{ }
-\newcommand{\engt}[1]{{#1}}
-\newcommand{\nedo}[1]{\selectlanguage{dutch} }
-\newcommand{\engo}[1]{\selectlanguage{english} {#1}}
+% \usepackage{multicol}
+% %\newcommand{\eng}[1]{\selectlanguage{english} {#1}}
+% \newcommand{\eng}[1]{\begin{multicols}{2}{\selectlanguage{english} {#1}}\end{multicols} \hrule}
+% \newcommand{\ned}[1]{ }
+% \newcommand{\engt}[1]{{#1}}
+% \newcommand{\nedt}[1]{ }
+% \newcommand{\nedo}[1]{ }
+% \newcommand{\engo}[1]{\selectlanguage{english} {#1}}
 
 %% Use following for book in Dutch language
-%\usepackage{multicol}
-%\newcommand{\eng}[1]{\selectlanguage{english} }
-%\newcommand{\ned}[1]{\begin{multicols}{2}{\selectlanguage{dutch} {#1}}\end{multicols}}
-%\newcommand{\engt}[1]{ }
-%\newcommand{\nedt}[1]{{#1}}
-%\newcommand{\engo}[1]{\selectlanguage{english} }
-%\newcommand{\nedo}[1]{\selectlanguage{dutch} {#1}}
+\usepackage{multicol}
+%\newcommand{\ned}[1]{\selectlanguage{dutch} {#1}}
+\newcommand{\ned}[1]{\begin{multicols}{2}{\selectlanguage{dutch} {#1}}\end{multicols} \hrule}
+\newcommand{\eng}[1]{ }
+\newcommand{\nedt}[1]{{#1}}
+\newcommand{\engt}[1]{ }
+\newcommand{\engo}[1]{ }
+\newcommand{\nedo}[1]{\selectlanguage{dutch} {#1}}
+
 
 %\selectlanguage{english}
 % \ParallelLText{\blindtext}
