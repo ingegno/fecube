@@ -352,25 +352,56 @@ Enkel de start van de \ardo{moviepattern} functie met de twee \ardo{switch} stru
      \end{doN}
 }
 
+\newpage
+\section{\engt{Lesson 5: Interaction with a push button} \nedt{Les 5: Interactie met een drukknop}}
 
-\section{\engt{Lesson 5: Interaction with a push button: Dices} \nedt{Les 5: Interactie met een drukknop: Dobbelstenen}}
+\eng{You can do wonderful things with your cube. But it would be nice if it was a bit more user friendly. Would it not be super if we could interact with the cube? For example, change effect when we push a button? Or change your cube into a dice that you roll when you push on a button.
+}
+\ned{Je kan prachtige dingen doen met je kubus. Maar we kunnen het nog wat gebruiksvriendelijker maken. Ware het niet super als je kon interageren met je kubus? Bevoorbeeld van effect veranderen als je een knop drukt? Of je kubus omtoveren in een dobbelsteen die je rolt als je op de knop drukt...}
 
-\eng{TODO}
-\ned{Je kan prachtige dingen doen met je kubus. Maar we kunnen het nog wat gebruiksvriendelijker maken. Ware het niet super als je kon interageren met je kubus. Bevoorbeeld van effect veranderen als je een knop drukt? Of je kubus omtoveren in een dobbelsteen die je rolt als je op de knop drukt.}
+\subsection{\engt{How does a push button work?} \nedt{Hoe werkt een drukknop?}}
 
-\subsection{\engt{How does a pushbutton work?} \nedt{Hoe werkt een drukknop?}}
+\eng{Take the push button. You see 4 pins, and a button you can push down, but which jumps back to the start position when you release it. There are two pins on one side, and two on the opposite side. Put the button with one side with pins towards you, and one away. 
+Normally the pins on the left are connected, and the pins on the right also. Then, when you press the button, the left and the right will be connected.
 
+Why 4 pins and not 2? Well, this makes it easier to solder. Normally you will need to connect more than two wires to the button, and having a different pin to solder to is easier. 
 
+To verify you understand what pin is what, we make a little circuit with a LED, a 330$\Omega$ resistor, and the push button. Use the push button to interrupt the power to the LED, and use your 5V and GND pins on the Arduino to provide current. No code is needed, you could also use a 3V coin button battery for this exercise.
+
+The wiring is given in Figure \ref{f:lesson5_pbtn1}. If you push the button the light should switch on.
+}
+
+\ned{Neem een drukknop. Je ziet 4 pinnen en een knop die je kan indrukken, maar welke terugkeert naar de beginpositie zodra je loslaat. Er zijn twee pinnen aan een zijde, en twee aan de overstaande zijde. Leg de knop zo dat een zijde met pinnen naar je toe, en de andere van je weg. Normaal gezien zijn de pinnen links verbonden met elkaar, alsook die rechts. Als je de knop indrukt worden ook links en rechts met elkaar verbonden.
+
+Waarom 4 pinnen en niet 2? Dit is omdat het makkelijker solderen is zo. Je zal vaak meer dan 2 draden aan een knop moeten bevestigen, en dus zijn twee extra pinnen handig.
+
+Om te zien of je goed begrijpt welke pin wat doet maken we een klein circuit met een LED, een 330$\Omega$ weerstand en een drukknop. Gebruik de drukknop om de stroom naar de LED te onderbreken, en gebruik de 5V en GND pinnen van de Arduino om stroom te leveren. Je hebt geen code nodig, en je zou ook een 3V knoopbatterij kunnen gebruiken voor deze oefening.
+
+Het schema is gegeven in Figuur \ref{f:lesson5_pbtn1}. Als je de knop indrukt zou het licht aan moeten gaan.
+}
 \begin{figure}
   \centering
   \includegraphics[width=6cm]{img/05_pushbutton_01_bb} \ \ 
   \includegraphics[width=6cm]{img/05_pushbutton_01_schem}
-\caption{\engt{Power, a pushbutton and a LED, and you can control the LED. No Arduino needed!}
-\nedt{Stroom, een drukknop en een LED, en je can de LED sturen. Geen Arduino nodig!}}
+\caption{\engt{Power, a pushbutton and a LED, and you can control the LED. No Arduino code needed!}
+\nedt{Stroom, een drukknop en een LED, en je can de LED sturen. Geen Arduino code nodig!}}
 \label{f:lesson5_pbtn1}       % Give a unique label
 \end{figure}
 
 \subsection{\engt{Reading pushbutton state} \nedt{Drukknop status lezen}}
+
+\eng{In the previous exercise we have learnt that we can use a push button to interrupt the current. That can be useful in some circumstances, but not for our Fe Cube. Instead, we want to use the button to receive input from the user. In other words, we want to know if the user pressed the button or not, and then react to that with Arduino code.
+
+The Arduino has a special function to read input from a digital pin: \ardo{digitalRead(pin)}. To use this method, a pin must be defined as \ardo{INPUT} in the \ardo{setup} function: \ardo{pinMode(pin, INPUT);}. 
+
+The function will read \ardo{HIGH} if the pin is on 5V, and \ardo{LOW} when on GND. So the trick is to create a circuit that is \ardo{LOW} when the button is not pressed, and \ardo{HIGH} when the button is pressed. Such a circuit is given in Figure \ref{f:lesson5_pbtn2}.
+}
+\ned{In de vorige oefening hebben we geleerd dat een drukknop de stroom kan onderbreken. Dit kan nuttig zijn in sommige omstandigheden, maar niet voor onze Fe Kubus. In de plaats willen we een knop waardoor we input kunnen krijgen van de gebruiker. In andere woorden, we will weten als de gebruiker de knop drukt of niet, en we willen daarop reageren via Arduino code.
+
+De Arduino heeft een speciale functie om input te lezen van een digitale pin:\ardo{digitalRead(pin)}. Om deze methode te gebruiken moeten we een pin defini\"eren als \ardo{INPUT} in de \ardo{setup} function: \ardo{pinMode(pin, INPUT);}. 
+
+De functie zal \ardo{HIGH} lezen als de pin op 5V staat en \ardo{LOW} als ze op GND is. De truck is dus om een circuit te maken die  \ardo{LOW} is als de knop niet ingedrukt is en \ardo{HIGH} als de knop ingedrukt is. Zo'n circuit is gegeven in Figuur \ref{f:lesson5_pbtn2}.
+}
 
 \begin{figure}
   \centering
@@ -381,10 +412,82 @@ Enkel de start van de \ardo{moviepattern} functie met de twee \ardo{switch} stru
 \label{f:lesson5_pbtn2}       % Give a unique label
 \end{figure}
 
+\eng{Let's analyse this circuit. The pin to read the state of the button is pin 2. When the button is not pressed we see that the pin is connected via black to the GND. So it will be in state GND or \ardo{LOW}. You can see there is a resistor, but this seems to have no function.
+
+Now consider the button pressed. There is a connection now from left to right in the pushbutton. So black (GND) is connected to red which goes so 5V on the Arduino. If there would be no resistor we would have a short-circuit: current running freely from 5V to GND. So, we \textbf{need} a resistor to avoid a short-circuit! What resistor do we need? Well, we want to have at pin 2, 5V when the button is pushed down, \textbf{and} we don't want to spend a lot of current to achieve this state. Hence, we want a large resistor! A large resistor will make sure the resistance from the wires from the pushbutton to the 5V pin is neglectable compared to the large resistor, so pin 2 will be on 5V. At the same time, a large resistor will make sure very little current will actually flow over the pushbutton, so our circuit will be very efficient. So, take for this resistor 10000$\Omega$ which we write as 10K$\Omega$. We call such a resistor used in this way a pull-down or pull-up resistor.
+
+We can now write Arduino code that reads the state of pin 2, and let's the LED shine based on this. To achieve this, our LED circuit of the previous excercise must be changed to draw current from a pin, eg pin 13. Like that, setting pin 13 HIGH or LOW will control the LED. Note that most Arduino boards have a tiny LED connected to pin 13 on the board, so you could use that instead of a real LED. The code is given in Code
+\ref{c:pbtn}.
+
+Note that our circuit works exactly as the one in the previous excercise: the LED shines when the button is pressed. How we achieve this is completely different though.
+}
+\ned{Laat ons dit circuit analyseren. De pin om de status van de knop te lezen is pin 2. Als deze knop niet is ingedrukt zien we dat de pin verbonden is via zwart met de GND. Het zal dus in de GND staat of \ardo{LOW} zijn. Je ziet dat er een weerstand is, maar deze lijkt geen functie te hebben.
+
+Beschouw nu het geval dat de knop ingedrukt is. Er is nu een connectie van links naar rechts in de drukknop. Zwart (GND) is dus verbonden met rood die naar de 5V op de Arduino gaat. Moest er geen weerstand zijn dan zouden we een kortsluiting krijgen: stroom die vrij stroomt van 5V naar GND. Aldus \textbf{moeten} we een weerstand hebben om kortsluiting te voorkomen. Welke weerstand hebben we nodig? Wel, we willen dat pin 2 op 5V staat als de knop ingedrukt is, \textbf{\'en} we willen niet veel stroom gebruiken om dit te verkrijgen. Bijgevolg willen we een grote weerstand! 
+Een grote weerstand zal zorgen dat de weerstand in de draden van de drukknop naar de 5V pin verwaarloosbaar is ten opzichte van de grote weerstand, en dus zal pin 2 op 5V staan. Terzelfdertijd zal een grote weerstand ervoor zorgen dat er maal heel weinig stroom zal vloeien over de drukknop, en ons circuit zal dus heel efficient zijn. Neem daarom als weerstand eentje van 10000$\Omega$, welke we ook schrijven als 10K$\Omega$. We noemen zo'n weerstand op deze manier gebruikt een \textit{pull-down} of \textit{pull-up} weerstand.
+
+We kunnen nu Arduino code schrijven die de status van pin 2 leest, en de LED laten schijnen op basis van die status. Om dit te doen dient ons LED circuit van de vorige oefening aangepast te worden om stroom te trekken van een pin, bv pin 13. Zo kunnen we pin 13 HIGH of LOW zetten om de LED te beheren. Merk op dat de meeste Arduino borden een kleine LED op het bord hebben die verbonden is met pin 13, je zou dus dat kunnen gebruiken ipv een echte LED. De code is gegeven in Code \ref{c:pbtn}. 
+}
+
 \begin{code}\label{c:pbtn}
  \ \newline
 \inputardfull{\string"../sketches/Fe_cube_05_pbtn/Fe_cube_05_pbtn.ino\string"}
 \end{code}
+
+\subsection{\engt{Only one button?} \nedt{Maar \'e\'en knop?}}
+
+\eng{What can we do with only one button? More than you think! Consider a touch pad on a tablet. What can you do with one finger? Consider a mouse. What can you do with one button?
+
+Yes, the answer is: a lot! You can have a normal press, a long press, a double press. And you could even react differently to input in certain patterns (gestures). 
+Reacting differently to different presses is a matter of software. The better you program, the better you can react to things happening. So, we need to think a bit on a method to program reacting to different presses.
+
+Let's define some concepts:
+\begin{itemize}
+ \item \textbf{Input sampling}. We don't want to spend too much time observing what happens to the button. Testing the state of the button every 40 ms (the time of a frame in our Fe Cube) should be sufficient. It might be a good idea to not block the normal code running on our Arduino, so to let that code indicate when we are allowed to sample the input, in our case the button.
+ \item An \textbf{event} is something happening to the button. There are only two events: \textit{buttonpress} and \textit{buttonrelease}. As we have seen from the previous excercise, we can recognize these events by a change in state. The first is LOW to HIGH, and the second is HIGH to LOW
+ \item Next we have \textbf{event handling}. Event handling is converting events in a \textit{button press type}. To do event handling, we need to know the time since a previous event, as well as the type of a previous press type. We can distinguish like this:
+\begin{enumerate}
+ \item \textbf{short press}: a press and a release within 2 seconds
+ \item \textbf{long press}: a press and a release taking more than 2 seconds
+ \item \textbf{double press}: a short press within 0.7 seconds after a previous short press
+ \item \textbf{extreme long press}: a press longer than 5 seconds. No need to wait for the release to set a press type.
+\end{enumerate}
+ \item An \textit{INTERRUPT}. We will have code running on our Arduino, and a button being pressed. We need to be able to interrupt the code that runs to start something else. So, our code will observe the button press type and based on that interrupt the running code to react to the press.
+\end{itemize}
+}
+
+\ned{Wat kunnen we doen met maar \'e\'en knop? Meer dan je denkt! Denk aan een aanraakscherm op een tablet. Wat kun je doen met \'e\'en vinger? Denk aan de computermuis. Wat kun je doen met \'e\'en knop?
+
+Ja, het antwoord is: veel! Je kan een normale druk hebben, een lange druk, een dubbele druk ... . Je zou zelf kunnen reageren op basis van bepaalde patronen (bv SOS in morse).
+Het verschillend reageren op verschillende drukken is een kwestie van software. Hoe beter je programmeert hoe beter je kan reageren op dingen die gebeuren. We moeten dus een beetje nadenken over de methode om met een programma te reageren op een knop.
+
+Laat ons enkele concepten defini\"eren:
+\begin{itemize}
+ \item \textbf{Input sampling} of \textbf{Invoertesten}. We willen niet teveel tijd besteden met het observeren wat er gebeurt met de knop. De status van de knop elke 40 ms testen (de tijd van een frame in onze Fe Cubus) zou voldoende moeten zijn. Het is misschien een goed idee om de gewone code die loopt op de Arduino niet te blokkeren, en we zouden dus die code kunnen laten aangeven wanneer we de invoer mogen testen, in ons geval de knop.
+ \item Een \textbf{event} of \textbf{gebeurtenis} is iets dat gebeurt met de knop. Er zijn maar twee mogelijke events : \textit{buttonpress} and \textit{buttonrelease}, in het Nederlands: Knop indrukken en Knop loslaten. Zoals we in de vorige oefening gezien hebben kunnen we deze herkennen door een verandering in de status. De eerste is LOW naar HIGH en de tweede HIGH naar LOW.
+ \item Vervolgens hebben we \textbf{event handling}. Event handling is het omzetten van events naar \textit{button press type}. Om event handling te doen moeten we tijd weten sinds een vorig event alsook het type van de vorige butten press. Op deze manier kunnen we onderscheiden:
+\begin{enumerate}
+ \item \textbf{short press} of \textbf{korte druk}: een druk en loslaten binnen de 2 sekonden
+ \item \textbf{long press} of \textbf{lange druk}: een druk en loslaten die langer dan 2 sekonden duurt
+ \item \textbf{double press} of \textbf{dubbele druk}: a korte druk binnen de 0.7 sekonden na een vorige korte druk
+ \item \textbf{extreme long press} of \textbf{extreem lange druk}: een druk die langer dan 5 sekonden duurt. Het is dan niet nodig te wachten op een loslaten om het druk type vast te leggen.
+\end{enumerate}
+ \item Een \textit{INTERRUPT}. Dit is het Engels voor \textit{Onderbreking}. We zullen code hebben lopen op de Arduino, en een knop die gedrukt wordt. We dienen in staat te zijn de code te onderbreken om iets anders te doen. Onze code moet dus het butten press type observeren en op basis daarvan de code kunnen onderbreken om te reageren op de druk.
+\end{itemize}
+}
+
+\eng{
+These are a lot of concepts to include in our code. Let's create code that does different things to the LED, to see how we can do this in practice, see Code \ref{c:pbtn_event}.
+}
+
+\ned{Dit zijn veel concepten om op te nemen in onze code. Laat ons nu code maken die verschillende dingen doet met de LED, om te zien hoe we dit in de praktijk kunnen doen, zie Code \ref{c:pbtn_event}.
+}
+
+\begin{code}\label{c:pbtn_event}
+ \ \newline
+\inputardfull{\string"../sketches/Fe_cube_05_pbtn_events/Fe_cube_05_pbtn_events.ino\string"}
+\end{code}
+
 
 \subsection{\engt{Fe Cube + pushbutton = control} \nedt{Fe Cube + Drukknop = sturing}}
 
