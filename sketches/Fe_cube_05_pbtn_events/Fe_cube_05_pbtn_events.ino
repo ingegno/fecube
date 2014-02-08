@@ -2,7 +2,7 @@
 Controlling a simple led via a pushbutton
 */ 
  
-#define buttonPin  2 // the number of the pushbutton pin
+#define btnpin  2 // the number of the pushbutton pin
 #define ledPin    11 // a PWM pin for the LED!
 
 bool test        = false;
@@ -36,7 +36,7 @@ unsigned long prevpresstime = 0;
 
 void setup() {    
   // initialize the pushbutton pin as an input:
-  pinMode(buttonPin, INPUT);     
+  pinMode(btnpin, INPUT);     
   // LED on PWM pin, no setup needed.
   if (test) {
     Serial.begin(9600);
@@ -48,7 +48,7 @@ void inputsampling(){
   if (allowInput) {
     if (presstype == NOPRESS) {
       btnStatePrev = btnState;
-      btnState = digitalRead(buttonPin);
+      btnState = digitalRead(btnpin);
       // handle the events if needed
       eventhandling();
     } else {
@@ -61,6 +61,7 @@ void inputsampling(){
         presstypePrev  = NOPRESS;
       }
     }
+    allowInput = false;
   }
 }
 
@@ -139,6 +140,7 @@ void loop(){
   // every 40 ms we read input, and then process it to set the light
   unsigned long currt = millis();
   if (currt - looptime > 40UL) {
+    allowInput = true;
     inputsampling();
     looptime = currt;    
   }
