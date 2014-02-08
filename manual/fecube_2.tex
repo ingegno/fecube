@@ -523,5 +523,24 @@ a digital pin free}
 \label{f:lesson5_pbtn3}
 \end{figure}
 
-\eng{}
-\ned{}
+\eng{For the code, we need to combine our Cube code, with the pushbutton code. The entire button handling code can be copied verbatim. In the Cube code we need to do the following changes:
+\begin{itemize}
+ \item We no longer update the \ardo{NRPATTERN} variable when a pattern is finished. The user will need to press the button to change the pattern.
+ \item In the \ardo{loop()} function we start with the inputsampling. Next the presstype is checked. If the button press type is \ardo{NOPRESS} and the shot is not finished, no new shot will be started. In all other cases we handle the press type. We will do the following: if a shortpress, we increase \ardo{NRPATTERN}, so as to move to the next pattern. If \ardo{EXTREMEPRESS} we will switch the cube off or on. If \ardo{DOUBLEPRESS} we will show a new effect: rolling 3 dices.
+ \item We write new shots: one to switch off the cube, and one for dice rolling
+ \item We update the \ardo{movie} function: if we need to show the dice effect or switch off the LED, we return those shots. Otherwise we do as before: return the correct pattern.
+\end{itemize}
+The full code is in \url{https://github.com/ingegno/fecube/blob/master/sketches/Fe_cube_05_cube_pbtn/Fe_cube_05_cube_pbtn.ino}.
+}
+
+\ned{In de code dienen we de kubus code te combineren met de drukknop code. De volledige drukknop logica kan letterlijk overgenomen worden. In de oorspronkelijke kubus code moeten we wel nog volgende wijzigingen doen:
+\begin{itemize}
+ \item We passen de variabele \ardo{NRPATTERN} niet langer aan als het patroon af is. De gebruiker zal moeten de knop drukken om een ander effect te zien.
+ \item In de \ardo{loop()} functie beginnen we met invoerlezing via de \ardo{inputsampling} functie. Vervolgens controleren we het presstype. Als de drukknop type \ardo{NOPRESS} is en het shot niet gedaan, zal er geen nieuw shot started. In alle andere gevallen moeten we het drukknop type behandelen. We zullen het volgende doen: bij een korte druk zullen we \ardo{NRPATTERN} verhogen, opdat een nieuw patroon zou getoond worden.  Indien het type \ardo{EXTREMEPRESS} is zullen we de kubus af- of aanzetten. Bij \ardo{DOUBLEPRESS} zullen we een nieuw effect tonen: 3 dobbelstenen gooien.
+ \item We schrijven nieuwe shots: een om te kubus af te zetten, en een om de dobbelsteen te tonen
+ \item We passen de \ardo{movie} functie aan: Als we de dobbelsteen moeten tonen of de LED moeten uitzetten, geven we die shots terug. Anders doen we zoals vroeger: het juiste patroon teruggeven.
+\end{itemize}
+De volledige code kun je vinden op 
+\url{https://github.com/ingegno/fecube/blob/master/sketches/Fe_cube_05_cube_pbtn/Fe_cube_05_cube_pbtn.ino}.
+}
+

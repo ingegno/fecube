@@ -717,6 +717,8 @@ void loop(){
       NRPATTERN = 666;
       PATTERNFINISHED = true;
       break;
+    default:
+      newshot = false;
   }
   //consider presstype handled:
   presstype = NOPRESS;
