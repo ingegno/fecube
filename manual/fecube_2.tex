@@ -72,7 +72,7 @@ In our previous script, we had ledR, ledG, ledB, which are easy to understand na
 Open Code \ref{c:l2_d}, and save it under a new name. The changes needed are first defining all the pins:
 }
 
-\ned{We zullen enkel controleren dat we deze schakelbord variant van de Fe kubus kunnen doen werken. Hiertoe passen we onze RGB schets aan. We zullen een film maken die eerst 4 sekonden rood toont, dan 4s groen, dan 4s blauw, dan 1 minuut een willekeurige kleur, en uiteindelijk gladde overgangen voor een minuut.
+\ned{We zullen enkel controleren dat we deze schakelbord variant van de Fe kubus kunnen doen werken. Hiertoe passen we onze RGB schets aan. We zullen een film maken die eerst 4 seconden rood toont, dan 4s groen, dan 4s blauw, dan 1 minuut een willekeurige kleur, en uiteindelijk gladde overgangen voor een minuut.
 
 Dit betekent dat we al de shots die we gemaakt hebben voor de RGB LED in de vorige lessen zullen gebruiken en aanpassen. De \ardo{movie} functie zullen we zo maken dat al deze shots elkaar opvolgen. In plaats van \'e\'en RGB led hebben we er nu 9, dus dienen we deze 9 nu samen aan of af schakelen. 
 
@@ -396,7 +396,7 @@ The Arduino has a special function to read input from a digital pin: \ardo{digit
 
 The function will read \ardo{HIGH} if the pin is on 5V, and \ardo{LOW} when on GND. So the trick is to create a circuit that is \ardo{LOW} when the button is not pressed, and \ardo{HIGH} when the button is pressed. Such a circuit is given in Figure \ref{f:lesson5_pbtn2}.
 }
-\ned{In de vorige oefening hebben we geleerd dat een drukknop de stroom kan onderbreken. Dit kan nuttig zijn in sommige omstandigheden, maar niet voor onze Fe Kubus. In de plaats willen we een knop waardoor we input kunnen krijgen van de gebruiker. In andere woorden, we will weten als de gebruiker de knop drukt of niet, en we willen daarop reageren via Arduino code.
+\ned{In de vorige oefening hebben we geleerd dat een drukknop de stroom kan onderbreken. Dit kan nuttig zijn in sommige omstandigheden, maar niet voor onze Fe Kubus. In de plaats willen we een knop waardoor we input kunnen krijgen van de gebruiker. In andere woorden, we willen weten als de gebruiker de knop drukt of niet, en we willen daarop reageren via Arduino code.
 
 De Arduino heeft een speciale functie om input te lezen van een digitale pin:\ardo{digitalRead(pin)}. Om deze methode te gebruiken moeten we een pin defini\"eren als \ardo{INPUT} in de \ardo{setup} function: \ardo{pinMode(pin, INPUT);}. 
 
@@ -414,7 +414,7 @@ De functie zal \ardo{HIGH} lezen als de pin op 5V staat en \ardo{LOW} als ze op 
 
 \eng{Let's analyse this circuit. The pin to read the state of the button is pin 2. When the button is not pressed we see that the pin is connected via black to the GND. So it will be in state GND or \ardo{LOW}. You can see there is a resistor, but this seems to have no function.
 
-Now consider the button pressed. There is a connection now from left to right in the pushbutton. So black (GND) is connected to red which goes so 5V on the Arduino. If there would be no resistor we would have a short-circuit: current running freely from 5V to GND. So, we \textbf{need} a resistor to avoid a short-circuit! What resistor do we need? Well, we want to have at pin 2, 5V when the button is pushed down, \textbf{and} we don't want to spend a lot of current to achieve this state. Hence, we want a large resistor! A large resistor will make sure the resistance from the wires from the pushbutton to the 5V pin is neglectable compared to the large resistor, so pin 2 will be on 5V. At the same time, a large resistor will make sure very little current will actually flow over the pushbutton, so our circuit will be very efficient. So, take for this resistor 10000$\Omega$ which we write as 10K$\Omega$. We call such a resistor used in this way a pull-down or pull-up resistor.
+Now consider the button pressed. There is a connection now from left to right in the pushbutton. So black (GND) is connected to red which goes so 5V on the Arduino. If there would be no resistor we would have a short-circuit: current running freely from 5V to GND. So, we \textbf{need} a resistor to avoid a short-circuit! What resistor do we need? Well, we want to have at pin 2, 5V when the button is pushed down, \textbf{and} we don't want to spend a lot of current to achieve this state. Hence, we want a large resistor! A large resistor will make sure the resistance from the wires from the pushbutton to the 5V pin is neglectable compared to the large resistor, so pin 2 will be on 5V. At the same time, a large resistor will make sure very little current will actually flow over the pushbutton, so our circuit will be very efficient. So, take for this resistor 10000$\Omega$ which we write as 10K$\Omega$ or 10k$\Omega$. We call such a resistor used in this way a pull-down or pull-up resistor.
 
 We can now write Arduino code that reads the state of pin 2, and let's the LED shine based on this. To achieve this, our LED circuit of the previous excercise must be changed to draw current from a pin, eg pin 13. Like that, setting pin 13 HIGH or LOW will control the LED. Note that most Arduino boards have a tiny LED connected to pin 13 on the board, so you could use that instead of a real LED. The code is given in Code
 \ref{c:pbtn}.
@@ -424,7 +424,7 @@ Note that our circuit works exactly as the one in the previous excercise: the LE
 \ned{Laat ons dit circuit analyseren. De pin om de status van de knop te lezen is pin 2. Als deze knop niet is ingedrukt zien we dat de pin verbonden is via zwart met de GND. Het zal dus in de GND staat of \ardo{LOW} zijn. Je ziet dat er een weerstand is, maar deze lijkt geen functie te hebben.
 
 Beschouw nu het geval dat de knop ingedrukt is. Er is nu een connectie van links naar rechts in de drukknop. Zwart (GND) is dus verbonden met rood die naar de 5V op de Arduino gaat. Moest er geen weerstand zijn dan zouden we een kortsluiting krijgen: stroom die vrij stroomt van 5V naar GND. Aldus \textbf{moeten} we een weerstand hebben om kortsluiting te voorkomen. Welke weerstand hebben we nodig? Wel, we willen dat pin 2 op 5V staat als de knop ingedrukt is, \textbf{\'en} we willen niet veel stroom gebruiken om dit te verkrijgen. Bijgevolg willen we een grote weerstand! 
-Een grote weerstand zal zorgen dat de weerstand in de draden van de drukknop naar de 5V pin verwaarloosbaar is ten opzichte van de grote weerstand, en dus zal pin 2 op 5V staan. Terzelfdertijd zal een grote weerstand ervoor zorgen dat er maal heel weinig stroom zal vloeien over de drukknop, en ons circuit zal dus heel efficient zijn. Neem daarom als weerstand eentje van 10000$\Omega$, welke we ook schrijven als 10K$\Omega$. We noemen zo'n weerstand op deze manier gebruikt een \textit{pull-down} of \textit{pull-up} weerstand.
+Een grote weerstand zal zorgen dat de weerstand in de draden van de drukknop naar de 5V pin verwaarloosbaar is ten opzichte van de grote weerstand, en dus zal pin 2 op 5V staan. Terzelfdertijd zal een grote weerstand ervoor zorgen dat er maar heel weinig stroom zal vloeien over de drukknop, en ons circuit zal dus heel efficient zijn. Neem daarom als weerstand eentje van 10000$\Omega$, welke we ook schrijven als 10K$\Omega$ of 10k$\Omega$. We noemen zo'n weerstand op deze manier gebruikt een \textit{pull-down} (naar GND) of \textit{pull-up} (naar 5V) weerstand.
 
 We kunnen nu Arduino code schrijven die de status van pin 2 leest, en de LED laten schijnen op basis van die status. Om dit te doen dient ons LED circuit van de vorige oefening aangepast te worden om stroom te trekken van een pin, bv pin 13. Zo kunnen we pin 13 HIGH of LOW zetten om de LED te beheren. Merk op dat de meeste Arduino borden een kleine LED op het bord hebben die verbonden is met pin 13, je zou dus dat kunnen gebruiken ipv een echte LED. De code is gegeven in Code \ref{c:pbtn}. 
 }
@@ -449,8 +449,8 @@ Let's define some concepts:
 \begin{enumerate}
  \item \textbf{short press}: a press and a release within 2 seconds
  \item \textbf{long press}: a press and a release taking more than 2 seconds
- \item \textbf{double press}: a short press within 0.7 seconds after a previous short press
- \item \textbf{extreme long press}: a press longer than 5 seconds. No need to wait for the release to set a press type.
+ \item \textbf{double press}: a short press within 0.5 seconds after a previous short press
+ \item \textbf{extreme long press}: a press longer than 4 seconds. No need to wait for the release to set a press type.
 \end{enumerate}
  \item An \textit{INTERRUPT}. We will have code running on our Arduino, and a button being pressed. We need to be able to interrupt the code that runs to start something else. So, our code will observe the button press type and based on that interrupt the running code to react to the press.
 \end{itemize}
@@ -464,13 +464,13 @@ Het verschillend reageren op verschillende drukken is een kwestie van software. 
 Laat ons enkele concepten defini\"eren:
 \begin{itemize}
  \item \textbf{Input sampling} of \textbf{Invoertesten}. We willen niet teveel tijd besteden met het observeren wat er gebeurt met de knop. De status van de knop elke 40 ms testen (de tijd van een frame in onze Fe Cubus) zou voldoende moeten zijn. Het is misschien een goed idee om de gewone code die loopt op de Arduino niet te blokkeren, en we zouden dus die code kunnen laten aangeven wanneer we de invoer mogen testen, in ons geval de knop.
- \item Een \textbf{event} of \textbf{gebeurtenis} is iets dat gebeurt met de knop. Er zijn maar twee mogelijke events : \textit{buttonpress} and \textit{buttonrelease}, in het Nederlands: Knop indrukken en Knop loslaten. Zoals we in de vorige oefening gezien hebben kunnen we deze herkennen door een verandering in de status. De eerste is LOW naar HIGH en de tweede HIGH naar LOW.
- \item Vervolgens hebben we \textbf{event handling}. Event handling is het omzetten van events naar \textit{button press type}. Om event handling te doen moeten we tijd weten sinds een vorig event alsook het type van de vorige butten press. Op deze manier kunnen we onderscheiden:
+ \item Een \textbf{event} of \textbf{gebeurtenis} is iets dat gebeurt met de knop. Er zijn maar twee mogelijke events : \textit{buttonpress} and \textit{buttonrelease}, in het Nederlands: Knop indrukken en Knop loslaten. Zoals we in de vorige oefening gezien hebben kunnen we deze herkennen door een verandering in de status van de knop. De eerste is LOW naar HIGH en de tweede HIGH naar LOW.
+ \item Vervolgens hebben we \textbf{event handling}. Event handling is het omzetten van events naar \textit{button press type}. Om event handling te doen moeten we de tijd weten sinds een vorig event alsook het type van de vorige druk. Op deze manier kunnen we onderscheiden:
 \begin{enumerate}
- \item \textbf{short press} of \textbf{korte druk}: een druk en loslaten binnen de 2 sekonden
- \item \textbf{long press} of \textbf{lange druk}: een druk en loslaten die langer dan 2 sekonden duurt
- \item \textbf{double press} of \textbf{dubbele druk}: a korte druk binnen de 0.7 sekonden na een vorige korte druk
- \item \textbf{extreme long press} of \textbf{extreem lange druk}: een druk die langer dan 5 sekonden duurt. Het is dan niet nodig te wachten op een loslaten om het druk type vast te leggen.
+ \item \textbf{short press} of \textbf{korte druk}: een druk en loslaten binnen de 2 seconden
+ \item \textbf{long press} of \textbf{lange druk}: een druk en loslaten die langer dan 2 seconden duurt
+ \item \textbf{double press} of \textbf{dubbele druk}: a korte druk binnen de 0.5 seconden na een vorige korte druk
+ \item \textbf{extreme long press} of \textbf{extreem lange druk}: een druk die langer dan 4 seconden duurt. Het is dan niet nodig te wachten op een loslaten om het druk type vast te leggen.
 \end{enumerate}
  \item Een \textit{INTERRUPT}. Dit is het Engels voor \textit{Onderbreking}. We zullen code hebben lopen op de Arduino, en een knop die gedrukt wordt. We dienen in staat te zijn de code te onderbreken om iets anders te doen. Onze code moet dus het butten press type observeren en op basis daarvan de code kunnen onderbreken om te reageren op de druk.
 \end{itemize}
@@ -478,9 +478,25 @@ Laat ons enkele concepten defini\"eren:
 
 \eng{
 These are a lot of concepts to include in our code. Let's create code that does different things to the LED, to see how we can do this in practice, see Code \ref{c:pbtn_event}.
+
+This code contains in the first part a function to do inputsampling, called \ardo{inputsampling()}. This happens if the variable \ardo{allowInput} allos it. The input is then handled in the function  \ardo{eventhandling}. This function first determines the \ardo{event}, and then determiens the press type, which is saved in the variable \ardo{presstype}.
+
+The second part of the code is the program that controls our LED. We can switch the LED on or off via a long press. A short press dims the LED a small fraction. After 15 short presses the LED will be at it's minimum brightness, with the next press going back to full brightness. We use PWM to dim the light, so we use for example pin 11. A double press will be translated in a flickering LED: half a second on, then half a second off.
+
+This code will observe the variable \ardo{presstype}, and if it is different from \ardo{NOPRESS} do the desired action. After handling the press type, we put  \ardo{presstype=NOPRESS}, so that we again wait for the next input.
+
+You have written your first program that allows you to control how the Arduino works!
 }
 
-\ned{Dit zijn veel concepten om op te nemen in onze code. Laat ons nu code maken die verschillende dingen doet met de LED, om te zien hoe we dit in de praktijk kunnen doen, zie Code \ref{c:pbtn_event}.
+\ned{Dit zijn veel concepten om op te nemen in onze code. Laat ons nu code maken die verschillende dingen doet met de LED, om te zien hoe we dit in de praktijk kunnen doen, zie Code \ref{c:pbtn_event}. 
+
+In deze code bevat het eerste gedeelte een functie die invoertesten doet, \ardo{inputsampling()} als dit toegelaten is door de variabele \ardo{allowInput}. De invoer wordt dan verwerkt met de functie \ardo{eventhandling}. Deze functie bepaalt eerst het \ardo{event}, en daarna het type druk, welke opgeslagen wordt in de variabele \ardo{presstype}. 
+
+Het tweede deel van de code is dan ons programma die een LED doet branden. We kunnen via een lange druk de LED aan of af doen. Een korte druk dimt de LED een kleine fractie. Na 15 keer een korte druk zal de LED maximaal gedimd zijn, om daarna weer op volle sterkte te branden. We gebruiken PWM om te dimmen, dus gebruiken we bv pin 11 voor de LED. Een dubbele druk zullen we vertalen in het flikkeren van de LED: een halve seconde aan, een halve uit. 
+
+Deze code zal dus de variabele \ardo{presstype} observeren, en als deze verschillend is van \ardo{NOPRESS} de geweste actie ondernemen. Na het behandelen van een druktype zetten we \ardo{presstype=NOPRESS}, zodat we weer wachten op de volgende input.
+
+Je hebt je eerste programma nu af die je toelaat te sturen hoe je Arduino werkt!
 }
 
 \begin{code}\label{c:pbtn_event}
