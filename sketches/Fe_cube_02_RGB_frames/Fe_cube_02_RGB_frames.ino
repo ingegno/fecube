@@ -36,9 +36,9 @@ General outline animation architecture
    can give the illusion of smooth movement/change
    Frames themself are drawn from subframes
 3. To create a frame, multiplexing will be needed. This is the act of
-   combining individual light outputs so as to create the single frame.
-   Eg, an RGB led cannot show R, G and B at the same time, so 
-   these must be shown serial. Likewise, a led cube might not have to power
+   combining individual light outputs to create a single frame.
+   Eg, an RGB led cannot show R, G and B at the same time, so these must be
+   shown in serie. For the same reason, a led cube might not have to power
    output to drive a complete cube in one subframe. So a subframe is one 
    output of a loop in arduino.  A cycle of subrames creates a frame. 
    The cycle is repeated for the duration of the frame.
@@ -72,17 +72,6 @@ void random_color(unsigned long framenr, int frame[3]){
   //frame[0] = 0; frame[1] = 0; frame[2] = 64;
 }
 
-/*********************************************
-Following avoids
-   #include "frames.h"
-with frames.h in same directory containing:
-   typedef void (*shotptr)(unsigned long framenr, int frame[3]);
-and then in this file using this typedef:
-   shotptr movie(unsigned long *shotduration){
-Instead, all the above rolled into one:
-   movie is a function that returns a function with signature like eg
-       void random_color(unsigned long framenr, int frame[3])
-**********************************************/
 void (*movie(unsigned long *shotduration))(unsigned long, int[3]){
   // when a shot is finished, movie() is called to obtain the next shot. 
   // Here we have a single random color, and a fixed duration of 1000 ms.

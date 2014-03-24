@@ -106,45 +106,44 @@ void smooth_color(unsigned long framenr, int frame[3]){
   }
 }
 
+int maxshot = 78;  // number of shots in our movie
+int shotnr = 0;    // empty start
 void (*movie(unsigned long *shotduration))(unsigned long, int[3]){
   // when a shot is finished, movie() is called to obtain the next shot.
+  shotnr += 1; //the shot we want to show next
+  if (shotnr> maxshot) { shotnr = 1;}  //if over the maximum, we start again
   unsigned long curmovietime = millis();
-  if (test) {
-    Serial.print("shot ");
-    Serial.print(curmovietime - movietime); Serial.print(" ");
-    Serial.print(curmovietime); Serial.print(" ");
+  switch (shotnr){
+    case 1:
+      //4 seconds red
+      *shotduration = 4000;
+      random_colorR = 64; random_colorG = 0; random_colorB = 0;
+      return fixed_color;
+      break;
+    case 2:
+      //4 seconds green
+      *shotduration = 4000;
+      random_colorR = 0; random_colorG = 64; random_colorB = 0;
+      return fixed_color;
+      break;
+    case 3: 
+      //4 seconds blue
+      *shotduration = 4000;
+      random_colorR = 0; random_colorG = 0; random_colorB = 64;
+      return fixed_color;
+      break;
   }
-  if (curmovietime - movietime > 2*60*1000UL  + 3*4000UL){
-    //start the movie again from the start.
-    movietime = curmovietime;
+  if (shotnr <= 63) {
+      //60 shots of a random color for 1 second
+      *shotduration = 1000;
+      return random_color;
   }
-  if (curmovietime - movietime < 4000UL) {
-    //4 seconds red
-    *shotduration = 4000;
-    random_colorR = 64; random_colorG = 0; random_colorB = 0;
-    return fixed_color;
-  } else if (curmovietime - movietime < 8000UL) {
-    //4 seconds green
-    *shotduration = 4000;
-    random_colorR = 0; random_colorG = 64; random_colorB = 0;
-    return fixed_color;
-  } else if (curmovietime - movietime < 12000UL) {
-    //4 seconds blue
-    *shotduration = 4000;
-    random_colorR = 0; random_colorG = 0; random_colorB = 64;
-    return fixed_color;
-  } else if (curmovietime - movietime < 12000UL + 60UL * 1000UL) {
-    //random color for 1 min, with 1 sec for a random color
-    *shotduration = 1000;
-    return random_color;
-  } else {
-    // one minitue smooth transitions each 4 sec
-    smooth_color_transition_duration = 3000;
-    fixed_color_duration = 500;
-    // a color, smooth transition, and another color, so duration:
-    *shotduration = smooth_color_transition_duration + 2 * fixed_color_duration;
-    return smooth_color;
-  }
+  //all remaining shots (up to 78) smooth transitions each 4 sec
+  smooth_color_transition_duration = 3000;
+  fixed_color_duration = 500;
+  // a color, smooth transition, and another color, so duration:
+  *shotduration = smooth_color_transition_duration + 2 * fixed_color_duration;
+  return smooth_color;
 }
 
 /***************************************************************************
