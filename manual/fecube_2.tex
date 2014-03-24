@@ -20,7 +20,7 @@ Connect then the resistors to pins 1 to 9. These are the pins that will feed the
 The Base leg of the NPN will control if the NPN junction is open or not. We will use pins 10, 11, 12 to control this. Your entire wiring should look like Fig.~\ref{f:lesson3_bb2}.
 }
 
-\ned{We hebben alles gezien om aan onze Fe Kubus te beginnen. We starten met alle componenten op het schakelbord te zetten. Dan testen we de schakeling met een programma die onze vorige RGB LED schets is aangepast voor de kubus. Alleen als we zeker zijn dat alles werkt zullen we de effectieve constructie doen.
+\ned{We hebben alles gezien om aan onze Fe Kubus te beginnen. We starten met alle componenten op het schakelbord te zetten. Dan testen we de schakeling met een programma die onze vorige RGB LED schets aanpast voor de kubus. Alleen als we zeker zijn dat alles werkt zullen we de effectieve constructie doen.
 
 Plaats dus de volgende componenten voor jou:
 \begin{enumerate}
@@ -115,7 +115,22 @@ Open Code \ref{c:l2_d}, en sla het op onder een andere naam. De eerste wijziging
 \eng{Finally, we need to update the \ardo{movie} function so that it would do what we want. So this function needs to be}
 \ned{Als laatste dienen we de \ardo{movie} functie aan te passen zodat het zou doen wat we willen. Deze functie dient te zijn}
 
-\inputard{\string"../sketches/Fe_cube_03_cube_test1/Fe_cube_03_cube_test1.ino\string"}{109}{149}
+\inputard{\string"../sketches/Fe_cube_03_cube_test1/Fe_cube_03_cube_test1.ino\string"}{109}{148}
+
+\eng{
+In the function \ardo{movie} you see the appearance of the \ardo{switch} structure. This is a programming structure that works like a switch based on a variable. The syntax is:
+}
+
+\ned{In de functie \ardo{movie} zie je een \ardo{switch} structuur. Dit is een programmeerstructuur die werkt als een test van een variabele. De syntax is:
+}
+
+\inputard{\string"codefrag/switch.ino\string"}{1}{10}
+
+\eng{In this switch structure, the commands for which the var is equal to one of the labels are executed from that point onwards, up to a \ardo{break;} command. It is nicer to read than a big \ardo{if} structure to test on a variable, but otherwise works just like an if structure.
+}
+
+\ned{In deze switch structuur worden de commando's voor dewelke de variabele gelijk is aan een label uitgevoerd vanaf dat label, en dit tot op het \ardo{break;} commando. Het is mooier om te lezen in code dan een grote \ardo{if} structuur om te testen op een variabele, maar werkt anders precies als een if structuur.
+}
 
 
 \engo{\begin{doE}
@@ -203,17 +218,7 @@ The \ardo{PROGMEM} part replaces a normal \ardo{array} construction and defines 
 
 You call in the \ardo{movie} function the new \ardo{moviepattern} function if you want to send a pattern to the LED cube. We cannot pass a variable with the moviepattern we want to use because this is now in \ardo{PROGMEM}. You will need to edit \ardo{moviepattern} to load the correct pattern.
 
-In the function \ardo{moviepattern} you see twice the appearance of the \ardo{switch} structure. This is a programming structure that works like a switch based on a variable. The syntax is:
-}
-
-\ned{Dit definieert de functies die we nodig hebben om data te verplaatsen van flash naar SRAM.  Het  \ardo{PROGMEM} gedeelte vervangt een gewone lijst (\ardo{array}) constructie en maakt voor ons een lijst van integers (gehele getallen, ons patroon dus). Het duidt aan dat we een lijst integers willen, maar dat we die in \ardo{PROGMEM} willen, dus in flash.
-
-In de functie \ardo{moviepattern} zie je twee keer een \ardo{switch} structuur. Dit is een programmeerstructuur die werkt als een test van een variabele. De syntax is:
-}
-
-\inputard{\string"codefrag/switch.ino\string"}{1}{10}
-
-\eng{In this switch structure, the commands for which the var is equal to one of the labels are executed from that point onwards, up to a \ardo{break;} command.
+In the function \ardo{moviepattern} you see twice the appearance of the \ardo{switch} structure. 
 
 In the first switch structure you need to add the start conditions of the patterns you want to show. In the second switch structure you need to copy the pattern you want into the \ardo{shotpattern} variable, as well set the \ardo{nextduration} variable to the duration of the \textit{next} shot. The function \ardo{pgm_read_word_near} is the function that will copy from the program memory (flash) to SRAM. The only thing needed to change there is the name of the pattern, or add a case with your pattern.
 
@@ -230,9 +235,11 @@ To show the influence of changing these parameters, the code has an extra patter
 The rest of the extra code is to compute the correct speedup of the shots in the pattern, and to determine correctly when a pattern is finished and the next pattern can begin.
 }
 
-\ned{In deze switch structuur worden de commando's voor dewelke de variabele gelijk is aan een label uitgevoerd vanaf dat label, en dit tot op het \ardo{break;} commando.
+\ned{Dit definieert de functies die we nodig hebben om data te verplaatsen van flash naar SRAM.  Het  \ardo{PROGMEM} gedeelte vervangt een gewone lijst (\ardo{array}) constructie en maakt voor ons een lijst van integers (gehele getallen, ons patroon dus). Het duidt aan dat we een lijst integers willen, maar dat we die in \ardo{PROGMEM} willen, dus in flash.
 
-In de eerste switch structuur dien je de startcondities vn je patroon te schrijven. In de tweede switch structuur dien je je patroon te copi\"eren in de \ardo{shotpattern} variabele, alsookde \ardo{nextduration} variabele opvullen met de duur van het \textit{volgende} shot. De functie \ardo{pgm_read_word_near}  is de functie die zal copi\"eren van programma geheugen (flash) naar SRAM. Het enige dat je hier normaal moet wijzigen is de naam van je patroon, of het toevoegen van een switch case voor jouw patroon.
+In de functie \ardo{moviepattern} zie je twee keer een \ardo{switch} structuur. 
+
+In de eerste switch structuur dien je de startcondities van je patroon te schrijven. In de tweede switch structuur dien je je patroon te copi\"eren in de \ardo{shotpattern} variabele, alsook de \ardo{nextduration} variabele opvullen met de duur van het \textit{volgende} shot. De functie \ardo{pgm_read_word_near}  is de functie die zal copi\"eren van programma geheugen (flash) naar SRAM. Het enige dat je hier normaal moet wijzigen is de naam van je patroon, of het toevoegen van een switch case voor jouw patroon.
 
 De startcondities van een patroon zijn:
 \begin{enumerate}

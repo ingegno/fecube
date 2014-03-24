@@ -17,7 +17,7 @@ MakeIndex=
 QuickBuild=
 
 [document-settings,item:fecube.tex]
-Bookmarks=625
+Bookmarks=677
 Encoding=UTF-8
 FoldedColumns=
 FoldedLines=
@@ -26,7 +26,7 @@ Indentation Mode=
 Mode=LaTeX
 
 [document-settings,item:fecube_2.tex]
-Bookmarks=
+Bookmarks=241
 Encoding=UTF-8
 FoldedColumns=
 FoldedLines=
@@ -44,7 +44,7 @@ Indentation Mode=normal
 Mode=
 
 [document-settings,item:manual.tex]
-Bookmarks=
+Bookmarks=0
 Encoding=UTF-8
 FoldedColumns=
 FoldedLines=
@@ -54,20 +54,20 @@ Mode=LaTeX
 
 [item:fecube.tex]
 archive=true
-column=12
+column=50
 encoding=UTF-8
 highlight=LaTeX
-line=191
+line=29
 mode=LaTeX
 open=true
 order=2
 
 [item:fecube_2.tex]
 archive=true
-column=0
+column=463
 encoding=UTF-8
 highlight=LaTeX
-line=483
+line=241
 mode=LaTeX
 open=true
 order=0
@@ -84,25 +84,25 @@ order=-1
 
 [item:manual.tex]
 archive=true
-column=0
+column=19
 encoding=UTF-8
 highlight=LaTeX
-line=99
+line=19
 mode=LaTeX
 open=true
 order=1
 
 [view-settings,view=0,item:fecube.tex]
-CursorColumn=12
-CursorLine=191
+CursorColumn=50
+CursorLine=29
 JumpList=
-ViMarks=.,625,61,[,625,61,],625,61
+ViMarks=.,677,389,[,677,389,],677,389
 
 [view-settings,view=0,item:fecube_2.tex]
-CursorColumn=0
-CursorLine=483
+CursorColumn=463
+CursorLine=241
 JumpList=
-ViMarks=.,482,201,[,483,0,],-1,-1
+ViMarks=.,241,190,[,241,190,],241,190
 
 [view-settings,view=0,item:fecubemanual.kilepr]
 CursorColumn=0
@@ -111,7 +111,7 @@ JumpList=
 ViMarks=
 
 [view-settings,view=0,item:manual.tex]
-CursorColumn=0
-CursorLine=99
+CursorColumn=19
+CursorLine=19
 JumpList=
 ViMarks=.,0,26,[,0,19,],0,26

@@ -17,7 +17,9 @@ De code van deze handleiding kan gevonden worden op \href{https://github.com/ing
  \item 9 RGB-LED + 3 extra (we assume common cathode for the cube)
  \item 1 big RGB-LED (we assume common anode)
  \item 3 NPN + 1 extra (2N3904 normally)
+ \item 1 pushbutton
  \item 9 220 $\Omega$ resistors + 3 extra
+ \item 1 10k-20k $\Omega$, so 10000-20000$\Omega$, resistor
  \item many wires
  \item lasercut base for the cube
  \item iron wire pillars for the cube
@@ -30,27 +32,29 @@ For an overview of meaning of the components, see the cheat sheet distributed se
 
 \ned{We zullen volgende componenten gebruiken: 
 \begin{enumerate}
- \item Een schakelbord
+ \item Een schakelbord (Breadboard)
  \item 9 RGB-LED + 3 extra (we veronderstellen gemeenschappelijke kathode voor de kubus)
  \item 1 grote RGB-LED (we veronderstellen gemeenschappelijke anode)
- \item 3 NPN + 1 extra (2N3904 normaal)
+ \item 3 NPN + 1 extra (2N3904 of gelijkaardig)
+ \item 1 drukknop
  \item 9 220 $\Omega$ weerstanden + 3 extra
+ \item 1 10k-20k$\Omega$ oftewel 10000-20000$\Omega$ weerstand
  \item veel draden
  \item lasercut basis voor de kubus
  \item ijzerdraad pilaren voor de kubus
  \item soldering plaat voor vaste componenten + connectiestukken
 \end{enumerate}
-Je zal ook een soldeerijzer nodig hebben, en optioneel kun je een bedekking maken voor de kubus, bv via 3D printen.
+Je zal ook een soldeerijzer nodig hebben, en optioneel kun je een afdekking maken voor de kubus, bv via 3D printen of in plexi met de lasercutter.
 
 Voor een overzicht van de betekenis van de componenten, zie het overzicht die je apart gekregen hebt.
 }
 
 \subsection{Arduino}
-\eng{We will make intensive use of Arduino, so you need to install the \href{http://Arduino.cc}{Arduino software}. Once installed, you can connect the Arduino to your PC via de \textsc{usb} port.  In the programming environment you installed you can write programs, and load those on the Arduino board. They will be executed there as long as the Arduino has power.
+\eng{We will make intensive use of Arduino, so you need to install the \href{http://Arduino.cc}{Arduino software}. Once installed, you can connect the Arduino board to your PC via de \textsc{usb} port.  In the programming environment you installed you can write programs, and load those on the Arduino board. They will be executed there as long as the Arduino has power.
 
 }
 \ned{We zullen intensief gebruik maken van Arduino, dus moet je de \href{http://Arduino.cc}{Arduino software} installeren op je laptop.
-Eenmaal geinstalleerd kun je nu je Arduino koppelen aan je computer via de \textsc{usb} poort. In de programmeeromgeving van Arduino kun je programma's schrijven en die opladen naar de Arduino, waar ze dan uitgevoerd worden zolang er stroom is.
+Eenmaal geinstalleerd kun je nu je Arduino bord koppelen aan je computer via de \textsc{usb} poort. In de programmeeromgeving van Arduino kun je programma's schrijven en die opladen naar de Arduino, waar ze dan uitgevoerd worden zolang er stroom is.
 }
 
 
@@ -61,11 +65,14 @@ Eenmaal geinstalleerd kun je nu je Arduino koppelen aan je computer via de \text
 \ned{Een programmeertaal moet verstaan worden door een computer. Spijtig genoeg zijn computers nog altijd een beetje dom, dus mag je geen enkele fout maken! Het is zoals een dictee waar je altijd 10/10 moet halen. Neem dus de tijd om de structuur en taal van de Arduino te leren. Zie de blaadjes 'Programmeren met Arduino' die je bij deze gids kan downloaden.}
 
 \section{\engt{Lesson 1: One LED Circuit} \nedt{Les 1: \'E\'en LED circuit}}
-\eng{We will make a circuit with one LED, which we will program to blink. The Arduino outputs 5 Volt, while the LED is designed for 3 Volt. Hence we will use a resistor to reduce the voltage over the LED. For LED, the resistor is best on the anode side (= the + side, which corresponds to the longest leg of the LED). You can calculate the resistor you need with \url{http://led.linear1.org/1led.wiz}}.
+\eng{We will make a circuit with one LED, which we will program to blink. The Arduino outputs 5 Volt, while the LED is designed for 3 Volt. Hence we will use a resistor to reduce the voltage over the LED. You can calculate the resistor you need with \url{http://led.linear1.org/1led.wiz}.}
+
+\ned{We maken een circuit met \'{e}\'{e}n enkele LED, welke we zullen programmeren om te pinken. De Arduino levert 5 Volt, terwijl de LED gemaakt is voor 3 Volt. We moeten dus een weerstand gebruiken om het voltage over de LED te verminderen.  Je kan de weerstand die je nodig hebt berekenen met  \url{http://led.linear1.org/1led.wiz}.}
 
 \subsection{\engt{One pin} \nedt{\'E\'en pin}}
 \eng{Make the circuit as indicated in Fig.~\ref{f:lesson1_onepin}. Use your breadboard and wires to make the connections. A wire from pin 2 to row 10 on the breadboard. Then the resistor of R=330 $\Omega$ from row 10 to row 6, the LED anode from row 6 to row 5, and finally a wire from row 5 to the GND pin on the Arduino. You can see }
-\ned{Maak het circuit zoals gegeven in Fig.~\ref{f:lesson1_onepin}. Gebruik je schakelbord en draden om de connecties te maken. dus hier, een draad van pin 2 naar rij 10 op je schakelbord. Dan de resistor met weerstand R=330 $\Omega$  van rij 10 naar rij 6, de LED anode van rij 6 naar rij 5, en uiteindelijk een draad van rij 5 naar de GND pin op de Arduino.}
+
+\ned{Maak het circuit zoals gegeven in Fig.~\ref{f:lesson1_onepin}. Gebruik je schakelbord en draden om de connecties te maken. Dus hier, een draad van pin 2 naar rij 10 op je schakelbord. Dan de resistor met weerstand R=330 $\Omega$  van rij 10 naar rij 6, de LED anode van rij 6 naar rij 5, en uiteindelijk een draad van rij 5 naar de GND pin op de Arduino.}
 
 \begin{figure}
   \centering
@@ -83,14 +90,20 @@ Eenmaal geinstalleerd kun je nu je Arduino koppelen aan je computer via de \text
  \ \newline
 \inputardfull{\string"../sketches/Fe_cube_01_led_one_pin/Fe_cube_01_led_one_pin.ino\string"}
 \end{code}
-
+\eng{Congratulations, you made your first programmable LED.}
 \engo{\begin{doE}
-      Congratulations, you made your first programmable LED. Change the program so that the LED blinks every 3 seconds, with 1 second off. Next, what does it happen if you blink every 40 milliseconds and every 10 milliseconds?
+       Change the program so that the LED blinks every 3 seconds, with 1 second off. Next, what does it happen if you blink every 40 milliseconds and every 10 milliseconds?
      \end{doE}
 }
-\nedo{\begin{doN}
-      Proficiat, je hebt je eerste programmeerbare LED gemaakt. Verander nu je programma zodat de LED elke 3 seconden pinkt, met 1 seconde af. Vervolgens, wat gebeurt er als je elke 40 milliseconden pinkt en als het elke 10 milliseconden pinkt? 
-     \end{doN}
+\ned{ Proficiat, je hebt je eerste programmeerbare LED gemaakt.}
+\nedo{\begin{doN}\begin{enumerate}
+                  \item  Verander nu je programma (Code 1) zodat de LED elke 3 seconden pinkt, met 1 seconde af. \\
+                  Vervolgens, wat gebeurt er als je elke 40 milliseconden pinkt en als het elke 10 milliseconden pinkt? 
+                  \item Wat moet je doen als je twee LED's wilt doen pinken? of afwisselend pinken? 
+                  Probeer het eens.
+                 \end{enumerate}
+
+          \end{doN}
 }
 \eng{How does it work? Well, the pins from 1 to 13 can have a HIGH state or a LOW state. HIGH means the pin has 5V of power, while LOW means the pin is in the ground state GND. We say that current flows from the positive voltage of 5V (the + side) to the GND (the - side). This is somewhat annoying as the actual quantum particles used here, called electrons, actually go the other way. So, they flow from the minus to the plus. This because they have themself a negative charge, so they are repelled by the negative GND. Theoretically you could use other quantum particles however! Anyway, the direction of the current, from + to - is just an agreement between scientists. 
 
@@ -105,9 +118,9 @@ Next comes the LED for the current. All the remaining power will be used to go t
 
 De krachtbron is hier 5 Volt (5V), wat een indicatie is van hoeveel werk je kan doen. Veel kracht betekent dat je veel werk kan doen! Om een LED te doen branden hebben we evenwel niet veel kracht nodig, dus beperken we die door een resistor toe te voegen die de kracht over de LED zal beperken. Dit verhoogt de levensduur van de LED.
 
-De resistor of weerstand is effectief wat het zegt: het resisteert of weerstaat de stroom. Bijgevolg verliezen de kwantumdeeltjes een deel van hun kracht als ze door een weerstand stromen. Niet alleen zullen de deeltjes minder kracht hebben erna, er zullen ook minder deeltjes passeren elke seconde. De stroom is dus verminderd. Een weerstand of resistor zal dus de stroom verminderen en na het passeren zal er ook nog eens minder kracht over zijn om door de rest van het circuit te stromen.
+De resistor of weerstand doet wat de naam zegt: het resisteert of weerstaat de stroom. Bijgevolg verliezen de kwantumdeeltjes een deel van hun kracht als ze door een weerstand stromen. Niet alleen zullen de deeltjes minder kracht hebben erna, er zullen ook minder deeltjes passeren elke seconde. De stroom is dus verminderd. Een weerstand of resistor zal dus de stroom verminderen en na het passeren zal er ook nog eens minder kracht over zijn om door de rest van het circuit te stromen.
 
-Daarna komt de LED voor de stroom. Alle overblijvende kracht zal gebruikt worden om door de LED te gaan en licht te genereren. Een LED maakt alleen licht als de anode (lange been, +) is geconnecteerd naar het votage (de positieve zijde), en de kathode (korte been, -) naar de GND zijde.
+Daarna komt de LED voor de stroom. Alle overblijvende kracht zal gebruikt worden om door de LED te gaan en licht te genereren. Een LED maakt alleen licht als de anode (lange been, +) is geconnecteerd naar het voltage (de positieve zijde), en de kathode (korte been, -) naar de GND zijde.
 Als je de LED ronddraait (probeer het!) zal er geen licht schijnen. Er zal ook maar heel weinig stroom vloeien dan, gezien de LED niet enkel geen licht maakt dan maar ook de stroom sterk zal weerstaan. Een LED in het groot zie je in Figuur \ref{f:LED}.
 } 
 
@@ -140,11 +153,11 @@ Now, after this drop, there are less holes in the p-type material in the directi
 
 If you plug out the LED, rotate it, and plug the LED back in the breadbroard, you connect the n-type material to the positive voltage. The electrons of the n-type material then just flow towards this voltage creating too little electrons in the material. This can only be corrected by an electron leaving the p-type material and like that creating a new hole there and a new electron in the n-type material. However, this clearly does not produce light (as the electron does not fall into a hole), but the electrons also resist a lot against moving from the p-type material to the n-type material (they are comfortable where they are and resist jumping, or seen differently, the material likes it's amount of holes and tries to keep it like that.). 
 }
-\ned{Je wil weten hoe de LED licht produceert? Wel, dat is kwantumfysica, en de meeste mensen leren daar nooit over. Laat ons het een beetje uitleggen. Om kwantumfysica te verstaan moet je met kwantumdeeltjes werken, dus hier de elektronen. Herinner, de elektronen stromen van de GND naar de pin 2, dus van de kathode (-) naar de anode (+) van de LED. 
+\ned{Je wilt weten hoe de LED licht produceert? Wel, dat is kwantumfysica, en de meeste mensen leren daar nooit over. Laat ons het een beetje uitleggen. Om kwantumfysica te verstaan moet je met kwantumdeeltjes werken, dus hier de elektronen. Weet je nog dat de elektronen stromen van de GND naar de pin 2, dus van de kathode (-) naar de anode (+) van de LED? 
 
-Aan de kathode zijde zit wat we een n-type materiaal noemen. Dit is een materiaal die een overschot aan negatieve electronen heeft, daarom n. Aan de anode zijde zit een p-type materiaal. Dat is een materiaal die een tekort aan elektronen heeft, wat we gaten noemen: het is de afwezigheid van een elektron in het materiaal. Het p-type materiaal laat stroom door door gaten rond te bewegen. Het n-type materiaal door elektronen rond te bewegen.
+Aan de kathode zijde zit wat we een n-type materiaal noemen. Dit is een ma\-te\-riaal die een overschot aan negatieve electronen heeft, daarom n. Aan de anode zijde zit een p-type materiaal. Dat is een materiaal die een tekort aan elektronen heeft, wat we gaten noemen: het is de afwezigheid van een elektron in het materiaal. Het p-type materiaal laat stroom door door gaten rond te bewegen. Het n-type materiaal laat stroom door elektronen rond te bewegen.
 
-Dus, als elektronen toekomen aan de kathode cre\"eren ze daar een surplus aan elektronen, en de elektronen worden geduwd in de richting van het p-materiaal. Daar aangekomen vallen ze in een van de gaten, en het is dit kwantumeffect dat een klein kwantum aan energie cre\"eert, welke een foton is wat we zien als het licht van de LED. Dit effect noemen we  \textit{Electroluminescentie}, en het gebeurt enkel bij overgang van een elekrton van een  n-type materiaal naar een p-type materiaal. Tussen andere materialen die elektronen doorlaten kunnen de elektronen altijd gradueel hun energie verliezen, in plaats van via een kwantum. 
+Dus, als elektronen toekomen aan de kathode cre\"eren ze daar een surplus aan elektronen, en de elektronen worden geduwd in de richting van het p-materiaal. Daar aangekomen vallen ze in een van de gaten, en het is dit kwantumeffect dat een klein kwantum aan energie cre\"eert, welke een foton is wat we waarnemen als het licht van de LED. Dit effect noemen we  \textit{Electroluminescentie}, en het gebeurt enkel bij overgang van een elekrton van een  n-type materiaal naar een p-type materiaal. Tussen andere materialen die elektronen doorlaten kunnen de elektronen altijd gradueel hun energie verliezen, in plaats van via een kwantum. 
 
 Nu, na het vallen in het gat zijn er minder gaten in het p-type materiaal aan de kant van het n-type materiaal, dus zullen de gaten bewegen in die richting om terug een gelijke balans in het materiaal te hebben. Hierdoor eindigen we met een tekort aan gaten aan de kathode zijde, welke op zijn beurt ervoor zal zorgen dat een elektron het materiaal zal verlaten (het materiaal houdt van zijn aantal gaten en wil het zo houden), waardoor een nieuw gat ontstaat daar.
 
@@ -158,13 +171,13 @@ Als je de LED omdraait, connecteer je het n-type materiaal aan de positieve krac
 \label{f:NPJunction}       % Give a unique label
 \end{figure}
 
-\subsection{\engt{Adding NPN, two pins} \nedt{Nu met NPN, twee pinnen}}
+\subsection{\engt{LED with NPN, two pins} \nedt{LED met NPN, twee pinnen}}
 \eng{Controlling the LED worked great, but we will later need the ability to cut off the power on the Cathode (-) side too, so towards the ground (GND). In this section we will learn how to do that. One possibility is to use a switch: a component that is on and off depending on a signal. Just like the light switches you use every day and where the input is the pressure of your hand touching it. We will use the smallest switch possible: an NPN gate. This piece is the half cilindrical black piece with 3 legs in your box, see Fig.~\ref{f:Tr_Pinouts}. 
 }
 
 
 
-\ned{De LED controleren werkte perfect, maar later zullen we de mogelijkheid willen om de stroom af te sluiten aan de Kathode zijde (-), dus aan de grond (GND). In deze sectie zullen we dat leren. Een mogelijkheid is om een schakelaar te gebruiken: een component die aan of af is afhankelijk van een signaal. Net zoals de lichtschakelaars die je dagelijks gebruikt, en waar de input de druk van je hand is. We zullen de kleinst mogelijke schakelaar gebruiken: een NPN brug. Dit stuk is de halve zwarte cilinder met 3 poten in je doos, zie Fig.~\ref{f:Tr_Pinouts}. 
+\ned{De LED controleren werkte perfect, maar later zullen we de mogelijkheid willen om de stroom af te sluiten aan de Kathode zijde (-), dus aan de grond (GND). In deze sectie zullen we dat leren. Een mogelijkheid is om een schakelaar te gebruiken: een component die aan of af is afhankelijk van een signaal. Net zoals de lichtschakelaars die je dagelijks gebruikt, en waar de input de druk van je hand is. We zullen de kleinst mogelijke schakelaar gebruiken: een NPN brug. Dit componentje is de halve zwarte cilinder met 3 poten in je doos, zie Fig.~\ref{f:Tr_Pinouts}. 
 }
 
 
@@ -178,7 +191,7 @@ Als je de LED omdraait, connecteer je het n-type materiaal aan de positieve krac
 
 \eng{As you can see in that figure, there is no standard for identifying the legs of the transistor. Normally, the one you have will have, looking at the flat side of NPN, the left leg as the in-side for the current (C, from collector), the right leg is the out-side (E, from extruder/emitter) that goes to the GND, and the middle leg is the P or positive control (B, from the word base). If there is positive power on the P, the NPN gate is open and current can flow to the ground state. If there is no power on the P, the NPN gate is closed. Our complete circuit is then given in Fig.~\ref{f:lesson1_twopin}}
 
-\ned{Zoals je in die figuur ziet is er geen standaard om de beentjes van een transistor te identifici\"eren. Normaal zal het als volgt zijn voor degene die jij zult gebruiken: hou je het rechtop en kijk je naar het vlakke stuk van de NPN, dan is de linkerpoot de in-zijde voor de stroom (C, van collector, waar er gecollecteerd wordt), de rechterpoot de uitgangzijde (E, van extruder) die naar de GND gaat, en het middelste been is de P of positieve controle (B, van basis). Als er een positieve stroom is op P, laat de NPN brug stroom door. Is er geen stroom op de P, dan kan er geen stroom door en is het circuit dus onderbroken. Het complete circuit is gegeven in Fig.~\ref{f:lesson1_twopin}.
+\ned{Zoals je in die figuur ziet is er geen standaard om de beentjes van een transistor te identifici\"eren. Normaal zal het als volgt zijn voor degene die jij zult gebruiken: hou je het rechtop en kijk je naar het vlakke stuk van de NPN, dan is de linkerpoot de in-zijde voor de stroom (C, van collector, waar er gecollecteerd wordt), de rechterpoot de uitgangzijde (E, van emittor of extruder) die naar de GND gaat, en het middelste been is de P of positieve controle (B, van basis). Als er een positieve stroom is op P, laat de NPN brug stroom door. Is er geen stroom op de P, dan kan er geen stroom door en is het circuit dus onderbroken. Het complete circuit is gegeven in Fig.~\ref{f:lesson1_twopin}.
 }
 
 
@@ -192,8 +205,21 @@ Als je de LED omdraait, connecteer je het n-type materiaal aan de positieve krac
 \end{figure}
 
 
-\eng{We now adapt our program so that the pin to the NPN is used to control the LED and make it blink. To see that the NPN works as expected, we cycle the LED through three states each for a second: both Arduino pins on; then only anode pin on, and then only pin to NPN on. Correct behavior means this will result in a LED on for a second, and off for two seconds.}
-\ned{Nu moeten we ons programma aanpassen zodat ook de pin naar de NPN gebruikt wordt om de LED te doen blinken. Om vast te stellen dat de NPN werkt zoals verwacht laten we de LED door drie standen gaan, elk voor een seconde: Beide Arduino pinnen aan, enkel de anode pin aan, en dan enkel de pin naar de NPN aan. Correct gedrag zou dan moeten zijn dat de LED aan is voor een seconde en af voor twee seconden.}
+\eng{We now adapt our program so that the pin to the NPN is used to control the LED and make it blink. To see that the NPN works as expected, we cycle the LED through three states each for a second: 
+\begin{enumerate}
+ \item Both Arduino pins on;
+ \item Only anode pin on
+ \item only pin to NPN on. 
+\end{enumerate}
+Correct behavior means this will result in a LED on for a second, and off for two seconds.}
+
+\ned{Nu moeten we ons programma aanpassen zodat ook de pin naar de NPN gebruikt wordt om de LED te doen blinken. Om vast te stellen dat de NPN werkt zoals verwacht laten we de LED door drie standen gaan, elk voor een seconde:
+\begin{enumerate}
+ \item Beide Arduino pinnen aan
+ \item Enkel de anode pin aan
+ \item Enkel de pin naar de NPN aan.
+\end{enumerate}
+Correct gedrag zou dan moeten zijn dat de LED aan is voor een seconde en uit voor twee seconden.}
 
 \begin{code}\label{c:l1_b}
  \ \newline
@@ -210,9 +236,9 @@ So, how do we obtain current from the n-type material, to the n-type material? T
 Note that we put in our test circuit a 5V signal over the base, which in itself is sufficient to power the LED. Because of this, our base current is actually sufficient to power the LED. This is not a problem, just something to be aware of.
 }
 
-\ned{Je zou graag weten hoe de NPN werkt? Wel, dit is een transistor, specifiek een Bipolaire transistor. De LED die we hiervoor gezien hebben is een PN overgang. Onze NPN nu is inderdaad een combinatie van 3 materialen die geconnecteerd worden: een n-type materiaal, een p-type materiaal, en dan opnieuw een n-type materiaal. Deze keer heeft het p-type materiaal maar weinig gaten. Als we het verbinden met de GND (-) zullen er nog minder gaten zijn. Zoals we uitgelegd hebben, een p-type materiaal geleidt stroomt via de gaten, dus kan er geen stroom vloeien, en is de overgang gesloten.
+\ned{Je zou graag weten hoe de NPN werkt? Wel, dit is een transistor, specifiek een Bipolaire transistor. De LED die we hiervoor gezien hebben is een PN overgang. Onze NPN nu is inderdaad een combinatie van 3 materialen die geconnecteerd worden: een n-type materiaal, een p-type materiaal, en dan opnieuw een n-type materiaal. Deze keer heeft het p-type materiaal maar weinig gaten. Als we het verbinden met de GND (-) zullen er nog minder gaten zijn. Zoals we uitgelegd hebben, een p-type materiaal geleidt stroom via de gaten, dus kan er geen stroom vloeien, en is de overgang gesloten.
 
-Als we een voltage over het p-type materiaal plaatsen, verliest het materiaal zijn elektronen, en krijgt dus meer gaten. Dit betekent dat we nu stroom kunnen hebben van het p-materiaal welke we de basis noemen, naar de emitter, welke een van de twee n-materialen is. Dit is hetzelfde als de PN overgang in de LED. De emitter zendt electronen in de basis (\textit{emit} is Engels voor uitzenden).
+Als we een voltage over het p-type ma\-te\-riaal plaatsen, verliest het materiaal zijn elektronen, en krijgt dus meer gaten. Dit betekent dat we nu stroom kunnen hebben van het p-materiaal welke we de basis noemen, naar de emitter, welke een van de twee n-materialen is. Dit is hetzelfde als de PN overgang in de LED. De emitter zendt elektronen in de basis (\textit{emit} is Engels voor uitzenden).
 
 Goed, hoe krijgen we dan stroom van het n-type materiaal naar het andere n-type materiaal? Dat zou niet mogelijk mogen zijn! De truck is dat het p-type materiaal eenmaal verbonden met een voltage (+) extra gaten krijgt, en het kan een lijn van gaten vormen van het emittor n-type materiaal naar het collector n-type materiaal. Nu gebeurt iets speciaals: de elektronen kunnen springen van gat naar gat via deze lijn van de emittor naar de collector. En wat meer is, ze kunnen dat veel, veel, vlugger doen dan dat de gaten zelf kunnen bewegen. In andere woorden, we krijgen een versterking van de stroom aan de basis, zie Fig.~\ref{f:NPNactive}. Als we de stroom aan de basis verhogen, stromen er nog meer gaten in het p-type materiaal, en kunnen er meer 'verbindingslijnen' tussen emittor en collector. We kunnen dus een klein signaal aan de basis omvormen tot een groot signaal over de NPN.
 
@@ -237,7 +263,7 @@ Merk op dat we in ons circuit een 5V signaal over de basis plaatsen, welke op zi
      \end{doN}
 }
 
-\subsection{\engt{Analog pulse width modulation} \nedt{Analoog puls breedte moduleren}}
+\subsection{\engt{Fade: Analog pulse width modulation} \nedt{Fade: Analoog puls breedte moduleren}}
 \eng{If you did the Task in the first section, you know that by blinking fast you can create the impression of a LED that is always on. However, as the LED was not on all the time, the LED was less bright! So, we can influence how bright a LED will be by not having it switched on all the time. The trick is to avoid seeing the LED blinking. Fortunately, humans have \href{http://en.wikipedia.org/wiki/Persistence_of_vision}{Persistence of vision}. Persistence of vision is the phenomenon where an image that is seen for only a fraction of a second will continue to be "seen" by your brain even after the original image has vanished or moved. This is the same principle behind film and television, where a rapidly changing image tricks your brain into seeing continuous motion. By turning our LED on and off rapidly, we can trick the brain into seeing an "average" value of brightness. Humans see 24 images per second, so if we switch on and off in roughly 40 milliseconds, we will not discern that the LED is blinking, but will instead see it less bright! 
 
 We can use the \ardo{delay} function of Arduino to achieve this: blinking the LED for the required amount of time. Fortunately, there is an easier way: Pulse Width Modulation (PWM). In this, a block wave is generated over a digital pin of the Arduino. A block wave is a wave between 0 (off) and 1 (on). In Arduino, you use the \ardo{analogWrite} function on a digital pin to achieve this. See it schematically in Fig.~\ref{f:PWM}. Note that older Arduinos only allow this on pin 9, 10 and 11! So check where your version of Arduino allows this function, You recognize these pins on the board with the sign \~.
@@ -245,11 +271,11 @@ We can use the \ardo{delay} function of Arduino to achieve this: blinking the LE
 The function is called \ardo{analogWrite} because it is a wave over a digital pin. Analog always refers to waves, whereas digital refers to 0s and 1s. So if you make a wave with 0 and 1 (see the figure to see it is a wave), we call it again analog. The function analogWrite allows a value from 0 (=always off) to 255 (=always on). 
 }
 
-\ned{Als je de opdracht uit de eerste sectie gedaan hebt, weet je dat door vlug te blinken, je de illusie kunt cre\"eren dat de LED altijd aan is. Evenwel, de LED is niet de hele tijd aan, bijgevolg was de LED wel minder helder! Dus, we kunnen be\"{\i}nvloeden hoe helder een LED is door deze te doen blinken. De truck is te verhinderen dat de mensen hem effectief zien blinken. Gelukkig hebben mensen persistentie van beelden, denk aan de \href{http://nl.wikipedia.org/wiki/Phenakistiscoop}{Phenakistiscoop}, uitgevonden door de Belg Plateau in Gent. Persistentie van beelden is het fenomeen waarbij een beeld dat maar een fractie van een seconde gezien is, door je brein zal blijven gezien worden, zelfs nadat het originele beel verdwenen is of bewogen heeft. Dit is het principie achter film en televisie. Door de LED vlug aan en af te schakelen, kunnen we onze brein bedotten in het zien van een ``gemiddelde'' waarde van helderheid. Mensen zien 24 beelden per seconde, als we dus aan en af schakelen in ongeveer 40 milliseconden, zullen we niet in staat zijn te zien dat de LED aan het blinken is, maar zullen we in plaats daarvan een gedimd licht zien!
+\ned{Als je de opdracht uit de eerste sectie gedaan hebt, weet je dat door vlug te blinken, je de illusie kunt cre\"eren dat de LED altijd aan is. Evenwel, de LED is niet de hele tijd aan, bijgevolg was de LED wel minder helder! Dus, we kunnen be\"{\i}nvloeden hoe helder een LED is door deze te doen blinken. De truck is te verhinderen dat de mensen hem effectief zien blinken. Gelukkig hebben mensen persistentie van beelden, denk aan de \href{http://nl.wikipedia.org/wiki/Phenakistiscoop}{Phenakistiscoop}, uitgevonden door de Belg Plateau in Gent. Persistentie van beelden is het fenomeen waarbij een beeld dat maar een fractie van een seconde gezien is, door je brein zal blijven gezien worden, zelfs nadat het originele beeld verdwenen is of bewogen heeft. Dit is het principie achter film en televisie. Door de LED vlug aan en uit te schakelen, kunnen we onze brein bedotten in het zien van een ``gemiddelde'' waarde van helderheid. Mensen zien 24 beelden per seconde, als we dus aan en uit schakelen in ongeveer 40 milliseconden, zullen we niet in staat zijn te zien dat de LED aan het blinken is, maar zullen we in plaats daarvan een gedimd licht zien!
 
-We kunnen de \ardo{delay} functie van Arduino gebruiken om dit te programmeren: de LED aan en af zetten voor een bepaalde tijd. Gelukkig kan het eenvoudiger: Puls Breedte modulatie (PWM). In deze wordt een blokgolf gegenereerd over een digitale pin van de Arduino. Een blokgolf is een golf tussen 0 (af) en 1 (aan). In Arduino doe je dit met de \ardo{analogWrite} functie op een digitale pin. Zie het schematisch in Fig.~\ref{f:PWM}. Merk op dat oudere Arduino's dit enkel toelaten op pin 9,10, en 11! Controleer waar jouw versie van Arduino dit toelaat, je herkent de pins op het bord met het teken \~.
+We zouden de \ardo{delay} functie van Arduino kunnen gebruiken om dit te programmeren: de LED aan en uit zetten voor een bepaalde tijd. Maar het kan eenvoudiger: Puls Breedte modulatie (PWM). In deze wordt een blokgolf gegenereerd over een digitale pin van de Arduino. Een blokgolf is een golf tussen 0 (uit) en 1 (aan). In Arduino doe je dit met de \ardo{analogWrite} functie op een digitale pin. Zie het schematisch in Fig.~\ref{f:PWM}. Merk op dat oudere Arduino's dit enkel toelaten op pin 9,10, en 11! Controleer waar jouw versie van Arduino dit toelaat, je herkent de pins op het bord met het teken \~.
 
-De functie wordt analogWrite genoemd omdat het een golf is over een digitale pin. Analoog refereeert altijd aan golven, terwijl digitaal refereert naar nullen en eenen. Als je dus een golf maakt met 0 en 1 (zie de figuur dat het inderdaad op een golf lijkt), noemen we het opnieuw analoog. De functie analogWrite laat waardes toe van 0 (=altijd af) tot 255 (=altijd aan).
+De functie wordt analogWrite genoemd omdat het een golf is over een digitale pin. Analoog refereeert altijd aan golven, terwijl digitaal refereert naar nullen en eenen. Als je dus een golf maakt met 0 en 1 (zie de figuur dat het inderdaad op een golf lijkt), noemen we het opnieuw analoog. De functie analogWrite laat waarden toe van 0 (=altijd af) tot 255 (=altijd aan).
 }
 
 \begin{figure}
@@ -277,13 +303,13 @@ In this code we do one more trick. We use a random number to decide how bright t
   \textbullet\ \ardo{random} This function of Arduino returns a random number; \ardo{random(256)} returns a random number between 0 and 255, see {\url{http://Arduino.cc/en/Reference/random}}.
 }
 
-\ned{De volgende vraag is op welke pin we de \ardo{analogWrite} moeten toepassen. Zoals we geleerd hebben in het vorige stuk: het doet er niet toe, beide zullen de LED onderbreken. Wij zullen het toepassen op de NPN pin, gezien dat degene is die we bij de Fe cube zullen gebruiken. Het circuit is gegeven in Fig.~\ref{f:lesson1_twopin_PWM}. Als je vergelijkt met Fig.~\ref{f:lesson1_twopin}, zie je dat het circuit hetzelfde is. Zie dan om te zien hoe PWM gebruikt wordt de code hieronder.
+\ned{De volgende vraag is op welke pin we de \ardo{analogWrite} moeten toepassen. Zoals we geleerd hebben in het vorige stuk: het doet er niet toe, beide pin 2 en pin 11 zullen de LED onderbreken. Wij zullen het toepassen op de NPN pin, gezien dat degene is die we bij de Fe cube zullen gebruiken. Het circuit is gegeven in Fig.~\ref{f:lesson1_twopin_PWM}. Als je vergelijkt met Fig.~\ref{f:lesson1_twopin}, zie je dat het circuit hetzelfde is. Zie dan de code hieronder om te zien hoe PWM gebruikt wordt .
 
-In de code doen we nog een enkele nieuwe truck. We gebruiken een willekeurig (=random) getal om te bepalen hoe helder de LED moet zijn, en wijzigen de helderheid elke seconde. Hiertoe hebben we 2 nieuwe begrippen nodig:
+Merk op dat we in de code enkele nieuwe trucks gebruiken. We gebruiken een willekeurig (=random) getal om te bepalen hoe helder de LED moet zijn, en we wijzigen de helderheid elke seconde. Hiertoe hebben we 2 nieuwe begrippen nodig:
 \newline
- \textbullet\ \ardo{randomSeed(analogRead(0));} Een random getal is enkel volledige willekeurig indien we niet kunnen raden waar het start. Hiertoe moeten we de random getallen generator zaaien (seed in het Engels) met een begingetal. We doen dit hier door het lezen van de waarde op de niet gebruikte analoge pin 0. Gezien deze analoge pin bij ons met niets geconnecteerd is, zal er enkel willekeurige storing erop zitten, welke we niet vooraf kunnen raden. Dit zal ons ongekend begin zijn, zodat we zeker zijn dat de serie helderheid die we zien telkens anders is als we de Arduino heropstarten.
+ \textbullet\ \ardo{randomSeed(analogRead(0))}. Een random getal is enkel volledige willekeurig indien we niet kunnen raden waar het start. Hiertoe moeten we de random getallen generator zaai\-en (seed in het Engels) met een begingetal. We doen dit hier door het lezen van de waarde op de niet gebruikte analoge pin 0. Gezien deze analoge pin bij ons met niets geconnecteerd is, zal er enkel willekeurige storing erop zitten, welke we niet vooraf kunnen raden. Dit zal ons ongekend begin zijn, zodat we zeker zijn dat de serie helderheid die we zien telkens anders is als we de Arduino heropstarten.
 \newline
- \textbullet\ \ardo{random} Deze Arduino functie genereert een willekeurig getal. Door te schrijven  \ardo{ramdom(256)} bekomen we een willekeurig getal tussen 0 en 255, zie \url{http://Arduino.cc/en/Reference/random}.
+ \textbullet\ \ardo{random}. Deze Arduino functie genereert een willekeurig getal. Door te schrijven  \ardo{ramdom(256)} bekomen we een willekeurig getal tussen 0 en 255, zie \url{http://Arduino.cc/en/Reference/random}.
 \
 }
 
@@ -292,7 +318,7 @@ In de code doen we nog een enkele nieuwe truck. We gebruiken een willekeurig (=r
 \inputardfull{\string"../sketches/Fe_cube_01_led_npn_pwm/Fe_cube_01_led_npn_pwm.ino\string"}
 \end{code}
 
-\subsection{\engt{Turn it around!} \nedt{Draai het om!}}
+\subsection{\engt{Turn it around!} \nedt{Draai het om! Hoe een digitale pin gebruiken als grond.}}
 \eng{We have used a digital pin for the plus, and the ground for the minus. In fact the pin was on 5 Volt above the ground, so we can interpret is as the ground being 0 Volt. You might think that this means pins are always positive, but that is not true. Pins can be sinks (provide negative current) or sources (provide positive current), depending on their place in the circuit. It is however important to keep in mind they can only carry a limited amount of current: 40 mA (milliamps) can be delivered to other devices/circuits. This is enough current to brightly light up a LED (don't forget the series resistor), or run many sensors, but not enough current to run most relays, solenoids, or motors. Drawing more current through a pin will destroy the pin, and possibly even the entire Arduino board! So be careful in how to use them. 
 
 If you need more current, use provided voltages on the board. You see a 3.3V (max 50 mA power draw) and a 5V (draw depending on how the Arduino is powered, USB or battery) pin. Test this. Make the circuit, and load the code from Code \ref{c:l1_b}. Instead of connecting the positive side to pin 1, connect it to 3.3V, and then to 5V. You will see the LED works without problems, however, you can no longer interrupt the LED by sending signals to pin 1.
@@ -307,16 +333,18 @@ As this is a LED, we use less than 40mA of current, so we can remove also the in
 It should be clear we can use the digital pins in different ways. Nevertheless, be well aware of the limitation to only draw 40mA from a digital pin! If you need more, use the voltage pins and the GND pin.
 }
 
-\ned{We hebben een digitale pin gebruikt voor de plus, en de grond voor de min. In realiteit was de pin op 5 Volt boven de grond, we kunnen dat dus interpreteren als de grond zijnde 0 Volt. Je zou kunnen denken dat dit betekent dat de pinnen altijd positief moeten zijn, maar dat is niet waar. Een pin kan zowel positieve stroom leveren als negatieve stroom, afhankelijk van de plaats in het circuit. Het is evenwel belangrijk om er rekening mee te houden dat een digitale pin maar een beperkte hoeveelheid stroom kan leveren: 40 mA (milliamps) is beschikbaar voor gebruik in het circuit. Dit is genoeg stroom om een LED helder te doen oplichten (vergeet evenwel geen weerstand in serie te plaatsen), of of om verschillende sensoren aan te drijven, maar niet genoeg om een relay of motor aan te drijven. Meer stroom trekken uit een digitale pin zal de pin kapot maken, en misschien wel je volledige Arduino bord! Wees dus voorzichtig in hoe je ze gebruikt.
+\ned{We hebben een digitale pin gebruikt voor de plus, en de grond voor de min. In realiteit was de pin op 5 Volt boven de grond. De grond kunnen we dus interpreteren als 0 Volt. Je zou kunnen denken dat dit betekent dat de pinnen altijd positief moeten zijn, maar dat is niet waar. Een pin kan zowel positieve stroom leveren als negatieve stroom, afhankelijk van de plaats in het circuit. Het is evenwel belangrijk om er rekening mee te houden dat een digitale pin maar een beperkte hoeveelheid stroom kan leveren: 40 mA (milliamps) is beschikbaar voor gebruik in het circuit. Dit is genoeg stroom om een LED helder te doen oplichten (vergeet evenwel geen weerstand in serie te plaatsen), of om verschillende sensoren aan te drijven, maar niet genoeg om een relay of motor aan te drijven. Meer stroom trekken uit een digitale pin zal de pin kapot maken, en misschien wel je volledige Arduino bord! Wees dus voorzichtig in hoe je ze gebruikt.
 
-Als je meer stroom nodig hebt, gebruik de beschikbare volt pinnen op het bord. Je ziet een 3.3V (tot 50mA stroom beschikbaar) en 5V pin (stroom afhankelijk van hoe je Arduino stroom krijgt, via USB of batterij) pin. Test dit. Maak het circuit en laad de code van Code \ref{c:l1_b}. In plaats van de positieve zijde te verbinden met pin 2, connecteer ze met 3.3V en dan met 5V. Je zal zien dat de LED zonder probleem werkt, maar je kan natuurlijk niet langer de LED afzetten door signalen te sturen naar pin 1.
+Als je meer stroom nodig hebt, gebruik de beschikbare volt pinnen op het bord. Je ziet een 3.3V (tot 50mA stroom beschikbaar) en 5V pin (stroom afhankelijk van hoe je Arduino stroom krijgt, via USB of batterij). \\
+{\textbf{Test dit.}} 
+\begin{enumerate}
+ \item Maak het circuit en laad de code van Code \ref{c:l1_b}. In plaats van de positieve zijde te verbinden met pin 2, connecteer ze met 3.3V en dan met 5V. Je zal zien dat de LED zonder probleem werkt, maar je kan natuurlijk niet langer de LED afzetten door signalen te sturen naar pin 2.
 
 Wat je moet onthouden is dat je voor grote projecten de voltage pinnen op de Arduino moet gebruiken om stroom te leveren: 3.3V, 5V en GND; terwijl je de genummerde pinnen gebruikt voor kleine dingen: een sensor, een LED, of een NPN transistor om stroom te onderbreken.
-
-Om te experimenteren met de mogelijkheden, laat ons het vorige voorbeeld helemaal omdraaien, en de grond verwijderen uit het circuit door een digitale pin te gebruiken als grond. Jou circuit zou eruit moeten zien als de linkse uit Fig~\ref{f:lesson1_twopin_PWM_reversed}. Belangrijk hier is dat we pin 2 moeten plaatsen op 0V. Dit doen we met
-\ardo{digitalWrite(1, LOW);}.  Dat is de enige wijziging bij de vorige code, maar het circuit is wel omgedraaid!
-
-Gezien dit een LED is gebruiken we minder dan 40mA stroom, en kunnen we dus ook het input voltage vervangen door een pin, zoals gedaan in de rechterfiguur van Fig~\ref{f:lesson1_twopin_PWM_reversed}.
+\item Om te experimenteren met de mogelijkheden, laat ons het vorige voorbeeld helemaal omdraaien, en de grond verwijderen uit het circuit door een digitale pin te gebruiken als grond. Jou circuit zou eruit moeten zien als de linkse uit Fig~\ref{f:lesson1_twopin_PWM_reversed}. Belangrijk hier is dat we pin 2 moeten plaatsen op 0V. Dit doen we met
+\ardo{digitalWrite(2, LOW);}.  Dat is de enige wijziging in de code, maar het circuit is wel omgedraaid!
+\item Gezien dit een LED is gebruiken we minder dan 40mA stroom, en kunnen we dus ook het input voltage vervangen door een pin, zoals gedaan in de rechterfiguur van Fig~\ref{f:lesson1_twopin_PWM_reversed}.
+\end{enumerate}
 
 Het zou duidelijk moeten zijn dat we de digitale pinnen op verschillende manieren kunnen gebruiken. Wees je evenwel goed bewust van de limitatie van de pinnen: je kan enkel 40mA uit een digitale pin krijgen. Als je meer nodig hebt, gebruik de voltage pinnen en de GND pin.
 }
@@ -331,7 +359,7 @@ Het zou duidelijk moeten zijn dat we de digitale pinnen op verschillende maniere
 \end{figure}
 
 \eng{Note following thing in the code: As pin 2 needs to act as ground, we need to do \ardo{digitalWrite(LOW)} on this pin. }
-\ned{Merk het volgende op in de code: gezien pin 2 zich als grond moet gedragen dienen we \ardo{digitalWrite(LOW)} op de pin uitvoeren.}
+\ned{Merk het volgende op in Code \ref{c:l1_d}: gezien pin 2 zich als grond moet gedragen dienen we \ardo{digitalWrite(2, LOW)} op de pin uitvoeren.}
 
 \begin{code}\label{c:l1_d}
  \ \newline
@@ -350,14 +378,14 @@ Het zou duidelijk moeten zijn dat we de digitale pinnen op verschillende maniere
 \label{f:RGB_LED}
 \end{figure}
 
-\eng{LED exist in different colors. Some LEDs can produce a color range. These are RGB LEDs, see a depiction in Fig.~\ref{f:RGB_LED}. They are essentially a red, green and blue LED rolled in a single package, and with a common anode or a common kathode. To drive this LED, we extend the single LED circuit with NPN. We assume you have an RGB LED with 3 cathodes and one anode, so we need 3 NPN gates, but only one resistor. 
+\eng{LED exist in different colors. Some LEDs can produce a color range. These are RGB LEDs, see a depiction in Fig.~\ref{f:RGB_LED}. They are essentially a red, green and blue LED rolled in a single package, and with a common anode or a common cathode. To drive this LED, we extend the single LED circuit with NPN. We assume you have an RGB LED with 3 cathodes and one anode, so we need 3 NPN gates, but only one resistor. 
 
 \textbf{Note:} If you use a LED with a common cathode, you will need to reverse the circuit as given in the previous lesson. See the cube later on where this is the case.
 }
 
-\ned{LED bestaan in verschillende kleuren. Sommige LED kunnen een kleurenbereik produceren. Dit zijn RGB LEDs, zie een afbeelding in Fig.~\ref{f:RGB_LED}. Ze zijn in essentie een rode, groene en blauwe LED in een enkel pakket, met een gedeelde anode of een gedeelde kathode. Om deze LED aan te drijven breiden we ons 1 LED met NPN circuit uit. We veronderstellen dat je een RGB LED hebt met 3 kathoden en 1 anode, dus zullen we 3 NPN bruggen nodig hebben, en 1 resistor. 
+\ned{LED bestaan in verschillende kleuren. Sommige LED kunnen een kleurenbereik produceren. Dit zijn RGB LEDs, zie een afbeelding in Fig.~\ref{f:RGB_LED}. Ze zijn in essentie een rode, groene en blauwe LED in een enkel pakket, met een gedeelde anode of een gedeelde ka\-thode. Om deze LED aan te drijven breiden we ons 1 LED met NPN circuit (Code 2) uit. We veronderstellen dat je een RGB LED hebt met 3 kathoden en 1 anode, dus zullen we 3 NPN bruggen nodig hebben, en 1 resistor. 
 
-\textbf{Merk Op:} Indien je een LED gebruikt met een gedeelde kathode dien je het circuit te inverteren zoals gezien in de vorige les. Zie ook de kubus later waar dit het geval is.
+{\textbf{Merk Op:}} Indien je een LED gebruikt met een gedeelde kathode dien je het circuit te inverteren zoals gezien in de vorige les. Zie ook de kubus later waar dit het geval is.
 }
 
 
@@ -389,7 +417,7 @@ Once you have the circuit made, the rest of the lesson will be programming the L
 
 \ned{Het circuit is gegeven in Fig.~\ref{f:lesson2_RGB}. Enkele dingen om rekening mee te houden: De NPN uit (E) gaan allemaal naar de grond (GND), plaats ze dus op een enkele rij op je schakelbord. Voor de andere connecties heb je verschillende draden nodig: 4 controle pinnen en de grond, dus 5 draden.
 
-Eenmaal je het circuit gemaakt is, is het vervolg van deze les het programmeren van de LED. Start met een simpel programma om de LED te laten lopen door Rood, Groen en Blauw. Als je klaar bent, verifieer dat je inderdaad deze orde ziet, indien niet heb je een fout gemaakt met het bedraden van de kathoden. Als je twee kathoden terzelfdertijd onder stroom plaats, zul je soms een mooie gemengde kleur krijgen, en soms niet. Dit is omdat de weerstand via een kleur niet identiek is aan die van een andere kleur, waardoor de stroom via een preferentieel pad zal lopen. Goedkope RGB LED zijn niet zo goed om kleuren correct te mengen door twee of meer kathoden terzelfdertijd aan te sturen. We zullen enkele trukjes moeten gebruiken om kleuren mooi te mengen. Dat is voor de volgende sectie, voor deze sectie was onze eerste Arduino sketch:}
+Eenmaal je circuit gemaakt is, is het vervolg van deze les het programmeren van de LED. Start met een simpel programma om de LED te laten lopen door Rood, Groen en Blauw. Als je klaar bent, verifieer dat je inderdaad deze orde ziet, indien niet heb je een fout gemaakt met het bedraden van de kathoden. Als je twee kathoden terzelfdertijd onder stroom plaats, zul je soms een mooie gemengde kleur krijgen, en soms niet. Dit is omdat de weerstand via een kleur niet identiek is aan die van een andere kleur, waardoor de stroom via een preferentieel pad zal lopen. Goedkope RGB LED zijn niet zo goed om kleuren correct te mengen door twee of meer kathoden terzelfdertijd aan te sturen. We zullen later enkele trukjes moeten gebruiken om kleuren mooi te mengen. Hier onze Arduino sketch voor RGB:}
 
 \begin{code}\label{c:l2_a}
  \ \newline
@@ -398,16 +426,16 @@ Eenmaal je het circuit gemaakt is, is het vervolg van deze les het programmeren 
 
 
 \subsection{\engt{Mixing colors} \nedt{Kleuren mengen}}
-\eng{In Code \ref{c:l1_c} we have shown how a LED light can be dimmed. We are going to use this now to mix colors. If we succeed in showing first red, then green, and then blue, with the colors correctly dimmed, we can mix colors. For example, if we turn off green, we will obtain red+green=yellow. The trick will again be to do this all so fast that due to persistence of vision we trick the eye into seeing a non-blinking mixed color.
+\eng{In Code \ref{c:l1_c} we have shown how a LED light can be dimmed. We are going to use this now to mix colors. If we succeed in showing first red, then green, and then blue, with the colors correctly dimmed, we can mix colors. For example, if we turn off blue, we will obtain red+green=yellow. The trick will again be to do this all so fast that due to persistence of vision we trick the eye into seeing a non-blinking mixed color.
 
 So, create an Arduino sketch to show a random mixed color for a second, then switch to a next random color. To dim a color we use \ardo{analogWrite}. We have seen that \ardo{analogWrite} creates a block wave, and that we can create 256 different block waves. The number 256 is not arbitrary. We have that 256=2*2*2*2*2*2*2*2, so 2 is multipled 8 times with itself. This is the largest number you can create with a single byte in the Arduino memory. The so called 8 bit byte is the unit used in the first computers to store information. 
 
 Fortunately, 256 is also the range used in analogWrite, as the original computer \href{http://en.wikipedia.org/wiki/RGB_color_model\#Numeric_representations}{RGB color model} is based on this number. The colors we will make with our multicolor LED should hence corresponds to those of the RGB color model, see Fig.~\ref{f:RGB_color}. 
 }
 
-\ned{In Code \ref{c:l1_c} hebben we getoond hoe we een LED licht kunnen dimmen. We gebruiken dit nu om kleuren te mengen. Als we erin slagen om eerst rood, dan groen, en dan blauw te tonen, met de kleuren correct gedimd, dan kunnen we kleuren mengen. Bevoorbeeld, als we groen afzetten zullen we rood+groen=geel krijgen. De truck om dit te doen werken zal weer zijn dat we dit allemaal zo snel moeten doen dat door persistentie van visie we ons ook kunnen doen geloven dat we op een niet pinkende manier kleuren mengen
+\ned{In Code \ref{c:l1_c} hebben we getoond hoe we een LED licht kunnen dimmen. We gebruiken dit nu om kleuren te mengen. Als we erin slagen om eerst rood, dan groen, en dan blauw te tonen, met de kleuren correct gedimd, dan kunnen we kleuren mengen. Bevoorbeeld, als we blauw afzetten zullen we rood+groen=geel krijgen. De truck om dit te doen werken zal weer zijn dat we dit allemaal zo snel moeten doen dat door persistentie van visie we ons ook kunnen doen geloven dat we op een niet pinkende manier kleuren mengen
 
-Maak dus een Arduino sketch om een willekeurige gemengde kleur te tonen voor een enkele seconde, om daarna een andere willekeurige kleur te tonen. Om een kleur te dimmen gebruiken we weer \ardo{analogWrite}. We hebben gezien dat \ardo{analogWrite} een blokgolf maakt en dat we 256 verschillende blokgolven kunnen verkrijgen, van 0 tot 255. Het nummer 256 komt niet zomaar uit de lucht vallen. We hebben dat 256==2*2*2*2*2*2*2*2, het is dus 2 die 8 keer met zichzelf vermenigvuldigd wordt. Dat is het grootste nummer die je kunt maken met een enkele byte (=8 bits) van het Arduino geheugen. De zo genaamde 8 bit byte is de eenheid gebruikt in de alereerste computers om informatie mee op te slaan.
+Maak dus een Arduino sketch om een willekeurige gemengde kleur te tonen voor een enkele seconde, om daarna een andere willekeurige kleur te tonen. Om een kleur te dimmen gebruiken we weer \ardo{analogWrite.} We hebben gezien dat \ardo{analogWrite} een blokgolf maakt en dat we 256 verschillende blokgolven kunnen verkrijgen, van 0 tot 255. Het nummer 256 komt niet zomaar uit de lucht vallen. We hebben dat 256==2*2*2*2*2*2*2*2, het is dus 2 die 8 keer met zichzelf vermenigvuldigd wordt. Dat is het grootste nummer die je kunt maken met een enkele byte (=8 bits) van het Arduino geheugen. De zo genaamde 8 bit byte is de eenheid gebruikt in de allereerste computers om informatie mee op te slaan.
 
 Het is erg handig dat 256 het verloop is dat gebruikt wordt in \ardo{analogWrite}, gezien het originele \href{http://en.wikipedia.org/wiki/RGB_color_model\#Numeric_representations}{RGB kleurenmodel} gebasseerd is op dit getal. De kleuren die wij zullen maken met onze RGB LED zullen dus overeenkomen met die van het RGB kleurenmodel, zie Fig.~\ref{f:RGB_color}. 
 }
@@ -446,7 +474,7 @@ so the variable currentTime is ever increasing, and the while loop will indeed s
 
 \ned{De gebruikte code vind je in Code \ref{c:l2_b}. Verschillende nieuwe concepten zijn aanwezig.
 \newline 
-\textbullet\ \ardo{Serial.begin} and \ardo{print}: \ardo{Serial} laat toe om je Arduino te observeren vanuit je PC. Het opent een trage connectie naar waar je prints kunt sturen. In de sketch doen we dat via een vlag: \ardo{bool test} is een variabele die we een vlag noemen: het kan twee waarden hebben: waar of vals, welke in het Engels zijn \textit{true} of \textit{false}. Als de variabele true is, dan printen we op de seri\"ele connectie de waarden van de willekeurig bepaalde Rood, Groen, en Blauw. We doen dit met het commando \ardo{Serial.print}. Om ervoor te zorgen dat de volgende waarde van RGB op een nieuwe lijn komt, eindigen we met \ardo{Serial.println}, die laaste \textit{ln} staat voor 'lijn'
+\textbullet\ \ardo{Serial.begin} and \ardo{print}: \ardo{Serial} laat toe om je Arduino te observeren vanuit je PC. Het opent een trage connectie naar waar je prints kunt sturen. In de sketch doen we dat via een vlag: \ardo{bool test}, dit is een variabele die we een vlag noemen: het kan twee waarden hebben: waar of vals, welke in het Engels zijn \textit{true} of \textit{false}. Als de variabele true is, dan printen we op de seri\"ele connectie de waarden van de willekeurig bepaalde Rood, Groen, en Blauw. We doen dit met het commando \ardo{Serial.print}. Om ervoor te zorgen dat de volgende waarde van RGB op een nieuwe lijn komt, eindigen we met \ardo{Serial.println}, die laaste \textit{ln} staat voor 'lijn'
 \newline
 \textbullet\ \ardo{millis()}: Dit is een fuctie die het aantal milliseconden sinds de opstart van de Arduino teruggeeft. Je kan functies opzoeken in de \href{http://Arduino.cc/en/Reference/millis}{Reference guide}. Het maximum getal die je kunt terugkrijgen komt overeen met 50 dagen. Daarna herstart het van 0.
 \newline
@@ -458,7 +486,7 @@ dus 'commando's' worden enkel uitgevoerd als conditie waar is.
 \textbullet\ Een \ardo{while} lus: Dit is een repetitie gebaseerd op een conditie. Zolang de conditie waar is zal het stuk in de gekrulde haakjes uitgevoerd worden. De syntax is:\newline
  \ardo{while (conditie)\{ ... commando's ...\}}
 \newline
-dus 'commando's' zullen uitgevoerd worden zolang conditie waar is. Opgelet hier, het is gemakkelijk om een while loop te maken die nooit stopt Het is belangrijk dat de conditie iets is dat regelmatig aangepast wordt. In onze code is de conditie:\newline
+dus 'commando's' zullen uitgevoerd worden zolang conditie waar is. Opgelet hier, het is gemakkelijk om een while loop te maken die nooit stopt. Het is belangrijk dat de conditie iets is dat regelmatig aangepast wordt. In onze code is de conditie:\newline
 \ardo{currentTime - prevTime < 1000} \newline
 dus zolang de huidige tijd (\textit{currentTime}) min the vorige tijd (\textit{prevTime}) minder dan een seconde is, herhalen we de commando's. Er zal een moment komen waarop de conditie vals is en de lus stopt. Dit omdat je als laatste lijn in de gekrulde haken van de while ziet:\newline
 \ardo{currentTime = millis();}
@@ -494,8 +522,8 @@ Om te testen hoe accuraat de kleuren zijn, doe het volgende:
  \item verifieer dat je hebt in je sketch: \ardo{bool test=true;}
  \item upload de sketch, een kleur zal nu een minuut duren
  \item Open de seri\"ele monitor, dit is het icoon met het vergrootglas in de rechterbovenhoek van de Arduino Editor. Een nieuw venster gaat open. Elke minuut zul je de kleur waarden zien verschijnen van de kleur die getoond wordt.
- \item Om te zien dat dit inderdaad ietwat correct is kun je een kleurenkiezer programma gebruiken. Bijvoorbeeld \href{http://www.colorpicker.com/}{www.colorpicker.com} heeft velden voor  R, G and B die je kunt ingeven om te zien welke kleur ermee overeenkomt.
- \item Verwacht niet teveel accuraatheid in de kleuren! Vooreerst, als je geen donkere kamer gebruikt zal de LED altijd zijn eigen kleur hebben. Zwarte kleuren zijn dan niet mogelijk, gezien donker gewoon afwezigheid van licht is. Verder worden rood, groen en blauw in verschillende regio's van de LED opgewekt waardoor het mixen niet perfect kan zijn. Dan komen ook het pure rood, groen en blauw niet overeen van deze van het RGB kleurenmodel, dus is mixen wat anders. Als laatste, de LED maakt maar weinig licht. De LED bevat of een lense om het licht te focussen in \'e\'en richting, of een wazige rand om het licht diffuus te verspreiden. In beide gevallen krijg je artefacten bij het mengen.
+ \item Om te zien dat dit plus-minus correct is kun je een kleurenkiezer programma gebruiken. Bijvoorbeeld \href{http://www.colorpicker.com/}{www.colorpicker.com} heeft velden voor  R, G and B die je kunt ingeven om te zien welke kleur ermee overeenkomt.
+ \item Verwacht niet teveel accuraatheid in de kleuren! Vooreerst, als je geen donkere kamer gebruikt zal de LED altijd zijn eigen kleur hebben. Zwarte kleuren zijn dan niet mogelijk, gezien donker gewoon afwezigheid van licht is. Verder worden rood, groen en blauw in verschillende regio's van de LED opgewekt waardoor het mixen niet perfect kan zijn. Dan komen ook het pure rood, groen en blauw niet precies overeen met die van het RGB kleurenmodel, dus is mixen wat anders. Als laatste, de LED maakt maar weinig licht. De LED bevat of een lense om het licht te focussen in \'e\'en richting, of een wazige rand om het licht diffuus te verspreiden. In beide gevallen krijg je artefacten bij het mengen.
 \end{enumerate}
 }
 
@@ -517,11 +545,11 @@ This is the reason we will mix colors the hard way: without PWM.
 
 Before we do that, we need to design a way to show animations, so as to have a robust base for the effects you might want to implement.}
 
-\ned{Voor onze kubus zullen we 9 LEDs hebben met 3 kleuren. Als we PWM willen gebruiken, zouden we 9x3=21 analogen pinnen nodig hebben om de 9 LEDs elk een andere kleur te geven. Dit is niet mogelijk met de Arduinoe, er zijn niet zoveel pinnen. We zouden in plaats daarvan de kubus kunnen zien als een enkele lamp die altijd dezelfde kleur zal tonen. Dan hebben we maar 3 pinnen met PWM nodig.
+\ned{Voor onze kubus zullen we 9 LEDs hebben met 3 kleuren. Als we PWM willen gebruiken, zouden we 9x3=21 analogen pinnen nodig hebben om de 9 LEDs elk een andere kleur te geven. Dit is niet mogelijk met de Arduino, er zijn niet zoveel pinnen. We zouden in plaats daarvan de kubus kunnen zien als een enkele lamp die altijd dezelfde kleur zal tonen. Dan hebben we maar 3 pinnen met PWM nodig.
 
-Vervolgens, door een LED na de andere aan te schakelen, zouden we toch nog in staat zijn om elke LED een andere kleur te geven! Het zou evenwel lang duren tussen branden voor een LED. Veronderstel dat we 0.5 milliseconden een kleur van een LED tonen via PWM. Een enkele LED heeft dan 1.5 ms nodig voor een kleur. Daarna pas kan de volgende LED. Dus zijn er 13 ms nodig voor de eerste LED opnieuw kan branden. In andere woorden, een kleur wordt 0.5 ms van een cyclus van 13.5 ms getoond, of 5/135=1/27 van de tijd. Het zou beter zijn als we 1/3 van de tijd kunnen gebruiken, gezien onze kubus dan 9 keer helderder zal zijn. Dat is de reden dat we kleuren zullen mengen op de moeilijke manier: zonder PWM.
+Vervolgens, door een LED na de andere aan te schakelen, zouden we toch nog in staat zijn om elke LED een andere kleur te geven! Het zou evenwel lang duren tussen branden voor een LED. Veronderstel dat we 0.5 milliseconden een kleur van een LED tonen via PWM. Een enkele LED heeft dan 1.5 ms nodig voor een kleur. Daarna pas kan de volgende LED. Dus zijn er 13 ms nodig voor de eerste LED opnieuw kan branden. In andere woorden, een kleur wordt 0.5 ms van een cyclus van 13.5 ms getoond, of 5/135=1/27 van de tijd. Het zou beter zijn als we 1/3 van de tijd kunnen gebruiken, gezien onze kubus dan 9 keer helderder zal zijn. Dat is de reden dat we kleuren zullen mengen op een moeilijke manier: zonder PWM.
 
-Voor we hieraan beginnen, moeten we ontwerpen hoe we animaties zullen tonen, zodat we een robuuste basis hebben voor de effecten die je wil tonen.
+Voor we hieraan beginnen, moeten we begrijpen hoe we animaties zullen tonen, zodat we een robuuste basis hebben voor de effecten die je wilt tonen.
 }
 
 \eng{We consider again our single RGB-LED. What effects can we show with one RGB? Some examples:
@@ -541,18 +569,18 @@ $$F=S_B \circ S_G \circ S_R \circ \ldots \circ S_B \circ S_G \circ S_R \circ S_B
 What is the best duration of a subframe? For a single LED, a third of a millisecond is not bad. We express this as microseconds ($\mu$s). A $\mu$s is a one thousanth of a millisecond, while a ms is a one thousanth of a second. 
 }
 
-\ned{We beschouwen opnieuw onze enkele RGB-LED. Welke effecten kunnen we tonen met een enkele RGB? Enkele voorbeelden:
+\ned{We beschouwen opnieuw onze RGB-LED. Welke effecten kunnen we tonen met \'e\'en enkele RGB? Enkele voorbeelden:
 \begin{itemize}
- \item Cycle rood, groen, blauw altijd sneller tot op het punt dat we wit zien.
+ \item Cycle: rood, groen, blauw altijd sneller tot op het punt dat we wit zien.
  \item Ga van een kleur naar een andere kleur op een mooie gladde manier.
  \item Doe morse code van een zin
  \item ....
 \end{itemize}
 Dus, hoe zullen we dat programmeren? We zullen doen zoals in de filmen: een specifiek effect bestaat uit verschillende shots of acties. Een actie heeft een zekere duur: $t_a$. De actie verdelen we in frames $F$, welke een enkel beeld zijn, zoals een foto genomen op een specifiek moment, zie Figuur \ref{f:horse_movie}. Een actie is dus een functie, welke voor een specifieke tijd ons dient te vertellen welk frame te tonen: $F=\mbox{actie(t)}$
 
-Om persistentie van beeld te krijgen, tonen we een frame 40 ms, waarna de volgende frame getoond wordt. Voor een enkele LED zal een frame specifieke kleur zijn. Om deze kleur te tonen, dienen te itereren over de 3 basiskleuren: rood, groen, blauw. Bijgevolg zullen we een frame $F$ onderverdelen in subframes $S$. Een subframe is een beeld die onze LED echt kan maken, dus een helderheid in rood, een helderheid in groen, of een helderheid in blauw. Dus, een frame is dan een aantal subframes die we in serie tonen:
+Om persistentie van beeld te krijgen, tonen we een frame 40 ms, waarna de volgende frame getoond wordt. Voor een enkele LED zal een frame een specifieke kleur zijn. Om deze kleur te tonen, dienen we te itereren over de 3 basiskleuren: rood, groen, blauw. Bijgevolg zullen we een frame $F$ onderverdelen in subframes $S$. Een subframe is een beeld die onze LED echt kan maken, dus een helderheid in rood, een helderheid in groen, of een helderheid in blauw. Dus, een frame is dan een aantal subframes die we in serie tonen:
 $$F=S_B \circ S_G \circ S_R.$$
-We hebben een laatste truck nodig om het te doen werken. Als we een frame in 3 gelijke subframes zouden delen , dan duren die elke $40/3\approx 13.3$ms. Dat is niet optimaal, gezien het vlug kan overkomen als geflikker, zeker als we maar een enkele basis kleur, bv rood, moeten tonen. Daarom zullen we een optimale tijd opnemen om een subframe te tonen. Dan, voor zo lang als een frame moet getoond worden, herhalen we de cyclus van subframe, we krijgen dus:
+We hebben nog een laatste truck nodig. Als we een frame in 3 ge\-lij\-ke subframes zouden delen , dan duren die elk $40/3\approx 13.3$ms. Dat is niet optimaal, gezien het vlug kan overkomen als geflikker, zeker als we maar een enkele basis kleur, bv rood, moeten tonen. Daarom zullen we een optimale tijd opnemen om een subframe te tonen. Dan, voor zo lang als een frame moet getoond worden, herhalen we de cyclus van subframes, we krijgen dus:
 $$F=S_B \circ S_G \circ S_R \circ \ldots \circ S_B \circ S_G \circ S_R \circ S_B \circ S_G \circ S_R.$$
 
 Wat is de beste duur van een subframe? Voor een enkele LED zal een derde van een ms niet slecht zijn. We drukken dit uit in microseconden ($\mu$s). A $\mu$s is een duizendste van een milliseconde, terwijl een ms een duizendste van een seconde is.
@@ -580,7 +608,7 @@ If the value of red is 64, we show red for 320$\mu$s, if the value is 0 we show 
 The code to implement this is in Code \ref{c:l2_c}.
 }
 
-\ned{Laat ons dit indee in de praktijk brengen met hetzelfde effect dat we eerder via PWM deden: toon een willekeurige kleur voor een sekonde. Gezien de LED niet evenveel kleuren kan tonen als het volledige RGB spectrum, limiteren we de 256 gradaties in 256/4=64 gradaties. We drukken de scene uit in de Rood, Groen en Blauw component in 64 gradaties, en een duur om de kleur te tonen:\newline
+\ned{Laat ons dit in de praktijk brengen met hetzelfde effect dat we eerder via PWM deden: toon een willekeurige kleur voor een seconde. Gezien de LED niet evenveel kleuren kan tonen als het volledige RGB spectrum, limiteren we de 256 gradaties in 256/4=64 gradaties. We drukken de scene uit in de Rood, Groen en Blauw component in 64 gradaties, en een duur om de kleur te tonen:\newline
 \textbf{scene = (red base 64, green base 64, blue base 64, duration)}.\newline
 De actie van deze scene is het tonen van een enkele rood, groen, blauw kleur, dus elke frame is identiek:
 $$F= (\mbox{rood, groen, blauw}).$$
@@ -610,18 +638,35 @@ The following function defines our movie. The movie function definition seems ve
 Below those two functions comes the internal loop to show a shot. This loop will call \ardo{movie} to obtain new shots, and will call the shot to obtain the frame to show. It will then take care of showing this frame for the frame duration (40ms). That's it.
 }
 
-\ned{De code ziet er complex uit, maar is eigenlijk verdeelt in twee delen: shots of acties die jij maakt, en een algemeen deel welke beslist wanneer een nieuw frame nodig is, dit frame opvraagt van de shot, en dan subframe cyclussen start om dit specifieke frame 40ms te tonen. Dit laatste deel zal niet meer wijzigen, als je wil kun je proberen het te verstaan, als niet, geen probleem, het volstaat in staat te zijn je eigen shots te schrijven.
+\ned{De code ziet er complex uit, maar is eigenlijk verdeelt in twee delen: shots of acties die jij maakt, en een algemeen deel welke beslist wanneer een nieuw frame nodig is, dit frame opvraagt de shot, en dan subframe cyclussen start om dit specifieke frame 40ms te tonen. Dit laatste deel zal niet meer wijzigen, als je wil kun je proberen het te verstaan, als niet, geen probleem, het volstaat in staat te zijn je eigen shots te schrijven.
 
 Laat ons over de code gaan. Zoals steeds beginnen we met de pinnen aanduiden die we zullen gebruiken. Dan komt de  \ardo{setup()} functie, welke de Arduino klaarmaakt. Niets nieuws dus.
-
-Vervolgens hebben we de functie voor ons shot: een willekeurige kleur. Deze functie heeft een specifiek functievoorschrift die al onze shots zullen moeten hebben:\newline
+\\
+We bekijken hier hoe een shot gemaakt wordt. Hiervoor hebben we een functie nodig: bv. een willekeurige kleur. Deze functie heeft een specifiek functievoorschrift die al onze shots zullen moeten hebben:\newline
 \textbf{ void random\_color(unsigned long framenr, int frame{$\lbrack$}3{$\rbrack$})}.\newline
 Dus, een shot geeft geen waarde terug. Dit duiden we aan met  \ardo{void}. Het heeft wel twee parameters nodig:
-het framenummer van het shot, en een lijst van 3 integers: {int frame{[}3{]}}. De functie dient deze lijst op te vullen met het frame dat getoond moet worden. Dat is het! Gezien onze kleuren lopen van 0 tot 64, gebruiken we \ardo{random(65)}. Om te testen dat je alle kleuren kunt tonen, wijzig eens random in de waarde voor enkel rood, groen, of blauw. 
+het framenummer van het shot, en een lijst van 3 gehele getallen: {int frame{[}3{]}}. De functie dient deze lijst op te vullen met het frame dat getoond moet worden. Dat is het! Gezien onze kleuren lopen van 0 tot 64, gebruiken we \ardo{random(65)}. 
 
-De volgende functie beschrijft onze film (\textit{movie} in het Engels). De functie definitie ziet er heel complex uit. In werkelijkheid duidt deze gewoon aan dat de \ardo{movie} functie een shot functie teruggeeft als waarde, zoals bevoorbeeld onze \ardo{random_color} functie van hierboven. Daarnaast krijgt de functie een variabele mee, \ardo{shotduration}, welke moet opgevuld worden met het aantal milliseconds de shot moet duren. De code zal telkens als een shot gedaan is, deze functie \ardo{movie} opnieuw oproepen om een volgend shot te bekomen.
+De volgende functie beschrijft onze film (\textit{movie} in het Engels). De functie definitie ziet er heel complex uit. In werkelijkheid duidt deze gewoon aan dat de \ardo{movie} functie een shot functie teruggeeft als waarde, zoals bevoorbeeld onze \ardo{random_color} functie van hierboven. Daarnaast krijgt de functie een variabele mee, \ardo{shotduration}, welke moet opgevuld worden met het aantal milliseconden van de duurtijd van je shot. De code zal dan telkens als een shot gedaan is, deze functie \ardo{movie} opnieuw oproepen om een volgend shot te bekomen en te tonen.
 
-Onder deze twee functies komt dan de interne Arduino \ardo{loop} om een shot te tonen. Deze loop zal dus  \ardo{movie} oproepen om nieuwe shots te bekomen, en zal dan de shot oproepen om een frame nummer te bekomen. Het zal er dan voor zorgen dat deze frame getoond wordt voor de duur van een frame (40ms). Dat is het.
+Onder deze twee functies komt dan de interne Arduino \ardo{loop} om een shot te tonen. Deze loop zal dus  \ardo{movie} oproepen om nieuwe shots te bekomen, en zal dan de shot oproepen om een frame nummer te bekomen. Het zal er dan voor zorgen dat deze frame getoond wordt voor de duur van een frame (40ms).
+}
+
+
+\engo{\begin{doE}
+      \textbf{Preprogrammed colors}. To test that you can show all possible colors, change the random call in the function \ardo{random\_color} into the fixed value for only red, green or blue. 
+     \end{doE}
+}
+\nedo{\begin{doN}
+      \textbf{Voorgeprogrammeerde kleuren: een vaste kleur tonen}. 
+Om te testen dat je alle kleuren kunt tonen, wijzig Code 7 zodat je een vaste kleur toont i.p.v. een random color, bv. altijd rood. \\
+Om dit te doen moet je  de functie \ardo{random\_color} aanpassen zodat je een functie \ardo{fixed\_color} hebt. Test het dan met bv. enkel rood, enkel groen, of enkel blauw. 
+     \end{doN}
+}
+\nedo{\begin{doN}
+      \textbf{Twee shots tonen}. 
+Pas nu Code 7 aan zodat je 1 seconde een vaste kleur toont en 2 sec een random kleur.   
+     \end{doN}
 }
 \subsection{\engt{Smooth transitions} \nedt{Gladde overhangen}}
 
@@ -637,15 +682,15 @@ So, if we start with $b=0$, we have the begincolor, and at $b=1$ we have the end
 When you divide two integers, the result is an integer, so we use the \ardo{float} function to change an integer into a float. Like this we find the blend between 0 and 1 for a specific frame number. Finally, our frame consists of colors which we denote as an integer between 0 and 64, so we apply the \ardo{round} function to convert the float to the nearest integer. For example \ardo{round(1.3)=1} and \ardo{round(1.6)=2}.
 }
 
-\ned{We breiden nu de vorige code uit, en maken een nieuw shot, als voorbeeld van hoe we shots kunnen toevoegen. Dit shot is een gladde overgang van een eerste kleur naar een andere kleur.
+\ned{We breiden nu de vorige code uit. We maken een nieuw shot en we zien zo hoe we shots kunnen toevoegen. Dit shot is een gladde overgang van een eerste kleur naar een andere kleur.
 
-De code voor dit shot, en de \ardo{movie} functie die ze roept kun je vinden in  Code \ref{c:l2_d}. Dit vervant het shot en movie deel van de vorige sectie.
+De code voor dit shot, en de \ardo{movie} functie die ze roept kun je vinden in  Code \ref{c:l2_d}. Dit vervangt het shot en movie deel van de vorige sectie.
 
 Enkele opmerkingen. We verdelen de volledige duur in frames, en berekenen welke we nodig hebben. Als we een transitie doen blenden we de twee kleuren: dat is een nummer tussen 0 en 1, noem het $b$. We mixen dan begin en eindkleur als:
 $$(1-b)\times \mbox{beginkleur} + b \times \mbox{eindkleur}.$$
 Als we dus starten met $b=0$, hebben we de beginkleur, en voor $b=1$ de eindkleur.
 
-Als je twee gehele getallen deelt, is het resultaat opnieuw een geheel getal. Daarom gebruiken we de \ardo{float} functie om een geheel getal (integer) in een re\"eel getal (float) te veranderen. Zo vinden we de blend tussen 0 en 1 voor een specifieke frame. Maar, ons frame bestaat wel uit kleuren die we aanduiden met een getal tussen 0 en 64, daarom passen we de functie \ardo{round} to om de float te veranderen in de dichstbijgelegen integer. Bijvoorbeeld:  \ardo{round(1.3)=1} en \ardo{round(1.6)=2}.
+Als je twee gehele getallen deelt, is het resultaat opnieuw een geheel getal. Daarom gebruiken we de \ardo{float} functie om een geheel getal (integer) in een re\"eel getal (float) te veranderen. Zo vinden we de blend tussen 0 en 1 voor een specifieke frame. Maar, ons frame bestaat wel uit kleuren die we aanduiden met een getal tussen 0 en 64, daarom passen we de functie \ardo{round} toe om de float te veranderen in de dichstbijgelegen integer. Bijvoorbeeld:  \ardo{round(1.3)=1} en \ardo{round(1.6)=2}.
 }
 
 \begin{code}\label{c:l2_d}
@@ -664,9 +709,9 @@ Als je twee gehele getallen deelt, is het resultaat opnieuw een geheel getal. Da
      \end{doE}
 }
 \nedo{\begin{doN}
-      \textbf{Jouw shot}. Maak nu je eigen shot. Bevoorbeeld, knipper de LED altijd maar sneller en sneller.
+      \textbf{Jouw shot}. Maak je eigen shot. Bevoorbeeld, knipper de LED altijd maar sneller en sneller.
       
-      Tip: Bevoorbeeld, als je shot 60 seconden is, en je start van een 2 seconden interval, en je wil eindigen met een 0.001 sekonden interval, dan moeten je intervallen lineair afnemen:
+      Tip: Bevoorbeeld, als je shot 60 seconden is, en je start van een 2 seconden interval, en je wil eindigen met een 0.001 seconden interval, dan moeten je intervallen lineair afnemen:
       $$y=2+\frac{0.001-2}{60} \mbox{tijd}$$
 
       Mooier: mengen, dit is twee kleuren afwisselend knipperen, en dit versnellen. Je zou de kleuren moeten zien vermengen. Nog mooier: rood, groen en blauw hoeveelheden mengen
