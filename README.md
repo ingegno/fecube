@@ -5,8 +5,8 @@ The Fe Cube is a RGB LED cube consisting of 9 LEDS, so like the Iron metal a [Cu
 
 A Fe Led Cube can be driven with an Arduino. This repository contains 
 
-1. a manual in latex in English and Dutch
-2. Accompanied Arduino sketches
+1. a manual in latex in English and Dutch (Italian planned)
+2. Accompaning Arduino sketches
 
 
 Specific in the Arduino implementation is that it is shot based, so not a pattern table as is common. A shot that can load a pattern is present though for simple use.
@@ -16,8 +16,16 @@ Prototypes
 
 The cube is a work in progress. Current protypes:
 
-proto 02
---------
+Prototype 3: Basic version
+--------------------------
+A lasercut frame, with plexiglass top. 3D printed optional cover. A pushbutton to interact with the cube: switch on/off and selecting an effect
+
+![](https://raw.github.com/ingegno/fecube/master/manual/pic/prototype03_a.JPG "Third prototype: basic version")
+![](https://raw.github.com/ingegno/fecube/master/manual/pic/prototype03_b.JPG "Third prototype: basic version - no cover")
+![](https://raw.github.com/ingegno/fecube/master/manual/pic/prototype03_c.JPG "Third prototype: basic version - different effect")
+
+Prototype 02
+------------
 A soldering board used to hold the components. In the future this must be hidden at the backside, now visible.
 
 ![](https://raw.github.com/ingegno/fecube/master/manual/pic/prototype02_a.JPG "Second prototype")
