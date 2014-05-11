@@ -23,16 +23,27 @@ Controlling a led cube or simple LED via a dist sensor
 #define trigPin A0
 #define echoPin A1
 
+unsigned long currentTime_mus = 0UL;
+/*************************************************/
+/*       variables for dist sensor interaction   */
+/*************************************************/
+//activate distance sensor or not
+#define USE_DIST true
+//speed of sound in air in cm/ms
+#define SPEED_SOUND 30.
 //the max distance in cm we want to measure
-#define MAX_DIST 40
+#define MAX_DIST 15.
 //the distance under which you can't see
 #define MIN_DIST 3.5
+//resolution for dist measurements in microseconds
+#define DIST_MEAS_RESO 500000UL  //500 ms
+//timeout to wait for echo pulse in microseconds
+unsigned long timeout_echo = (2* MAX_DIST+1) / SPEED_SOUND * 1000;
 //storage variables:
 int duration;
 float distance = 0;
 unsigned long brightness = 0UL;
 unsigned long last_dist_meas = 0UL;
-unsigned long looptime_mus = 0UL;
 bool dotrig = false;
 
 bool test = false;  //use serial monitor for testing (slows down update rate!)
@@ -58,35 +69,37 @@ void setup() {
 /*************************************************/
 /*      Void Loop & functions                    */
 /*************************************************/
+
 float meas_dist(){
-  // measure distance once every 0.5 seconds
-  
-    if (test) {
-      Serial.print(looptime_mus);Serial.print(" ");Serial.print(last_dist_meas);Serial.print(" ");Serial.print((looptime_mus-last_dist_meas < 1500000UL));
+  if (test) {
+      Serial.print(currentTime_mus);Serial.print(" ");Serial.print(last_dist_meas);Serial.print(" ");Serial.print((currentTime_mus-last_dist_meas < 1500000UL));
       Serial.println("");
       delay(500);
     }
-  if (looptime_mus-last_dist_meas < 0500000UL){
+  // measure distance once every xx seconds
+  if (currentTime_mus-last_dist_meas < DIST_MEAS_RESO){
     dotrig = true;
+    //release the function, return to the loop
     return distance;
   }
   if (dotrig == true){
     dotrig = false;
-    // read the distance. Emit sound 1ms
+    // read the distance. Prepare to emit sound
     digitalWrite(trigPin, HIGH);
   }
   delayMicroseconds(1000); // Note: not allowed for the real cube to delay!!
   // for code with no delays, use:
-  //if (looptime_mus-last_dist_meas < 1500000UL + 1000UL){
-  //  // release to the loop 
+  //if (currentTime_mus-last_dist_meas < DIST_MEAS_RESO + 1000UL){
+  //  // release to the loop, too early to detect echo 
   //  return distance;
   //}
-  //we waited long enough, determine new distance:
+  //we waited long enough, determine new distance, emit sound:
   digitalWrite(trigPin, LOW);
   //catch echo, determine distance
-  duration = pulseIn(echoPin, HIGH);
+  duration = pulseIn(echoPin, HIGH, timeout_echo);
   //Notice: Out of range == 0 cm!
-  distance = (duration/2) / 29.1;
+  //speed of sound in air: 29 to 34 cm/ms. Half time to object
+  distance = (duration/2) / SPEED_SOUND;
   if (distance < MIN_DIST || distance > MAX_DIST){
     //out of range
     if (test) {
@@ -99,19 +112,29 @@ float meas_dist(){
       Serial.print("Iets gezien op "); Serial.print(distance); Serial.println(" cm"); 
       delay(500);
     }
+    // Set color values 
+    //dist_to_color();
+    dist_to_brightness();
   }
-  //set time of dist meas, so that the function can rerun
+  //set time of this dist meas, so it does not happen again too fast
   last_dist_meas = micros();
   return distance;
 }
 
-void loop(){
-  looptime_mus = micros();
-  distance = meas_dist();  // returns 0 or number between min and max dist
-  //convert to a scale, here brightness as a fraction of 20
-  if (distance != 0UL){
-    brightness = (MAX_DIST-distance) * 20/(MAX_DIST-MIN_DIST);
+
+void dist_to_brightness(){
+  //convert distance into brightness value in (0,10)
+  if (distance == 0) {
+    return;
   }
+  //normalized distance in [0,20]
+  brightness = (MAX_DIST-distance) * 10/(MAX_DIST-MIN_DIST);
+}
+
+
+void loop(){
+  currentTime_mus = micros();
+  distance = meas_dist();  // returns 0 or number between min and max dist
   
   digitalWrite(ledR, LOW);
   digitalWrite(ledG, LOW);
@@ -119,10 +142,10 @@ void loop(){
   digitalWrite(ledR, HIGH);
   if (brightness > 0UL){
    all_led_on();
-   delay(brightness);
+   delay(2*brightness);
   }
   all_led_off();
-  delay(20-brightness);
+  delay(20-2*brightness);
 }
 
 void all_led_off(){
