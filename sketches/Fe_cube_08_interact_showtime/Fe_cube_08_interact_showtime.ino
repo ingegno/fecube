@@ -739,7 +739,7 @@ float meas_dist(){
     // release to the loop, too early to detect echo 
     return distance;
   }
-  //we waited long enough, determine new distance, emit sound:
+  //we waited long enough, determine new distance, emit sound (8x40kHz pulses):
   digitalWrite(trigPin, LOW);
   //catch echo, determine distance
   duration = pulseIn(echoPin, HIGH, timeout_echo);
