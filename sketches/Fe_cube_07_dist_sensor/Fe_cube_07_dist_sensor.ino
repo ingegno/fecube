@@ -29,8 +29,8 @@ unsigned long currentTime_mus = 0UL;
 /*************************************************/
 //activate distance sensor or not
 #define USE_DIST true
-//speed of sound in air in cm/ms
-#define SPEED_SOUND 30.
+//speed of sound in air in cm/ms (somewhat slower to account for delay)
+#define SPEED_SOUND 29.1
 //the max distance in cm we want to measure
 #define MAX_DIST 15.
 //the distance under which you can't see
@@ -87,13 +87,14 @@ float meas_dist(){
     // read the distance. Prepare to emit sound
     digitalWrite(trigPin, HIGH);
   }
-  delayMicroseconds(1000); // Note: not allowed for the real cube to delay!!
+  //minimum of 10 microsec of delay needed
+  delayMicroseconds(100); // Note: not allowed for the real cube to delay!!
   // for code with no delays, use:
-  //if (currentTime_mus-last_dist_meas < DIST_MEAS_RESO + 1000UL){
+  //if (currentTime_mus-last_dist_meas < DIST_MEAS_RESO + 100UL){
   //  // release to the loop, too early to detect echo 
   //  return distance;
   //}
-  //we waited long enough, determine new distance, emit sound:
+  //we waited long enough, determine new distance, emit sound (8x40kHz pulses):
   digitalWrite(trigPin, LOW);
   //catch echo, determine distance
   duration = pulseIn(echoPin, HIGH, timeout_echo);
