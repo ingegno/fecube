@@ -35,22 +35,36 @@ unsigned long currentTime_mus = 0UL;
 #define MAX_DIST 15.
 //the distance under which you can't see
 #define MIN_DIST 3.5
+
+//control scheme to use to control the LED via dist sensor
+#define DSTCTRL_SCALED 0  // color depending on distance hand
+#define DSTCTRL_TIMED  1  // color depending on time hand held in place
+#define DSTCTROL DSTCTRL_TIMED
+
 //resolution for dist measurements in microseconds
 #define DIST_MEAS_RESO 500000UL  //500 ms
 //timeout to wait for echo pulse in microseconds
 unsigned long timeout_echo = (2* MAX_DIST+1) / SPEED_SOUND * 1000;
 //storage variables:
 int duration;
-float distance = 0;
+float distance = 0, old_distance = 0;
 unsigned long brightness = 0UL;
 unsigned long last_dist_meas = 0UL;
 bool dotrig = false;
-
-bool test = false;  //use serial monitor for testing (slows down update rate!)
+//4 scale vals from min to max
+#define DSTSCALE_BR_MIN    MIN_DIST
+#define DSTSCALE_BR_MAX    MIN_DIST + (MAX_DIST-MIN_DIST)/4.
+#define DSTSCALE_BLUE_MIN  DSTSCALE_BR_MAX
+#define DSTSCALE_BLUE_MAX  DSTSCALE_BLUE_MIN + (MAX_DIST-MIN_DIST)/4.
+#define DSTSCALE_GREEN_MIN DSTSCALE_BLUE_MAX
+#define DSTSCALE_GREEN_MAX DSTSCALE_GREEN_MIN + (MAX_DIST-MIN_DIST)/4.
+#define DSTSCALE_RED_MIN   DSTSCALE_GREEN_MAX
+#define DSTSCALE_RED_MAX   DSTSCALE_RED_MIN + (MAX_DIST-MIN_DIST)/4.
 
 /*************************************************/
 /*       Setup code                              */
 /*************************************************/
+bool test = false;  //use serial monitor for testing (slows down update rate!)
 void setup() {
   if (test) {
     Serial.begin(9600);
@@ -114,7 +128,6 @@ float meas_dist(){
       delay(500);
     }
     // Set color values 
-    //dist_to_color();
     dist_to_brightness();
   }
   //set time of this dist meas, so it does not happen again too fast
@@ -124,12 +137,24 @@ float meas_dist(){
 
 
 void dist_to_brightness(){
-  //convert distance into brightness value in (0,10)
-  if (distance == 0) {
-    return;
+  if (DSTCTROL == DSTCTRL_TIMED) {
+    //convert time held in place into brightness value in (0,10)
+    if (distance >=DSTSCALE_BR_MIN && distance <= DSTSCALE_BR_MAX ) {
+      if (old_distance >=DSTSCALE_BR_MIN && old_distance <= DSTSCALE_BR_MAX ) {
+        //second measurement here, we increase brightness one
+        brightness += 1;
+        if (brightness >10) brightness = 0;
+      }
+    }
+    old_distance = distance;
+  } else {
+    //convert distance into brightness value in (0,10)
+    if (distance == 0) {
+      return;
+    }
+    //normalized distance in [0,20]
+    brightness = (MAX_DIST-distance) * 10/(MAX_DIST-MIN_DIST);
   }
-  //normalized distance in [0,20]
-  brightness = (MAX_DIST-distance) * 10/(MAX_DIST-MIN_DIST);
 }
 
 
