@@ -36,6 +36,36 @@ unsigned long currentTime;
 /*       Pattern for Fe Cube                     */
 /*************************************************/
 
+const PROGMEM prog_int16_t PatternSnake[] = {
+//a color based snake order led: color + brightness as points
+//ledTLF,   ledTLA,   ledTRF,   ledTRA,   ledBLF,   ledBLA,   ledBRF,   ledBRA,   ledMID,  duration
+//snake with color 1 then 2
+ 0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  1,10,  0, 0,  0, 0,  0, 0,  1000,
+ 0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  1,10,  0, 0,  1000,
+ 0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  1,10,  0, 0,  0, 0,  1000,
+ 0, 0,  0, 0,  0, 0,  0, 0,  1,10,  0, 0,  0, 0,  0, 0,  0, 0,  1000,
+ 0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  1,10,  1000,
+ 0, 0,  1,10,  0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  1000,
+ 0, 0,  0, 0,  0, 0,  1,10,  0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  1000,
+ 0, 0,  0, 0,  1,10,  0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  1000,
+ 1,10,  0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  1000,
+ 0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  1,10,  1000,
+ //now color 2
+ 0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  2,10,  0, 0,  0, 0,  0, 0,  1000,
+ 0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  2,10,  0, 0,  1000,
+ 0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  2,10,  0, 0,  0, 0,  1000,
+ 0, 0,  0, 0,  0, 0,  0, 0,  2,10,  0, 0,  0, 0,  0, 0,  0, 0,  1000,
+ 0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  2,10,  1000,
+ 0, 0,  2,10,  0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  1000,
+ 0, 0,  0, 0,  0, 0,  2,10,  0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  1000,
+ 0, 0,  0, 0,  2,10,  0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  1000,
+ 2,10,  0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  1000,
+ 0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  2,10,  1000,
+// dummy to end the pattern, with duration the effect for the next repeat, see effect
+ 0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  0, 0,  -11
+};
+
+
 const PROGMEM prog_int16_t PatternSnakeRGB[] = {
 //order led:
 //ledTLF,   ledTLA,   ledTRF,   ledTRA,   ledBLF,   ledBLA,   ledBRF,   ledBRA,   ledMID,  duration
@@ -129,16 +159,33 @@ unsigned long prevpresstime = 0;
 #define MAX_DIST 15.
 //the distance under which you can't see
 #define MIN_DIST 3.5
+
+//control scheme to use to control the LED via dist sensor
+#define DSTCTRL_SCALED 0  // color depending on distance hand
+#define DSTCTRL_TIMED  1  // color depending on time hand held in place
+#define DSTCTROL DSTCTRL_TIMED
+
 //resolution for dist measurements in microseconds
 #define DIST_MEAS_RESO 500000UL  //500 ms
 //timeout to wait for echo pulse in microseconds
 unsigned long timeout_echo = (2* MAX_DIST+1) / SPEED_SOUND * 1000;
 //storage variables:
 int duration;
-float distance = 0;
+float distance = 0, old_distance = 0;
 unsigned long brightness = 0UL;
 unsigned long last_dist_meas = 0UL;
+//by default the color that is controlled is color 1
+int color_to_update = 1;
 bool dotrig = false;
+//4 scale vals from min to max
+#define DSTSCALE_BR_MIN    MIN_DIST
+#define DSTSCALE_BR_MAX    MIN_DIST + (MAX_DIST-MIN_DIST)/4.
+#define DSTSCALE_BLUE_MIN  DSTSCALE_BR_MAX
+#define DSTSCALE_BLUE_MAX  DSTSCALE_BLUE_MIN + (MAX_DIST-MIN_DIST)/4.
+#define DSTSCALE_GREEN_MIN DSTSCALE_BLUE_MAX
+#define DSTSCALE_GREEN_MAX DSTSCALE_GREEN_MIN + (MAX_DIST-MIN_DIST)/4.
+#define DSTSCALE_RED_MIN   DSTSCALE_GREEN_MAX
+#define DSTSCALE_RED_MAX   DSTSCALE_RED_MIN + (MAX_DIST-MIN_DIST)/4.
 
 /*************************************************/
 /*       Setup code                              */
@@ -278,6 +325,14 @@ unsigned long movietime = 0UL;
 int random_colorR = 64; // global variables
 int random_colorG = 0;
 int random_colorB = 0;
+//color 2
+int random_colorR2 = 0; // global variables
+int random_colorG2 = 64;
+int random_colorB2 = 0;
+//color 3
+int random_colorR3 = 0; // global variables
+int random_colorG3 = 0;
+int random_colorB3 = 64;
 
 void fixed_color(unsigned long framenr, int frame[27]){
   //shot: show a fixed color stored in global variables:
@@ -342,6 +397,8 @@ void smooth_color(unsigned long framenr, int frame[27]){
 
 /** NEXT FUNCTIONS BASED ON ALL LED DIFFERENT **/
 int shotpattern[28] = {0,0,0, 0,0,0, 0,0,0, 0,0,0, 0,0,0, 0,0,0, 0,0,0, 0,0,0, 0,0,0, 0};
+// same but based on fixed color and brightness
+int shotpatterncolor[19] = {0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0};
 
 void fixed_pattern(unsigned long framenr, int frame[27]){
   //shot: show a fixed pattern stored in global variables:
@@ -350,6 +407,10 @@ void fixed_pattern(unsigned long framenr, int frame[27]){
   }
 }
 
+#define P_TYPE_UNDEF 0 // Unknown pattern type
+#define P_TYPE_FULL  1 // Pattern via full RGB value
+#define P_TYPE_COLOR 2 // Pattern via a color number + brightness
+int patterntype=0;                  // what type of pattern? FULL or COLOR?
 float patternscale_start   = 1.;    // scale time of pattern with this amount
 float patternscale_speedup = 0.75;  // every repeat, time is multiplied with this
 float patternscale_min     = 0.002; // min value of patternscale
@@ -387,6 +448,7 @@ void (*moviepattern(unsigned long *shotduration))(unsigned long, int[27]){
     switch (NRPATTERN) {
       case 0:
         //first call, we load the snake pattern
+        patterntype = P_TYPE_FULL;
         // red, green, blue
         patternscale_start = 1.;
         patternscale_speedup = 0.75;
@@ -397,20 +459,28 @@ void (*moviepattern(unsigned long *shotduration))(unsigned long, int[27]){
         break;
       case 1:
         // blue and red
-        starteffect = -12;
-        extend_pattern = 1;
+        patterntype = P_TYPE_COLOR;
+        starteffect = 0;
+        extend_pattern = 0;
+        patternscale_start = 1.;
+        patternscale_speedup = 0.75;
+        patternscale_min = 0.002;
+        patternrepeatmin = 250;
         break;
       case 2:
         // green and blue
+        patterntype = P_TYPE_FULL;
         starteffect = -11;
         break;
       case 3:
         // green back - forth
+        patterntype = P_TYPE_FULL;
         starteffect = -11;
         extend_pattern = 1;
         break;
       case 4:
         // beating heart
+        patterntype = P_TYPE_FULL;
         patternscale_start = 0.15;
         starteffect = 0;
         extend_pattern = 1;
@@ -420,6 +490,7 @@ void (*moviepattern(unsigned long *shotduration))(unsigned long, int[27]){
         break;
       case 5:
         //Siren
+        patterntype = P_TYPE_FULL;
         patternscale_start = 1.;
         starteffect = 0;
         extend_pattern = 3;
@@ -440,8 +511,11 @@ void (*moviepattern(unsigned long *shotduration))(unsigned long, int[27]){
   int nextduration = 0;
   for (int ind=0; ind < 28; ind++){
     switch (NRPATTERN) {
-      case 0:
       case 1:
+        shotpatterncolor[ind] = pgm_read_word_near(PatternSnake+19*curpattern + ind);
+        nextduration = pgm_read_word_near(PatternSnakeRGB +19*(curpattern + 2) - 1);
+        break;
+      case 0:
       case 2:
         shotpattern[ind] = pgm_read_word_near(PatternSnakeRGB +28*curpattern + ind);
         nextduration = pgm_read_word_near(PatternSnakeRGB +28*(curpattern + 2) - 1);
@@ -464,8 +538,14 @@ void (*moviepattern(unsigned long *shotduration))(unsigned long, int[27]){
         break;
     }
   }
-  apply_shot_effect();
-  *shotduration = round(shotpattern[27] * patternscale);
+  if (patterntype == P_TYPE_FULL){
+    apply_shot_effect();
+    *shotduration = round(shotpattern[27] * patternscale);
+  } else {
+    // color based pattern
+    apply_shot_effect_color();
+    *shotduration = round(shotpattern[18] * patternscale);
+  }
   //next time show next pattern
   curpattern += revert;
   if (nextduration <= 0 || curpattern == 0){
@@ -542,6 +622,40 @@ void (*moviepattern(unsigned long *shotduration))(unsigned long, int[27]){
     }
   }
   return fixed_pattern;
+}
+
+void apply_shot_effect_color(){
+  //we have a color based pattern, we convert to normal pattern, then apply shot
+  int tmp1,tmp2;
+  for (int indsh=0; indsh < 9; indsh++){
+    tmp1 = shotpatterncolor[2*indsh];
+    tmp2 = shotpatterncolor[2*indsh+1];
+    if (tmp1 == 1) {
+      //color 1, brightness tmp2 is scale from 0 to 10
+      shotpattern[3*indsh]   = int(random_colorR * tmp2/10.);
+      shotpattern[3*indsh+1] = int(random_colorG * tmp2/10.);
+      shotpattern[3*indsh+2] = int(random_colorB * tmp2/10.);
+      color_to_update = 1;
+    } else if (tmp1 == 2) {
+      //color 2
+      shotpattern[3*indsh]   = int(random_colorR2 * tmp2/10.);
+      shotpattern[3*indsh+1] = int(random_colorG2 * tmp2/10.);
+      shotpattern[3*indsh+2] = int(random_colorB2 * tmp2/10.);
+      color_to_update = 2;
+    } else if (tmp1 == 3) {
+      //color 3
+      shotpattern[3*indsh]   = int(random_colorR3 * tmp2/10.);
+      shotpattern[3*indsh+1] = int(random_colorG3 * tmp2/10.);
+      shotpattern[3*indsh+2] = int(random_colorB3 * tmp2/10.);
+      color_to_update = 3;
+    } else { //0 or undefined, no color to show
+      //color 1, brightness tmp2 is scale from 0 to 10
+      shotpattern[3*indsh]   = 0;
+      shotpattern[3*indsh+1] = 0;
+      shotpattern[3*indsh+2] = 0;
+    }
+  }
+  apply_shot_effect();
 }
 
 void apply_shot_effect(){
@@ -681,6 +795,7 @@ void rolldice(unsigned long framenr, int frame[27]){
 
 void (*movie(unsigned long *shotduration))(unsigned long, int[27]){
   // when a shot is finished, movie() is called to obtain the next shot.
+  color_to_update = 1;  //by default only base color to update via dist sensor
   unsigned long curmovietime = millis();
   switch (NRPATTERN) {
     case 666:
@@ -767,36 +882,168 @@ float meas_dist(){
 }
 
 void dist_to_brightness(){
-  //convert distance into brightness value in (0,10)
-  if (distance == 0) {
-    return;
+  if (DSTCTROL == DSTCTRL_TIMED) {
+    //convert time held in place into brightness value in (0,10)
+    if (distance >=DSTSCALE_BR_MIN && distance <= DSTSCALE_BR_MAX ) {
+      if (old_distance >=DSTSCALE_BR_MIN && old_distance <= DSTSCALE_BR_MAX ) {
+        //second measurement here, we increase brightness one
+        brightness += 1;
+        if (brightness >10) brightness = 0;
+      }
+    }
+    old_distance = distance;
+  } else {
+    //convert distance into brightness value in (0,10)
+    if (distance == 0) {
+      return;
+    }
+    //normalized distance in [0,20]
+    brightness = (MAX_DIST-distance) * 10/(MAX_DIST-MIN_DIST);
   }
-  //normalized distance in [0,20]
-  brightness = (MAX_DIST-distance) * 10/(MAX_DIST-MIN_DIST);
 }
 
 void dist_to_color(){
-  //convert distance into RGB value
-  if (distance == 0) {
-    return;
-  }
-  //first cm to switch off color
-  if (distance < MIN_DIST + 1){
-    random_colorR = 0;
-    random_colorG = 0;
-    random_colorB = 0;
-  }
-  //normalized distance in [0,9]
-  float norm_dist = (MAX_DIST-distance) * 9/(MAX_DIST-(MIN_DIST+1));
-  if (norm_dist <= 3){
-    //RED: value from 0 to 64
-    random_colorR = int(norm_dist/3*64);
-  } else if (norm_dist <= 6) {
-    //GREEN
-    random_colorG = int((norm_dist-3)/3*64);
-  } else{
-    //BLUE
-    random_colorB = int((norm_dist-6)/3*64);
+  
+  if (DSTCTROL == DSTCTRL_TIMED) {
+    //convert time held in place into brightness value in (0,10)
+    if (distance >= DSTSCALE_BR_MIN && distance <= DSTSCALE_BR_MAX ) {
+      if (old_distance >= DSTSCALE_BR_MIN && old_distance <= DSTSCALE_BR_MAX ) {
+        //second measurement here, we increase brightness one
+        switch (color_to_update) {
+          case 2:
+            random_colorR2 += 1;random_colorG2 += 1;random_colorB2 += 1;
+            if (random_colorR2 >64) random_colorR2 = 64;
+            if (random_colorG2 >64) random_colorG2 = 64;
+            if (random_colorB2 >64) random_colorB2 = 64;
+            if (random_colorR2 == 64 && random_colorG2 == 64 && random_colorB2 == 64) {
+              //switch off
+              random_colorR2 = 0;random_colorG2 = 0;random_colorB2 = 0;
+            }
+            break;
+          case 3:
+            random_colorR3 += 1;random_colorG2 += 1;random_colorB2 += 1;
+            if (random_colorR3 >64) random_colorR3 = 64;
+            if (random_colorG3 >64) random_colorG3 = 64;
+            if (random_colorB3 >64) random_colorB3 = 64;
+            if (random_colorR3 == 64 && random_colorG3 == 64 && random_colorB3 == 64) {
+              //switch off
+              random_colorR3 = 0;random_colorG3 = 0;random_colorB3 = 0;
+            }
+            break;
+          default:
+            random_colorR += 1;random_colorG += 1;random_colorB += 1;
+            if (random_colorR >64) random_colorR = 64;
+            if (random_colorG >64) random_colorG = 64;
+            if (random_colorB >64) random_colorB = 64;
+            if (random_colorR == 64 && random_colorG == 64 && random_colorB == 64) {
+              //switch off
+              random_colorR = 0;random_colorG = 0;random_colorB = 0;
+            }
+            break;
+        }
+      }
+    } else if (distance >= DSTSCALE_BLUE_MIN && distance <= DSTSCALE_BLUE_MAX ) {
+      if (old_distance >= DSTSCALE_BLUE_MIN && old_distance <= DSTSCALE_BLUE_MAX ) {
+        //second measurement here, we increase blue by one
+        switch (color_to_update) {
+          case 2:
+            random_colorB2 += 1;
+            if (random_colorB2 >64) random_colorB2 = 0;
+          case 3:
+            random_colorB3 += 1;
+            if (random_colorB3 >64) random_colorB3 = 0;
+          default:
+            random_colorB += 1;
+            if (random_colorB >64) random_colorB = 0;
+        }
+      }
+    } else if (distance >= DSTSCALE_GREEN_MIN && distance <= DSTSCALE_GREEN_MAX ) {
+      if (old_distance >= DSTSCALE_GREEN_MIN && old_distance <= DSTSCALE_GREEN_MAX ) {
+        //second measurement here, we increase greed by one
+        switch (color_to_update) {
+          case 2:
+            random_colorG2 += 1;
+            if (random_colorG2 >64) random_colorG2 = 0;
+          case 3:
+            random_colorG3 += 1;
+            if (random_colorG3 >64) random_colorG3 = 0;
+          default:
+            random_colorG += 1;
+            if (random_colorG >64) random_colorG = 0;
+        }
+      }
+    } else if (distance >= DSTSCALE_RED_MIN && distance <= DSTSCALE_RED_MAX ) {
+      if (old_distance >= DSTSCALE_RED_MIN && old_distance <= DSTSCALE_RED_MAX ) {
+        //second measurement here, we increase red by one
+        switch (color_to_update) {
+          case 2:
+            random_colorR2 += 1;
+            if (random_colorR2 >64) random_colorR2 = 0;
+          case 3:
+            random_colorR3 += 1;
+            if (random_colorR3 >64) random_colorR3 = 0;
+          default:
+            random_colorR += 1;
+            if (random_colorR >64) random_colorR = 0;
+        }
+      }
+    }
+    old_distance = distance;
+  } else {
+    //convert distance into RGB value
+    if (distance == 0) {
+      return;
+    }
+    //first cm to switch off color
+    if (distance < MIN_DIST + 1){
+        switch (color_to_update) {
+          case 2:
+          random_colorR2 = 0;
+          random_colorG2 = 0;
+          random_colorB2 = 0;
+          case 3:
+          random_colorR3 = 0;
+          random_colorG3 = 0;
+          random_colorB3 = 0;
+          default:
+          random_colorR = 0;
+          random_colorG = 0;
+          random_colorB = 0;
+        }
+    }
+    //normalized distance in [0,9]
+    float norm_dist = (MAX_DIST-distance) * 9/(MAX_DIST-(MIN_DIST+1));
+    if (norm_dist <= 3){
+      //RED: value from 0 to 64
+        switch (color_to_update) {
+          case 2:
+            random_colorR2 = int(norm_dist/3*64);
+          case 3:
+            random_colorR3 = int(norm_dist/3*64);
+          default:
+            random_colorR = int(norm_dist/3*64);
+        }
+    } else if (norm_dist <= 6) {
+      //GREEN
+        switch (color_to_update) {
+          case 2:
+            random_colorG2 = int((norm_dist-3)/3*64);
+          case 3:
+            random_colorG3 = int((norm_dist-3)/3*64);
+          default:
+            random_colorG  = int((norm_dist-3)/3*64);
+        }
+    } else{
+      //BLUE
+        switch (color_to_update) {
+          case 2:
+            random_colorB2 = int((norm_dist-6)/3*64);
+          case 3:
+            random_colorB3 = int((norm_dist-6)/3*64);
+          default:
+            random_colorB = int((norm_dist-6)/3*64);
+        }
+    }
   }
 }
 
