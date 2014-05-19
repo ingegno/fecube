@@ -30,7 +30,7 @@ unsigned long currentTime_mus = 0UL;
 //activate distance sensor or not
 #define USE_DIST true
 //speed of sound in air in cm/ms (somewhat slower to account for delay)
-#define SPEED_SOUND 29.1
+#define SPEED_SOUND 0.034
 //the max distance in cm we want to measure
 #define MAX_DIST 15.
 //the distance under which you can't see
@@ -44,7 +44,7 @@ unsigned long currentTime_mus = 0UL;
 //resolution for dist measurements in microseconds
 #define DIST_MEAS_RESO 500000UL  //500 ms
 //timeout to wait for echo pulse in microseconds
-unsigned long timeout_echo = (2* MAX_DIST+1) / SPEED_SOUND * 1000;
+unsigned long timeout_echo = (2* MAX_DIST+1) / SPEED_SOUND;
 //storage variables:
 int duration;
 float distance = 0, old_distance = 0;
@@ -114,7 +114,7 @@ float meas_dist(){
   duration = pulseIn(echoPin, HIGH, timeout_echo);
   //Notice: Out of range == 0 cm!
   //speed of sound in air: 29 to 34 cm/ms. Half time to object
-  distance = (duration/2) / SPEED_SOUND;
+  distance = (duration/2) * SPEED_SOUND;
   if (distance < MIN_DIST || distance > MAX_DIST){
     //out of range
     if (test) {

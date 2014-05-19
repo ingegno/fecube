@@ -153,8 +153,8 @@ unsigned long prevpresstime = 0;
 /*************************************************/
 //activate distance sensor or not
 #define USE_DIST true
-//speed of sound in air in cm/ms (somewhat slower to account for delay)
-#define SPEED_SOUND 29.1
+//speed of sound in air in cm/micros
+#define SPEED_SOUND 0.034
 //the max distance in cm we want to measure
 #define MAX_DIST 15.
 //the distance under which you can't see
@@ -168,7 +168,7 @@ unsigned long prevpresstime = 0;
 //resolution for dist measurements in microseconds
 #define DIST_MEAS_RESO 500000UL  //500 ms
 //timeout to wait for echo pulse in microseconds
-unsigned long timeout_echo = (2* MAX_DIST+1) / SPEED_SOUND * 1000;
+unsigned long timeout_echo = (2* MAX_DIST+1) / SPEED_SOUND;
 //storage variables:
 int duration;
 float distance = 0, old_distance = 0;
@@ -512,8 +512,10 @@ void (*moviepattern(unsigned long *shotduration))(unsigned long, int[27]){
   for (int ind=0; ind < 28; ind++){
     switch (NRPATTERN) {
       case 1:
-        shotpatterncolor[ind] = pgm_read_word_near(PatternSnake+19*curpattern + ind);
-        nextduration = pgm_read_word_near(PatternSnakeRGB +19*(curpattern + 2) - 1);
+        if (ind < 19) {
+          shotpatterncolor[ind] = pgm_read_word_near(PatternSnake+19*curpattern + ind);
+          nextduration = pgm_read_word_near(PatternSnake +19*(curpattern + 2) - 1);
+        }
         break;
       case 0:
       case 2:
@@ -544,7 +546,7 @@ void (*moviepattern(unsigned long *shotduration))(unsigned long, int[27]){
   } else {
     // color based pattern
     apply_shot_effect_color();
-    *shotduration = round(shotpattern[18] * patternscale);
+    *shotduration = round(shotpatterncolor[18] * patternscale);
   }
   //next time show next pattern
   curpattern += revert;
@@ -851,7 +853,7 @@ float meas_dist(){
   //delayMicroseconds(100); // Note: not allowed for the real cube to delay!!
   // for code with no delays, use:
   if (currentTime_mus-last_dist_meas < DIST_MEAS_RESO + 100UL){
-    // release to the loop, too early to detect echo 
+    // release to the loop, too early to trigger sound 
     return distance;
   }
   //we waited long enough, determine new distance, emit sound (8x40kHz pulses):
@@ -859,13 +861,14 @@ float meas_dist(){
   //catch echo, determine distance
   duration = pulseIn(echoPin, HIGH, timeout_echo);
   //Notice: Out of range == 0 cm!
-  distance = (duration/2) / SPEED_SOUND;
+  distance = (duration/2) * SPEED_SOUND;
   if (distance < MIN_DIST || distance > MAX_DIST){
     //out of range
     if (test) {
       Serial.println("Niets gezien");
       delay(500);
     }
+    old_distance = distance;
     distance = 0.;
   } else {
     if (test) {
@@ -875,6 +878,7 @@ float meas_dist(){
     // Set color values 
     dist_to_brightness();
     dist_to_color();
+    old_distance = distance;
   }
   //set time of this dist meas, so it does not happen again too fast
   last_dist_meas = micros();
@@ -891,7 +895,6 @@ void dist_to_brightness(){
         if (brightness >10) brightness = 0;
       }
     }
-    old_distance = distance;
   } else {
     //convert distance into brightness value in (0,10)
     if (distance == 0) {
@@ -907,88 +910,91 @@ void dist_to_color(){
   if (DSTCTROL == DSTCTRL_TIMED) {
     //convert time held in place into brightness value in (0,10)
     if (distance >= DSTSCALE_BR_MIN && distance <= DSTSCALE_BR_MAX ) {
-      if (old_distance >= DSTSCALE_BR_MIN && old_distance <= DSTSCALE_BR_MAX ) {
+      //if (old_distance >= DSTSCALE_BR_MIN && old_distance <= DSTSCALE_BR_MAX ) 
+      {
         //second measurement here, we increase brightness one
         switch (color_to_update) {
           case 2:
-            random_colorR2 += 1;random_colorG2 += 1;random_colorB2 += 1;
-            if (random_colorR2 >64) random_colorR2 = 64;
-            if (random_colorG2 >64) random_colorG2 = 64;
-            if (random_colorB2 >64) random_colorB2 = 64;
-            if (random_colorR2 == 64 && random_colorG2 == 64 && random_colorB2 == 64) {
+            random_colorR2 -= 6;random_colorG2 -= 6;random_colorB2 -= 6;
+            if (random_colorR2 < 0) random_colorR2 = 0;
+            if (random_colorG2 < 0) random_colorG2 = 0;
+            if (random_colorB2 < 0) random_colorB2 = 0;
+            if (random_colorR2 == 0 && random_colorG2 == 0 && random_colorB2 == 0) {
               //switch off
-              random_colorR2 = 0;random_colorG2 = 0;random_colorB2 = 0;
+              random_colorR2 = 64-random(0,5);random_colorG2 = 64-random(0,5);random_colorB2 = 64-random(0,5);
             }
             break;
           case 3:
-            random_colorR3 += 1;random_colorG2 += 1;random_colorB2 += 1;
-            if (random_colorR3 >64) random_colorR3 = 64;
-            if (random_colorG3 >64) random_colorG3 = 64;
-            if (random_colorB3 >64) random_colorB3 = 64;
-            if (random_colorR3 == 64 && random_colorG3 == 64 && random_colorB3 == 64) {
+            random_colorR3 -= 6;random_colorG2 -= 6;random_colorB2 -= 6;
+            if (random_colorR3 < 0) random_colorR3 = 0;
+            if (random_colorG3 < 0) random_colorG3 = 0;
+            if (random_colorB3 < 0) random_colorB3 = 0;
+            if (random_colorR3 == 0 && random_colorG3 == 0 && random_colorB3 == 0) {
               //switch off
-              random_colorR3 = 0;random_colorG3 = 0;random_colorB3 = 0;
+              random_colorR3 = 64-random(0,5);random_colorG3 = 64-random(0,5);random_colorB3 = 64-random(0,5);
             }
             break;
           default:
-            random_colorR += 1;random_colorG += 1;random_colorB += 1;
-            if (random_colorR >64) random_colorR = 64;
-            if (random_colorG >64) random_colorG = 64;
-            if (random_colorB >64) random_colorB = 64;
-            if (random_colorR == 64 && random_colorG == 64 && random_colorB == 64) {
+            random_colorR -= 6;random_colorG -= 6;random_colorB -= 6;
+            if (random_colorR < 0) random_colorR = 0;
+            if (random_colorG < 0) random_colorG = 0;
+            if (random_colorB < 0) random_colorB = 0;
+            if (random_colorR == 0 && random_colorG == 0 && random_colorB == 0) {
               //switch off
-              random_colorR = 0;random_colorG = 0;random_colorB = 0;
+              random_colorR = 64-random(0,5);random_colorG = 64-random(0,5);random_colorB = 64-random(0,5);
             }
             break;
         }
       }
     } else if (distance >= DSTSCALE_BLUE_MIN && distance <= DSTSCALE_BLUE_MAX ) {
-      if (old_distance >= DSTSCALE_BLUE_MIN && old_distance <= DSTSCALE_BLUE_MAX ) {
+      //if (old_distance >= DSTSCALE_BLUE_MIN && old_distance <= DSTSCALE_BLUE_MAX ) 
+      {
         //second measurement here, we increase blue by one
         switch (color_to_update) {
           case 2:
-            random_colorB2 += 1;
-            if (random_colorB2 >64) random_colorB2 = 0;
+            random_colorB2 += 6;
+            if (random_colorB2 >64) random_colorB2 = random(0,5);
           case 3:
-            random_colorB3 += 1;
-            if (random_colorB3 >64) random_colorB3 = 0;
+            random_colorB3 += 6;
+            if (random_colorB3 >64) random_colorB3 = random(0,5);
           default:
-            random_colorB += 1;
-            if (random_colorB >64) random_colorB = 0;
+            random_colorB += 6;
+            if (random_colorB >64) random_colorB = random(0,5);
         }
       }
     } else if (distance >= DSTSCALE_GREEN_MIN && distance <= DSTSCALE_GREEN_MAX ) {
-      if (old_distance >= DSTSCALE_GREEN_MIN && old_distance <= DSTSCALE_GREEN_MAX ) {
+      //if (old_distance >= DSTSCALE_GREEN_MIN && old_distance <= DSTSCALE_GREEN_MAX ) 
+      {
         //second measurement here, we increase greed by one
         switch (color_to_update) {
           case 2:
-            random_colorG2 += 1;
-            if (random_colorG2 >64) random_colorG2 = 0;
+            random_colorG2 += 6;
+            if (random_colorG2 >64) random_colorG2 = random(0,5);
           case 3:
-            random_colorG3 += 1;
-            if (random_colorG3 >64) random_colorG3 = 0;
+            random_colorG3 += 6;
+            if (random_colorG3 >64) random_colorG3 = random(0,5);
           default:
-            random_colorG += 1;
-            if (random_colorG >64) random_colorG = 0;
+            random_colorG += 6;
+            if (random_colorG >64) random_colorG = random(0,5);
         }
       }
     } else if (distance >= DSTSCALE_RED_MIN && distance <= DSTSCALE_RED_MAX ) {
-      if (old_distance >= DSTSCALE_RED_MIN && old_distance <= DSTSCALE_RED_MAX ) {
+      //if (old_distance >= DSTSCALE_RED_MIN && old_distance <= DSTSCALE_RED_MAX ) 
+      {
         //second measurement here, we increase red by one
         switch (color_to_update) {
           case 2:
-            random_colorR2 += 1;
-            if (random_colorR2 >64) random_colorR2 = 0;
+            random_colorR2 += 6;
+            if (random_colorR2 >64) random_colorR2 = random(0,5);
           case 3:
-            random_colorR3 += 1;
-            if (random_colorR3 >64) random_colorR3 = 0;
+            random_colorR3 += 6;
+            if (random_colorR3 >64) random_colorR3 = random(0,5);
           default:
-            random_colorR += 1;
-            if (random_colorR >64) random_colorR = 0;
+            random_colorR += 6;
+            if (random_colorR >64) random_colorR = random(0,5);
         }
       }
     }
-    old_distance = distance;
   } else {
     //convert distance into RGB value
     if (distance == 0) {
