@@ -161,8 +161,9 @@ unsigned long prevpresstime = 0;
 #define MIN_DIST 3.5
 
 //control scheme to use to control the LED via dist sensor
-#define DSTCTRL_SCALED 0  // color depending on distance hand
-#define DSTCTRL_TIMED  1  // color depending on time hand held in place
+#define DSTCTRL_SCALED    0  // color depending on distance hand
+#define DSTCTRL_TIMED_BR  1  // color depending on time hand held in place, brightness, blue, green, red
+#define DSTCTRL_TIMED     2  // color depending on time, scales blue green red
 #define DSTCTROL DSTCTRL_TIMED
 
 //resolution for dist measurements in microseconds
@@ -180,16 +181,16 @@ unsigned long last_dist_meas = 0UL;
 //by default the color that is controlled is color 1
 int color_to_update = 1;
 bool dotrig = false;
-//4 scale vals from min to max
-#define DSTSCALE_BR_MIN    MIN_DIST
-#define DSTSCALE_BR_MAX    MIN_DIST + (MAX_DIST-MIN_DIST)/4.
-#define DSTSCALE_BLUE_MIN  DSTSCALE_BR_MAX
-#define DSTSCALE_BLUE_MAX  DSTSCALE_BLUE_MIN + (MAX_DIST-MIN_DIST)/4.
-#define DSTSCALE_GREEN_MIN DSTSCALE_BLUE_MAX
-#define DSTSCALE_GREEN_MAX DSTSCALE_GREEN_MIN + (MAX_DIST-MIN_DIST)/4.
-#define DSTSCALE_RED_MIN   DSTSCALE_GREEN_MAX
-#define DSTSCALE_RED_MAX   DSTSCALE_RED_MIN + (MAX_DIST-MIN_DIST)/4.
 
+int DSTSCALE_BR_MIN;
+int DSTSCALE_BR_MAX;
+int DSTSCALE_BLUE_MIN;
+int DSTSCALE_BLUE_MAX;
+int DSTSCALE_GREEN_MIN;
+int DSTSCALE_GREEN_MAX;
+int DSTSCALE_RED_MIN;
+int DSTSCALE_RED_MAX;
+  
 /*************************************************/
 /*       Setup code                              */
 /*************************************************/
@@ -207,6 +208,22 @@ void setup() {
   // initialize the distance sensor
   pinMode(trigPin, OUTPUT);
   pinMode(echoPin, INPUT);
+  
+  //intervals for scales
+  DSTSCALE_BR_MIN = MIN_DIST;
+  DSTSCALE_BR_MAX = MIN_DIST;
+  float scales = 3.;
+  if (DSTCTROL == DSTCTRL_TIMED_BR) {
+    scales = 4.;
+    DSTSCALE_BR_MAX = MIN_DIST + (MAX_DIST-MIN_DIST)/scales;
+  }
+  DSTSCALE_BLUE_MIN  = DSTSCALE_BR_MAX;
+  DSTSCALE_BLUE_MAX  = DSTSCALE_BLUE_MIN + (MAX_DIST-MIN_DIST)/scales;
+  DSTSCALE_GREEN_MIN = DSTSCALE_BLUE_MAX;
+  DSTSCALE_GREEN_MAX = DSTSCALE_GREEN_MIN + (MAX_DIST-MIN_DIST)/scales;
+  DSTSCALE_RED_MIN   = DSTSCALE_GREEN_MAX;
+  DSTSCALE_RED_MAX   = DSTSCALE_RED_MIN + (MAX_DIST-MIN_DIST)/scales;
+
 }
 
 /*************************************************/
@@ -943,28 +960,27 @@ void dist_to_color(){
         //second measurement here, we increase brightness one
         switch (color_to_update) {
           case 2:
-            random_colorR2 -= 6;random_colorG2 -= 6;random_colorB2 -= 6;
-            if (random_colorR2 < 0) random_colorR2 = 0;
-            if (random_colorG2 < 0) random_colorG2 = 0;
-            if (random_colorB2 < 0) random_colorB2 = 0;
             if (random_colorR2 == 0 && random_colorG2 == 0 && random_colorB2 == 0) {
-              //switch off
               random_colorR2 = 64-random(0,5);random_colorG2 = 64-random(0,5);random_colorB2 = 64-random(0,5);
+            } else {
+              random_colorR2 -= 6;random_colorG2 -= 6;random_colorB2 -= 6;
+              if (random_colorR2 < 0) random_colorR2 = 0;
+              if (random_colorG2 < 0) random_colorG2 = 0;
+              if (random_colorB2 < 0) random_colorB2 = 0;
             }
             break;
           case 3:
-            random_colorR3 -= 6;random_colorG2 -= 6;random_colorB2 -= 6;
-            if (random_colorR3 < 0) random_colorR3 = 0;
-            if (random_colorG3 < 0) random_colorG3 = 0;
-            if (random_colorB3 < 0) random_colorB3 = 0;
             if (random_colorR3 == 0 && random_colorG3 == 0 && random_colorB3 == 0) {
-              //switch off
               random_colorR3 = 64-random(0,5);random_colorG3 = 64-random(0,5);random_colorB3 = 64-random(0,5);
+            } else {
+              random_colorR3 -= 6;random_colorG3 -= 6;random_colorB3 -= 6;
+              if (random_colorR3 < 0) random_colorR3 = 0;
+              if (random_colorG3 < 0) random_colorG3 = 0;
+              if (random_colorB3 < 0) random_colorB3 = 0;
             }
             break;
           default:
             if (random_colorR == 0 && random_colorG == 0 && random_colorB == 0) {
-              //switch off
               random_colorR = 64-random(0,5);random_colorG = 64-random(0,5);random_colorB = 64-random(0,5);
             } else {
               random_colorR -= 6;random_colorG -= 6;random_colorB -= 6;
@@ -981,14 +997,28 @@ void dist_to_color(){
         //second measurement here, we increase blue by one
         switch (color_to_update) {
           case 2:
-            random_colorB2 += 6;
-            if (random_colorB2 >64) random_colorB2 = random(0,5);
+            if (random_colorB2 == 0) {
+              random_colorB2 = random(0,5);
+            } else {
+              random_colorB2 += 6;
+            }
+            if (random_colorB2 >64) random_colorB2 = 0;
+            break;
           case 3:
-            random_colorB3 += 6;
-            if (random_colorB3 >64) random_colorB3 = random(0,5);
+            if (random_colorB3 == 0) {
+              random_colorB3 = random(0,5);
+            } else {
+              random_colorB3 += 6;
+            }
+            if (random_colorB3 >64) random_colorB3 = 0;
+            break;
           default:
-            random_colorB += 6;
-            if (random_colorB >64) random_colorB = random(0,5);
+            if (random_colorB == 0) {
+              random_colorB = random(0,5);
+            } else {
+              random_colorB += 6;
+            }
+            if (random_colorB >64) random_colorB = 0;
         }
       }
     } else if (distance >= DSTSCALE_GREEN_MIN && distance <= DSTSCALE_GREEN_MAX ) {
@@ -997,14 +1027,28 @@ void dist_to_color(){
         //second measurement here, we increase greed by one
         switch (color_to_update) {
           case 2:
-            random_colorG2 += 6;
-            if (random_colorG2 >64) random_colorG2 = random(0,5);
+            if (random_colorG2 == 0) {
+              random_colorG2 = random(0,5);
+            } else {
+              random_colorG2 += 6;
+            }
+            if (random_colorG2 >64) random_colorG2 = 0;
+            break;
           case 3:
-            random_colorG3 += 6;
-            if (random_colorG3 >64) random_colorG3 = random(0,5);
+            if (random_colorG3 == 0) {
+              random_colorG3 = random(0,5);
+            } else {
+              random_colorG3 += 6;
+            }
+            if (random_colorG3 >64) random_colorG3 = 0;
+            break;
           default:
-            random_colorG += 6;
-            if (random_colorG >64) random_colorG = random(0,5);
+            if (random_colorG == 0) {
+              random_colorG = random(0,5);
+            } else {
+              random_colorG += 6;
+            }
+            if (random_colorG >64) random_colorG = 0;
         }
       }
     } else if (distance >= DSTSCALE_RED_MIN && distance <= DSTSCALE_RED_MAX ) {
@@ -1013,14 +1057,28 @@ void dist_to_color(){
         //second measurement here, we increase red by one
         switch (color_to_update) {
           case 2:
-            random_colorR2 += 6;
-            if (random_colorR2 >64) random_colorR2 = random(0,5);
+            if (random_colorR2 == 0) {
+              random_colorR2 = random(0,5);
+            } else {
+              random_colorR2 += 6;
+            }
+            if (random_colorR2 >64) random_colorR2 = 0;
+            break;
           case 3:
-            random_colorR3 += 6;
-            if (random_colorR3 >64) random_colorR3 = random(0,5);
+            if (random_colorR3 == 0) {
+              random_colorR3 = random(0,5);
+            } else {
+              random_colorR3 += 6;
+            }
+            if (random_colorR3 >64) random_colorR3 = 0;
+            break;
           default:
-            random_colorR += 6;
-            if (random_colorR >64) random_colorR = random(0,5);
+            if (random_colorR == 0) {
+              random_colorR = random(0,5);
+            } else {
+              random_colorR += 6;
+            }
+            if (random_colorR >64) random_colorR = 0;
         }
       }
     }
