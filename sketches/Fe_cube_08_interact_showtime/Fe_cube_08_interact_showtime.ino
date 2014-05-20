@@ -156,7 +156,7 @@ unsigned long prevpresstime = 0;
 //speed of sound in air in cm/micros
 #define SPEED_SOUND 0.034
 //the max distance in cm we want to measure
-#define MAX_DIST 15.
+#define MAX_DIST 30.
 //the distance under which you can't see
 #define MIN_DIST 3.5
 
@@ -170,8 +170,11 @@ unsigned long prevpresstime = 0;
 //timeout to wait for echo pulse in microseconds
 unsigned long timeout_echo = (2* MAX_DIST+1) / SPEED_SOUND;
 //storage variables:
-int duration;
-float distance = 0, old_distance = 0;
+unsigned long duration = 0UL;
+float distance = 0, old_distance = 0;;
+unsigned char echoval;
+unsigned long echoduration=0UL;
+bool inecholoc = false;
 unsigned long brightness = 0UL;
 unsigned long last_dist_meas = 0UL;
 //by default the color that is controlled is color 1
@@ -817,10 +820,12 @@ void (*movie(unsigned long *shotduration))(unsigned long, int[27]){
       //smooth random color
       *shotduration = smooth_color_transition_duration + 2 * fixed_color_duration;
       return smooth_color;
+      break;
     case 7:
       //fixed interactive color
       *shotduration = 10000;
       return fixed_color;
+      break;
     default:
       //we show a pattern:
       return moviepattern(shotduration);
@@ -833,55 +838,78 @@ void (*movie(unsigned long *shotduration))(unsigned long, int[27]){
 /*************************************************/
 
 float meas_dist(){
-  if (test) {
-      Serial.print(currentTime_mus);Serial.print(" ");Serial.print(last_dist_meas);Serial.print(" ");Serial.print((currentTime_mus-last_dist_meas < 1500000UL));
-      Serial.println("");
-      delay(500);
-    }
+  bool updated_dist = false;
   // measure distance once every xx seconds
   if (currentTime_mus-last_dist_meas < DIST_MEAS_RESO){
     dotrig = true;
-    //release the function, return to the loop
-    return distance;
-  }
-  if (dotrig == true){
+    inecholoc = false;
+  } else if (!inecholoc && dotrig == true){
     dotrig = false;
     // read the distance. Prepare to emit sound
     digitalWrite(trigPin, HIGH);
-  }
-  //minimum of 10 microsec of delay needed
-  //delayMicroseconds(100); // Note: not allowed for the real cube to delay!!
-  // for code with no delays, use:
-  if (currentTime_mus-last_dist_meas < DIST_MEAS_RESO + 100UL){
-    // release to the loop, too early to trigger sound 
-    return distance;
-  }
-  //we waited long enough, determine new distance, emit sound (8x40kHz pulses):
-  digitalWrite(trigPin, LOW);
-  //catch echo, determine distance
-  duration = pulseIn(echoPin, HIGH, timeout_echo);
-  //Notice: Out of range == 0 cm!
-  distance = (duration/2) * SPEED_SOUND;
-  if (distance < MIN_DIST || distance > MAX_DIST){
-    //out of range
-    if (test) {
-      Serial.println("Niets gezien");
-      delay(500);
+  } else if (!inecholoc && currentTime_mus-last_dist_meas > DIST_MEAS_RESO + 100UL){
+    //we waited long enough, determine new distance, emit sound (8x40kHz pulses):
+    echoduration = micros();
+    digitalWrite(trigPin, LOW);
+    //catch echo, determine distance
+    bool contwait = true;
+    while (contwait) {
+      //timing starts running when pin reads HIGH
+      echoval = digitalRead(echoPin);
+      if (test) {
+        Serial.print("echo val "); Serial.println(echoval);
+      }
+      if (echoval == HIGH) {
+        //start timing
+        echoduration = micros();
+        contwait = false;
+        inecholoc = true;
+      } else if (micros() - echoduration > 800UL) {
+        //timeout, jump out of loop
+        contwait = false;
+        inecholoc = false;
+        duration = 0UL;
+        updated_dist = true;
+      }
     }
-    old_distance = distance;
-    distance = 0.;
-  } else {
+  } else if (inecholoc) {
+    //we are waiting for the echo, we test the echo pin
+    echoval = digitalRead(echoPin);
+    //if we read LOW, timing ends
+    if (echoval == LOW) {
+      //echo received, new duration value
+      duration = currentTime_mus-echoduration;
+      inecholoc = false;
+      updated_dist = true;
+    } else if (currentTime_mus-echoduration > timeout_echo) {
+      duration = 0UL;
+      inecholoc = false;
+      updated_dist = true;
+    }
+  }
+  if (updated_dist) {
     if (test) {
-      Serial.print("Iets gezien op "); Serial.print(distance); Serial.println(" cm"); 
-      delay(500);
+        Serial.print("Duration of echo in microsec ");Serial.println(duration);
+      }
+    distance = (duration/2.) * SPEED_SOUND;
+    if (distance < MIN_DIST || distance > MAX_DIST){
+      //out of range
+      if (test) {
+        Serial.println("Niets gezien");
+        //delay(500);
+      }
+      distance = 0.;
     }
     // Set color values 
     dist_to_brightness();
     dist_to_color();
     old_distance = distance;
+    if (test) {
+       Serial.print("Iets gezien op "); Serial.print(distance); Serial.println(" cm"); 
+     }
+    //set time of this dist meas, so it does not happen again too fast
+    last_dist_meas = micros();
   }
-  //set time of this dist meas, so it does not happen again too fast
-  last_dist_meas = micros();
   return distance;
 }
 
@@ -910,7 +938,7 @@ void dist_to_color(){
   if (DSTCTROL == DSTCTRL_TIMED) {
     //convert time held in place into brightness value in (0,10)
     if (distance >= DSTSCALE_BR_MIN && distance <= DSTSCALE_BR_MAX ) {
-      //if (old_distance >= DSTSCALE_BR_MIN && old_distance <= DSTSCALE_BR_MAX ) 
+      if (old_distance >= DSTSCALE_BR_MIN && old_distance <= DSTSCALE_BR_MAX ) 
       {
         //second measurement here, we increase brightness one
         switch (color_to_update) {
@@ -935,19 +963,20 @@ void dist_to_color(){
             }
             break;
           default:
-            random_colorR -= 6;random_colorG -= 6;random_colorB -= 6;
-            if (random_colorR < 0) random_colorR = 0;
-            if (random_colorG < 0) random_colorG = 0;
-            if (random_colorB < 0) random_colorB = 0;
             if (random_colorR == 0 && random_colorG == 0 && random_colorB == 0) {
               //switch off
               random_colorR = 64-random(0,5);random_colorG = 64-random(0,5);random_colorB = 64-random(0,5);
+            } else {
+              random_colorR -= 6;random_colorG -= 6;random_colorB -= 6;
+              if (random_colorR < 0) random_colorR = 0;
+              if (random_colorG < 0) random_colorG = 0;
+              if (random_colorB < 0) random_colorB = 0;
             }
             break;
         }
       }
     } else if (distance >= DSTSCALE_BLUE_MIN && distance <= DSTSCALE_BLUE_MAX ) {
-      //if (old_distance >= DSTSCALE_BLUE_MIN && old_distance <= DSTSCALE_BLUE_MAX ) 
+      if (old_distance >= DSTSCALE_BLUE_MIN && old_distance <= DSTSCALE_BLUE_MAX ) 
       {
         //second measurement here, we increase blue by one
         switch (color_to_update) {
@@ -979,7 +1008,7 @@ void dist_to_color(){
         }
       }
     } else if (distance >= DSTSCALE_RED_MIN && distance <= DSTSCALE_RED_MAX ) {
-      //if (old_distance >= DSTSCALE_RED_MIN && old_distance <= DSTSCALE_RED_MAX ) 
+      if (old_distance >= DSTSCALE_RED_MIN && old_distance <= DSTSCALE_RED_MAX ) 
       {
         //second measurement here, we increase red by one
         switch (color_to_update) {
