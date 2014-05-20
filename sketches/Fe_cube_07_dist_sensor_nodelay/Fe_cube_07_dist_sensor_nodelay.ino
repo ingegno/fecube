@@ -23,16 +23,18 @@ Controlling a led cube or simple LED via a dist sensor
 #define trigPin A0
 #define echoPin A1
 
-unsigned long currentTime_mus = 0UL;
+unsigned long currentTime_mus = 0UL, cycle_time = 0UL;
+int cycle_brightness = 0;
+
 /*************************************************/
 /*       variables for dist sensor interaction   */
 /*************************************************/
 //activate distance sensor or not
 #define USE_DIST true
-//speed of sound in air in cm/ms (somewhat slower to account for delay)
+//speed of sound in air in cm/micros (somewhat slower to account for delay)
 #define SPEED_SOUND 0.034
 //the max distance in cm we want to measure
-#define MAX_DIST 15.
+#define MAX_DIST 60.
 //the distance under which you can't see
 #define MIN_DIST 3.5
 
@@ -48,7 +50,10 @@ unsigned long timeout_echo = (2* MAX_DIST+1) / SPEED_SOUND;
 //storage variables:
 unsigned long duration = 0UL;
 float distance = 0, old_distance = 0;
-unsigned long brightness = 0UL;
+unsigned char echoval;
+unsigned long echoduration=0UL;
+bool inecholoc = false;
+int brightness = 0;
 unsigned long last_dist_meas = 0UL;
 bool dotrig = false;
 //4 scale vals from min to max
@@ -64,7 +69,7 @@ bool dotrig = false;
 /*************************************************/
 /*       Setup code                              */
 /*************************************************/
-bool test = false;  //use serial monitor for testing (slows down update rate!)
+#define test false  //use serial monitor for testing (slows down update rate!)
 void setup() {
   if (test) {
     Serial.begin(9600);
@@ -76,7 +81,10 @@ void setup() {
  pinMode(ledTLF,OUTPUT); pinMode(ledTRA,OUTPUT); pinMode(ledTRF,OUTPUT);
   // initialize the distance sensor
   pinMode(trigPin, OUTPUT);
-  pinMode(echoPin, INPUT);  
+  pinMode(echoPin, INPUT);
+  
+  cycle_time = micros();
+  duration = 0UL;
 }
 
 
@@ -85,53 +93,71 @@ void setup() {
 /*************************************************/
 
 float meas_dist(){
-  if (test) {
-      Serial.print(currentTime_mus);Serial.print(" ");Serial.print(last_dist_meas);Serial.print(" ");Serial.print((currentTime_mus-last_dist_meas < 1500000UL));
-      Serial.println("");
-      delay(500);
-    }
+  bool updated_dist = false;
   // measure distance once every xx seconds
   if (currentTime_mus-last_dist_meas < DIST_MEAS_RESO){
     dotrig = true;
-    //release the function, return to the loop
-    return distance;
-  }
-  if (dotrig == true){
+    inecholoc = false;
+  } else if (!inecholoc && dotrig == true){
     dotrig = false;
     // read the distance. Prepare to emit sound
     digitalWrite(trigPin, HIGH);
+  } else if (!inecholoc && currentTime_mus-last_dist_meas > DIST_MEAS_RESO + 100UL){
+    //we waited long enough, determine new distance, emit sound (8x40kHz pulses):
+    echoduration = micros();
+    digitalWrite(trigPin, LOW);
+    //catch echo, determine distance
+    bool contwait = true;
+    while (contwait) {
+      //timing starts running when pin reads HIGH
+      echoval = digitalRead(echoPin);
+      if (test) {
+        Serial.print("echo val "); Serial.println(echoval);
+      }
+      if (echoval == HIGH) {
+        //start timing
+        echoduration = micros();
+        contwait = false;
+        inecholoc = true;
+      } 
+    }
+  } else if (inecholoc) {
+    //we are waiting for the echo, we test the echo pin
+    echoval = digitalRead(echoPin);
+    //if we read LOW, timing ends
+    if (echoval == LOW) {
+      //echo received, new duration value
+      duration = currentTime_mus-echoduration;
+      inecholoc = false;
+      updated_dist = true;
+    } else if (currentTime_mus-echoduration > timeout_echo) {
+      duration = 0UL;
+      inecholoc = false;
+      updated_dist = true;
+    }
   }
-  //minimum of 10 microsec of delay needed
-  delayMicroseconds(100); // Note: not allowed for the real cube to delay!!
-  // for code with no delays, use:
-  //if (currentTime_mus-last_dist_meas < DIST_MEAS_RESO + 100UL){
-  //  // release to the loop, too early to detect echo 
-  //  return distance;
-  //}
-  //we waited long enough, determine new distance, emit sound (8x40kHz pulses):
-  digitalWrite(trigPin, LOW);
-  //catch echo, determine distance
-  duration = pulseIn(echoPin, HIGH, timeout_echo);
-  //Notice: Out of range == 0 cm!
-  //speed of sound in air: 29 to 34 cm/ms. Half time to object
-  distance = (duration/2) * SPEED_SOUND;
-  if (distance < MIN_DIST || distance > MAX_DIST){
-    //out of range
-    if (test) {
-      Serial.println("Niets gezien");
-      delay(500);
-    }
-    distance = 0.;
-  } else {
-    if (test) {
-      Serial.print("Iets gezien op "); Serial.print(distance); Serial.println(" cm"); 
-      delay(500);
-    }
+  if (updated_dist) {
+    
+      if (test) {
+        Serial.print("Duration of echo in microsec ");Serial.println(duration);
+      }
+    distance = (duration/2.) * SPEED_SOUND;
+    if (distance < MIN_DIST || distance > MAX_DIST){
+      //out of range
+      if (test) {
+        Serial.println("Niets gezien");
+      }
+      distance = 0.;
+    } 
     // Set color values 
     dist_to_brightness();
+    old_distance = distance;
+    if (test) {
+       Serial.print("Iets gezien op "); Serial.print(distance); Serial.println(" cm"); 
+     }
+    //set time of this dist meas, so it does not happen again too fast
+    last_dist_meas = micros();
   }
-  //set time of this dist meas, so it does not happen again too fast
-  last_dist_meas = micros();
   return distance;
 }
 
@@ -146,7 +172,6 @@ void dist_to_brightness(){
         if (brightness >10) brightness = 0;
       }
     }
-    old_distance = distance;
   } else {
     //convert distance into brightness value in (0,10)
     if (distance == 0) {
@@ -160,18 +185,27 @@ void dist_to_brightness(){
 
 void loop(){
   currentTime_mus = micros();
-  distance = meas_dist();  // returns 0 or number between min and max dist
+  meas_dist();  // sets internally distance and brightness
   
-  digitalWrite(ledR, LOW);
-  digitalWrite(ledG, LOW);
-  digitalWrite(ledB, LOW);
-  digitalWrite(ledR, HIGH);
-  if (brightness > 0UL){
-   all_led_on();
-   delay(2*brightness);
+  // a cycle is 20 ms
+  if (currentTime_mus - cycle_time > 20000UL) {
+    //restart a cycle
+    cycle_time = currentTime_mus;
+    digitalWrite(ledR, LOW);
+    digitalWrite(ledG, LOW);
+    digitalWrite(ledB, LOW);
+    digitalWrite(ledR, HIGH);
+    cycle_brightness = brightness;
+    if (cycle_brightness > 0UL){
+     all_led_on();
+    } else {
+      all_led_off();
+    }
   }
-  all_led_off();
-  delay(20-2*brightness);
+  //in loop, we keep led state up to point that we need to switch led off
+  if (currentTime_mus - cycle_time > 2*cycle_brightness*1000UL){
+    all_led_off();
+  }
 }
 
 void all_led_off(){
