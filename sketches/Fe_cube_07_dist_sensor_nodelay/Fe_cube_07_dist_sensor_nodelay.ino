@@ -119,7 +119,13 @@ float meas_dist(){
         echoduration = micros();
         contwait = false;
         inecholoc = true;
-      } 
+      } else if (micros() - echoduration > 800UL) {
+        //timeout, jump out of loop
+        contwait = false;
+        inecholoc = false;
+        duration = 0UL;
+        updated_dist = true;
+      }
     }
   } else if (inecholoc) {
     //we are waiting for the echo, we test the echo pin
