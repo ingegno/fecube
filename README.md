@@ -5,7 +5,7 @@ The Ingegno Fe Cube is a RGB LED cube consisting of 9 LEDS, so like the Iron met
 
 A Fe Led Cube is driven with an Arduino. It can be used as an educational package into Arduino and making skills like lasercutting and 3D printing. This repository contains 
 
-1. a manual in latex in English and Dutch (Italian planned)
+1. Data for a Scribus manual in English and Dutch (Italian planned)
 2. Accompaning Arduino sketches to learn how the Cube can be programmed
 3. The final complete sketch to load on a Fe cube and interact with it
 
@@ -13,6 +13,9 @@ There are many LED cubes available, and many manuals to create one exist. Nevert
 
 Specific in the Arduino implementation is that it is shot based, so not a pattern table as is common. A shot that can load a pattern is present though for simple use. Next there is an event system to interact with the environment. In the Basic version this is a push button. In the Interactive version a distance sensor is added.
 
+Manual sketches
+===============
+You can find the sketches from the manual on the [sketches overview page.](manual/sketches.md)
 
 Prototypes
 ==========
