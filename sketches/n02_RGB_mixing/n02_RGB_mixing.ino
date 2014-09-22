@@ -3,9 +3,6 @@ const int ledPinR =  8;
 const int ledPinG =  9;
 const int ledPinB = 10;
 
-int ledStateR = LOW;
-int ledStateG = LOW;
-int ledStateB = LOW;
 long previousMillis = 0;
 
 long interval = 3000;
@@ -51,7 +48,7 @@ void loop()
   if (timer > interval) {
     // save last time
     previousMillis = currentMillis;
-  }p
+  }
 
   if ( timer < interval/3) {
     yellow();
