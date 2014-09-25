@@ -1,3 +1,8 @@
+Manual sketches
+===============
+You can find the sketches from the manual on the [sketches overview page.](manual/sketches.md)
+
+
 Ingegno Fe Cube
 ===============
 
@@ -12,10 +17,6 @@ A Fe Led Cube is driven with an Arduino. It can be used as an educational packag
 There are many LED cubes available, and many manuals to create one exist. Nevertheless, in our view there was still a gap to be filled. A LED cube is ideal to impress visitors with, but we want to make it clear that this is a project within the grasp of beginners. The construction is not hard, and the programming can be kept simple (at least the parts the user would like to change). Hence a manual to go from no knowledge to a working Fe LED Cube.
 
 Specific in the Arduino implementation is that it is shot based, so not a pattern table as is common. A shot that can load a pattern is present though for simple use. Next there is an event system to interact with the environment. In the Basic version this is a push button. In the Interactive version a distance sensor is added.
-
-Manual sketches
-===============
-You can find the sketches from the manual on the [sketches overview page.](manual/sketches.md)
 
 Prototypes
 ==========
