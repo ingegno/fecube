@@ -4,7 +4,7 @@ const int ledG = 11;
 const int ledB = 12;
 // Bottom/Top - Left/Right - Aft/Front
 int ledBLA=1; int ledTLA=2; int ledBLF=3; int ledTLF=4;
-int ledMID=5; int ledTRF=6; int ledBRA=8; int ledTRA=7;
+int ledMID=5; int ledTRA=6; int ledTRF=7; int ledBRA=8;
 int ledBRF=9;
 
 
