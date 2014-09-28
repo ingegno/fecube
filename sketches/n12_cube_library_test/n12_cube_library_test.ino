@@ -1,9 +1,6 @@
 /*
 Controlling a FE Cube - intelligent patterns
 */
-#define __PROG_TYPES_COMPAT__   // define needed for older arduino avr !
-#include <avr/pgmspace.h> // allows use of PROGMEM to store patterns in flash
-
 #include "fecube.h"
 
 void effect1(unsigned long framenr, int frame[27]){

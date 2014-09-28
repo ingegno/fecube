@@ -40,6 +40,41 @@ bool ALLOWDIM = false;
 bool test = false;  //use serial monitor for testing (slows down update rate!)
 
 /*************************************************/
+/*       Simple functions                        */
+/*************************************************/
+void all_led_off(){
+ digitalWrite(ledBLA,HIGH); digitalWrite(ledBLF,HIGH);
+ digitalWrite(ledBRA,HIGH); digitalWrite(ledBRF,HIGH);
+ digitalWrite(ledMID,HIGH); digitalWrite(ledTLA,HIGH);
+ digitalWrite(ledTLF,HIGH); digitalWrite(ledTRA,HIGH);
+ digitalWrite(ledTRF,HIGH);
+}
+
+void all_led_on(){
+ digitalWrite(ledBLA,LOW); digitalWrite(ledBLF,LOW);
+ digitalWrite(ledBRA,LOW); digitalWrite(ledBRF,LOW);
+ digitalWrite(ledMID,LOW); digitalWrite(ledTLA,LOW);
+ digitalWrite(ledTLF,LOW); digitalWrite(ledTRA,LOW);
+ digitalWrite(ledTRF,LOW);
+}
+
+void fecube_clearframe(int frame[27]) {
+  for (int ind=0; ind < 27; ind++){
+    frame[ind] = 0;
+  }
+}
+
+void fecube_set_frame(int frame1[27], int frame2[27]) {
+  for (int ind=0; ind < 27; ind++){
+    frame1[ind] = frame2[ind];
+  }
+}
+ 
+void fecube_set_ledcolor(int led, int R_1, int G_1, int B_1, int frame[27]) {
+  frame[led*3+cR] = R_1; frame[led*3+cG] = G_1;frame[led*3+cB] = B_1;
+}
+
+/*************************************************/
 /*       variables for input sampling            */
 /*************************************************/
 bool allowInput  = true;
@@ -84,9 +119,60 @@ void fecube_setup() {
   pinMode(buttonPin, INPUT);     
 }
 
+
+/*************************************************/
+/*       General effects                         */
+/*************************************************/
+
+void fecube_switch_off(unsigned long framenr, int frame[27]){
+  //shot: switch the cube off, allow inputsampling to continue
+  for (int ind=0; ind < 27; ind++){
+    frame[ind] = 0;
+  }
+  // too avoid too much cycling we switch off, and delay somewhat
+  all_led_off();
+  delay(35);
+}
+
+// show numbers on the cube
+void one(int frame[27], int color){
+  //switch leds corresponding with the color and number 1
+  frame[8*3+color] = 255;
+}
+void two(int frame[27], int color){
+  //switch leds corresponding with the color and number 2
+  frame[1*3+color] = 255; frame[2*3+color] = 255;
+}
+void three(int frame[27], int color){
+  //switch leds corresponding with the color and number 3
+  frame[8*3+color] = 255; frame[0*3+color] = 255; frame[7*3+color] = 255;
+}
+void four(int frame[27], int color){
+  //switch leds corresponding with the color and number 4
+  frame[0*3+color] = 255; frame[1*3+color] = 255; frame[2*3+color] = 255;
+  frame[3*3+color] = 255;
+}
+void five(int frame[27], int color){
+  //switch leds corresponding with the color and number 5
+  frame[8*3+color] = 255; frame[0*3+color] = 255; frame[1*3+color] = 255;
+  frame[6*3+color] = 255; frame[7*3+color] = 255;
+}
+void six(int frame[27], int color){
+  //switch leds corresponding with the color and number 6
+  frame[4*3+color] = 255; frame[5*3+color] = 255; frame[6*3+color] = 255;
+  frame[7*3+color] = 255; frame[0*3+color] = 255; frame[3*3+color] = 255;
+}
+
 /*************************************************/
 /*       Flag setting functions                  */
 /*************************************************/
+
+int NREFFECT = 0;
+
+void fecube_set_starteffectnr(int val) {
+  NREFFECT = val;
+}
+
 void fecube_allowdim(bool val) {
   ALLOWDIM = val;
 }
@@ -104,6 +190,31 @@ void fecube_set_effects(const int nreffects, void (*effects[])(unsigned long, in
     fecube_effects[ind] = effects[ind];
     fecube_effect_duration[ind] = effect_duration[ind];
   }
+}
+
+//effect to show on double press (shown once, then stops)
+void (*fecube_dblpress_effect)(long unsigned int, int*) = fecube_switch_off;
+unsigned long fecube_dblpress_duration = 10000UL;
+void fecube_set_dblpress_effect(unsigned long duration, void (*effect)(unsigned long, int[27])) {
+  fecube_dblpress_duration = duration;
+  fecube_dblpress_effect = effect;
+}
+
+//effect to show on long press
+void (*fecube_longpress_effect)(long unsigned int, int*) = fecube_switch_off;
+unsigned long fecube_longpress_duration = 1000UL;
+void fecube_set_longpress_effect(unsigned long duration, void (*effect)(unsigned long, int[27])) {
+  fecube_longpress_duration = duration;
+  fecube_longpress_effect = effect;
+}
+ 
+ 
+unsigned long shotduration = 0UL;
+// hook function to change duration of an effect. Use with care, normally
+// shot duration is set by user in the effect duration list. Use this function 
+// for effects with difficult to know duration, so you can change is programmatically
+void fecube_set_shotduration(unsigned long val) {
+    shotduration = val;
 }
 
 /*************************************************/
@@ -192,135 +303,11 @@ void inputsampling(){
   }
 }
 
+
 /*************************************************/
-/*       The application: an Fe Cube             */
+/*      Support for pattern effects              */
 /*************************************************/
 
-/***************************************************************************
-A shot consists of frames which are shown 40ms. We determe in the loop if
-a new frame must be drawn.
-
-General outline animation architecture 
-
-1. A movie is a sequence of shots.
-2. A shot has a duration expressed in ms. The action will be split up in 
-   frames to give the illusion of smooth change. 
-2. A frame is a fixed pattern that repeats for 1/25 of a second. The human
-   eye can only see 24 images per second, so one frame every 1/25 seconds
-   can give the illusion of smooth movement/change
-   Frames themself are drawn from subframes
-3. To create a frame, multiplexing will be needed. This is the act of
-   combining individual light outputs so as to create the single frame.
-   Eg, an RGB led cannot show R, G and B at the same time, so 
-   these must be shown serial. Likewise, a led cube might not have to power
-   output to drive a complete cube in one subframe. So a subframe is one 
-   output of a loop in arduino.  A cycle of subrames creates a frame. 
-   The cycle is repeated for the duration of the frame.
-***************************************************************************/
-unsigned long movietime = 0UL;
-
-
-void all_led_off(){
- digitalWrite(ledBLA,HIGH); digitalWrite(ledBLF,HIGH);
- digitalWrite(ledBRA,HIGH); digitalWrite(ledBRF,HIGH);
- digitalWrite(ledMID,HIGH); digitalWrite(ledTLA,HIGH);
- digitalWrite(ledTLF,HIGH); digitalWrite(ledTRA,HIGH);
- digitalWrite(ledTRF,HIGH);
-}
-
-void all_led_on(){
- digitalWrite(ledBLA,LOW); digitalWrite(ledBLF,LOW);
- digitalWrite(ledBRA,LOW); digitalWrite(ledBRF,LOW);
- digitalWrite(ledMID,LOW); digitalWrite(ledTLA,LOW);
- digitalWrite(ledTLF,LOW); digitalWrite(ledTRA,LOW);
- digitalWrite(ledTRF,LOW);
-}
-
-
-/** FIRST FUNCTIONS BASED ON EQUAL COLORS FOR ALL LED **/
-long random_colorR = 0; // global variables
-long random_colorG = 0;
-long random_colorB = 0;
-
-void fecube_clearframe(int frame[27]) {
-  for (int ind=0; ind < 27; ind++){
-    frame[ind] = 0;
-  }
-}
-
-void fecube_set_frame(int frame1[27], int frame2[27]) {
-  for (int ind=0; ind < 27; ind++){
-    frame1[ind] = frame2[ind];
-  }
-}
- 
-void fecube_set_ledcolor(int led, int R_1, int G_1, int B_1, int frame[27]) {
-  frame[led*3+cR] = R_1; frame[led*3+cG] = G_1;frame[led*3+cB] = B_1;
-}
-  
-void fixed_color(unsigned long framenr, int frame[27]){
-  //shot: show a fixed color stored in global variables:
-  for (int ind=0; ind < 9; ind++){
-    frame[ind*3]   = random_colorR;
-    frame[ind*3+1] = random_colorG;
-    frame[ind*3+2] = random_colorB;
-  }
-}
-
-void random_color(unsigned long framenr, int frame[27]){
-  //shot: a random color for a specific duration
-  if (framenr == 0) {
-    //determine the random color we will use
-   random_colorR = int(random(65));
-   random_colorG = int(random(65));
-   random_colorB = int(random(65));
-  }
-  //store the random color in the frame
-  fixed_color(framenr, frame);
-}
-
-long smooth_colorR, smooth_colorG, smooth_colorB; // global variables
-unsigned int smooth_color_transition_duration = 10000;
-unsigned int fixed_color_duration = 5000;
-
-void smooth_color(unsigned long framenr, int frame[27]){
-  //shot: shows a color, then goes smooth to a new color
-  unsigned int last_fixed_frame = fixed_color_duration/40;
-  unsigned int last_trans_frame = (smooth_color_transition_duration +
-                fixed_color_duration) / 40;
-  unsigned int smooth_frame_length = last_trans_frame - last_fixed_frame;
-  if (framenr < last_fixed_frame) {
-    //show the fixed color
-    fixed_color(framenr, frame);
-  } else if (framenr == last_fixed_frame){
-    // finished first color, we determine what will be our next color
-    smooth_colorR = int(random(65));
-    smooth_colorG = int(random(65));
-    smooth_colorB = int(random(65));
-    fixed_color(framenr, frame);
-  } else if(framenr < last_trans_frame) {
-    // we compute how much to mix both colors
-    float blend = (framenr - last_fixed_frame) /  float(smooth_frame_length);
-    frame[0] = round((1-blend) * random_colorR + blend * smooth_colorR);
-    frame[1] = round((1-blend) * random_colorG + blend * smooth_colorG);
-    frame[2] = round((1-blend) * random_colorB + blend * smooth_colorB);
-    for (int ind=1; ind < 9; ind++){
-      frame[ind*3]   = frame[0];
-      frame[ind*3+1] = frame[1];
-      frame[ind*3+2] = frame[2];
-    }
-  } else {
-    //we have (framenr >= last_trans_frame)
-    //so finished, we end with last color showing it fixed
-    random_colorR = smooth_colorR;
-    random_colorG = smooth_colorG;
-    random_colorB = smooth_colorB;
-    fixed_color(framenr, frame);
-  }
-}
-
-
-/** NEXT FUNCTIONS BASED ON ALL LED DIFFERENT **/
 int shotpattern[28] = {0,0,0, 0,0,0, 0,0,0, 0,0,0, 0,0,0, 0,0,0, 0,0,0, 0,0,0, 0,0,0, 0};
 
 void fixed_pattern(unsigned long framenr, int frame[27]){
@@ -334,191 +321,22 @@ float patternscale_start   = 1.;    // scale time of pattern with this amount
 float patternscale_speedup = 0.75;  // every repeat, time is multiplied with this
 float patternscale_min     = 0.002; // min value of patternscale
 unsigned int patternrepeatmin = 250;// how many times to repeat min value before restart
-int totalpatterns  = 1;             // how many patterns in our movie.
 int extend_pattern = 2;             // extend the pattern this number of times
 // effect to apply, use as last duration
 //  0: no effect;  -1: reverse the entire pattern
 //-11: shift colors one right; -12: shift colors two right
 //-90, -180, -270: rotate over those angles
-int starteffect = 0;
+int pattern_starteffect = 0;
 
 //internally used variables, don't change:
 boolean PATTERNFINISHED = true;
-int NRPATTERN = 5;
 int PREVPATTERN = 0;
 float patternscale = patternscale_start;
 unsigned int patternrepeat = 0;
 unsigned int curpattern = 0;
 int nrextends = 0;
 int revert = 1;
-int effect=starteffect;
-
-/*
-void (*moviepattern(unsigned long *shotduration))(unsigned long, int[27]){
-  // we obtain the current pattern:
-  if (PATTERNFINISHED) {
-    nrextends = 0;
-    curpattern = 0;
-    if (NRPATTERN > 5) {
-      NRPATTERN = 0;
-    }
-    switch (NRPATTERN) {
-      case 0:
-        //first call, we load the snake pattern
-        // red, green, blue
-        patternscale_start = 1.;
-        patternscale_speedup = 0.75;
-        patternscale_min = 0.002;
-        patternrepeatmin = 250;
-        extend_pattern = 2;
-        starteffect = 0;
-        break;
-      case 1:
-        // blue and red
-        starteffect = -12;
-        extend_pattern = 1;
-        break;
-      case 2:
-        // green and blue
-        starteffect = -11;
-        break;
-      case 3:
-        // green back - forth
-        starteffect = -11;
-        extend_pattern = 1;
-        break;
-      case 4:
-        // beating heart
-        patternscale_start = 0.15;
-        starteffect = 0;
-        extend_pattern = 1;
-        patternscale_speedup = 0.9;
-        patternscale_min = 0.01;
-        patternrepeatmin = 200;
-        break;
-      case 5:
-        //Siren
-        patternscale_start = 1.;
-        starteffect = 0;
-        extend_pattern = 3;
-        patternscale_speedup = 1.;
-        patternscale_min = 1.;
-        patternrepeatmin = 50;
-        break;
-    }
-    //reset start in case it changed
-    effect = starteffect;
-    patternscale = patternscale_start;
-    PATTERNFINISHED = false;
-  }
-  int nextduration = 0;
-  for (int ind=0; ind < 28; ind++){
-    switch (NRPATTERN) {
-      case 0:
-      case 1:
-      case 2:
-        shotpattern[ind] = pgm_read_word_near(PatternSnakeRGB +28*curpattern + ind);
-        nextduration = pgm_read_word_near(PatternSnakeRGB +28*(curpattern + 2) - 1);
-        break;
-      case 3:
-        shotpattern[ind] = pgm_read_word_near(PatternSnakeRGB +28*curpattern + ind);
-        nextduration = pgm_read_word_near(PatternSnakeRGB +28*(curpattern + 2) - 1);
-        // we override the effect as we want reverse!
-        if (nextduration <= 0) {
-          nextduration = -1;
-        }
-        break;
-      case 4:
-        shotpattern[ind] = pgm_read_word_near(PatternHeart +28*curpattern + ind);
-        nextduration = pgm_read_word_near(PatternHeart +28*(curpattern + 2) - 1);
-        break;
-      case 5:
-        shotpattern[ind] = pgm_read_word_near(PatternSiren +28*curpattern + ind);
-        nextduration = pgm_read_word_near(PatternSiren +28*(curpattern + 2) - 1);
-        break;
-    }
-  }
-  apply_shot_effect();
-  *shotduration = round(shotpattern[27] * patternscale);
-  //next time show next pattern
-  curpattern += revert;
-  if (nextduration <= 0 || curpattern == 0){
-    //pattern table finished, restart table with an extend if asked, 
-    //otherwise start from start with a speedup if required.
-    if (nrextends == extend_pattern){
-      // finished extending, start from 0, do speedup if requested.
-      nrextends = 0;
-      curpattern = 0;
-      revert = 1;
-      effect = starteffect;
-      patternscale *= patternscale_speedup;
-      if (patternscale <= patternscale_min){
-        // repeat the minimum scale a given number of times
-        patternrepeat += 1;
-        if (patternrepeat > patternrepeatmin){
-          PATTERNFINISHED = true;
-          patternscale = patternscale_start;
-          patternrepeat = 0;
-        } else {
-          patternscale = patternscale_min;
-        }
-      }
-    } else {
-      //extend the pattern, prepare to do an effect
-      nrextends += 1;
-      if (effect == -11 && nextduration == -11){
-        effect = -12;
-      } else if (effect == -12 && nextduration == -11){
-        effect = 0;
-      } else if (effect == -90) {
-        if (nextduration == -90){
-         effect = -180;
-        } else if (nextduration == -180) {
-          effect = -270;
-        } else if (nextduration == -270) {
-          effect = 0;
-        } else {
-          effect = nextduration;
-        }
-      } else if (effect == -180) {
-        if (nextduration == -90){
-         effect = -270;
-        } else if (nextduration == -180) {
-          effect = 0;
-        } else if (nextduration == -270) {
-          effect = -90;
-        } else {
-          effect = nextduration;
-        }
-      } else if (effect == -270) {
-        if (nextduration == -90){
-         effect = 0;
-        } else if (nextduration == -180) {
-          effect = -90;
-        } else if (nextduration == -270) {
-          effect = -180;
-        } else {
-          effect = nextduration;
-        }
-      } else {
-        effect = nextduration;
-      }
-      if (effect == -1 || curpattern == 0){
-        //we revert the pattern
-        revert = -revert;
-        effect = starteffect;
-        if (!(curpattern == 0)){
-          curpattern = curpattern - 2;
-        } 
-      } else {
-        curpattern = 0;
-      }
-    }
-  }
-  return fixed_pattern;
-}
-*/
-
+int pattern_effect=pattern_starteffect;
 
 void rotateRGB_shot(){
   int tmp;
@@ -549,136 +367,188 @@ void rotate_shot(){
 
 void apply_shot_effect(){
   //apply an effect on the shot
-  if (effect == -11){
+  if (pattern_effect == -11){
     rotateRGB_shot();
-  } else if (effect == -12){
+  } else if (pattern_effect == -12){
     rotateRGB_shot();
     rotateRGB_shot();
-  } else if (effect == -90){
+  } else if (pattern_effect == -90){
     rotate_shot();
-  } else if (effect == -180){
+  } else if (pattern_effect == -180){
     rotate_shot();
     rotate_shot();
-  } else if (effect == -270){
+  } else if (pattern_effect == -270){
     rotate_shot();
     rotate_shot();
     rotate_shot();
   } 
 }
 
-void switch_off(unsigned long framenr, int frame[27]){
-  //shot: switch the cube off, allow inputsampling to continue
-  for (int ind=0; ind < 27; ind++){
-    frame[ind] = 0;
-  }
-  // too avoid too much cycling we switch off, and delay somewhat
-  all_led_off();
-  delay(35);
-}
 
-void one(int frame[27], int color){
-  //switch leds corresponding with the color and number 1
-  frame[8*3+color] = 255;
-}
-void two(int frame[27], int color){
-  //switch leds corresponding with the color and number 2
-  frame[1*3+color] = 255; frame[2*3+color] = 255;
-}
-void three(int frame[27], int color){
-  //switch leds corresponding with the color and number 3
-  frame[8*3+color] = 255; frame[0*3+color] = 255; frame[7*3+color] = 255;
-}
-void four(int frame[27], int color){
-  //switch leds corresponding with the color and number 4
-  frame[0*3+color] = 255; frame[1*3+color] = 255; frame[2*3+color] = 255;
-  frame[3*3+color] = 255;
-}
-void five(int frame[27], int color){
-  //switch leds corresponding with the color and number 5
-  frame[8*3+color] = 255; frame[0*3+color] = 255; frame[1*3+color] = 255;
-  frame[6*3+color] = 255; frame[7*3+color] = 255;
-}
-void six(int frame[27], int color){
-  //switch leds corresponding with the color and number 6
-  frame[4*3+color] = 255; frame[5*3+color] = 255; frame[6*3+color] = 255;
-  frame[7*3+color] = 255; frame[0*3+color] = 255; frame[3*3+color] = 255;
-}
-
-int D6R = 0; int D6G = 0; int D6B = 0;
-
-void rolldice(unsigned long framenr, int frame[27]){
-  //shot: 3d6 dices rolling, 2 sec rolling, 6 sec show value
-  // 
-  int rolseconds = 2;
-  int showduration = 6;
-  int showvalduration = 1;  //seconds to show val
-  if (framenr == 0) {
-    randomSeed(millis());
-    D6R = random(1,7);D6G = random(1,7);D6B = random(1,7);
-  }
-  if (framenr < rolseconds * 25UL) {
-    //first 50, every 5 frames a new pattern, this is rolling
-    if (framenr % 5 == 0) {
-      for (int ind=0; ind < 9; ind++){
-        //determine if on or off
-        if (random(2) == 0) {
-          frame[ind*3] = 0;frame[ind*3+1] = 0;frame[ind*3+2] = 0;
+void fecube_pattern_effect(unsigned long framenr, float scale_start, float scale_speedup,
+            float scale_min, unsigned int repeat_min, int extend, int starteffect,
+            void (*load_pattern_function)(unsigned int, int*, int[28])
+                          ) {
+  // if frame 0, we load the correct pattern, and then continue with fixed_pattern
+  // for all frames of the computed duration. 
+  // next time we have frame 0, we shift to the next line, and repeat!
+  if (framenr == 0 ) {
+    // we obtain the current pattern:
+    if (PATTERNFINISHED) {
+        nrextends = 0;
+        curpattern = 0;
+        //first call, set variabls
+        patternscale_start  = scale_start;
+        patternscale_speedup= scale_speedup;
+        patternscale_min    = scale_min;
+        patternrepeatmin    = repeat_min;
+        extend_pattern      = extend;
+        pattern_starteffect = starteffect;
+        
+        //reset start in case it changed
+        pattern_effect = pattern_starteffect;
+        patternscale = patternscale_start;
+        PATTERNFINISHED = false;
+    }
+    int nextduration = 0;
+    load_pattern_function(curpattern, &nextduration, shotpattern);
+            
+    apply_shot_effect();
+    
+    //overrule user set duration, this is a pattern, we read duration from 
+    // the pattern
+    fecube_set_shotduration(round(shotpattern[27] * patternscale));
+    
+    //next time show next pattern
+    curpattern += revert;
+    if (nextduration <= 0 || curpattern == 0){
+        //pattern table finished, restart table with an extend if asked, 
+        //otherwise start from start with a speedup if required.
+        if (nrextends == extend_pattern){
+          // finished extending, start from 0, do speedup if requested.
+          nrextends = 0;
+          curpattern = 0;
+          revert = 1;
+          pattern_effect = pattern_starteffect;
+          patternscale *= patternscale_speedup;
+          if (patternscale <= patternscale_min){
+              // repeat the minimum scale a given number of times
+              patternrepeat += 1;
+              if (patternrepeat > patternrepeatmin){
+              PATTERNFINISHED = true;
+              patternscale = patternscale_start;
+              patternrepeat = 0;
+              } else {
+              patternscale = patternscale_min;
+              }
+          }
         } else {
-          //on, determine color
-          frame[ind*3] = 0;frame[ind*3+1] = 0;frame[ind*3+2] = 0;
-          int add = random(3);
-          frame[ind*3+add] = 255;
+        //extend the pattern, prepare to do an effect
+        nrextends += 1;
+        if (pattern_effect == -11 && nextduration == -11){
+            pattern_effect = -12;
+        } else if (pattern_effect == -12 && nextduration == -11){
+            pattern_effect = 0;
+        } else if (pattern_effect == -90) {
+            if (nextduration == -90){
+            pattern_effect = -180;
+            } else if (nextduration == -180) {
+            pattern_effect = -270;
+            } else if (nextduration == -270) {
+            pattern_effect = 0;
+            } else {
+            pattern_effect = nextduration;
+            }
+        } else if (pattern_effect == -180) {
+            if (nextduration == -90){
+            pattern_effect = -270;
+            } else if (nextduration == -180) {
+            pattern_effect = 0;
+            } else if (nextduration == -270) {
+            pattern_effect = -90;
+            } else {
+            pattern_effect = nextduration;
+            }
+        } else if (pattern_effect == -270) {
+            if (nextduration == -90){
+            pattern_effect = 0;
+            } else if (nextduration == -180) {
+            pattern_effect = -90;
+            } else if (nextduration == -270) {
+            pattern_effect = -180;
+            } else {
+            pattern_effect = nextduration;
+            }
+        } else {
+            pattern_effect = nextduration;
+        }
+        if (pattern_effect == -1 || curpattern == 0){
+            //we revert the pattern
+            revert = -revert;
+            pattern_effect = pattern_starteffect;
+            if (!(curpattern == 0)) {
+            curpattern = curpattern - 2;
+            } 
+        } else {
+            curpattern = 0;
         }
       }
     }
-  } else {
-    for (int ind=0; ind < 27; ind++){
-      frame[ind] = 0;
-    }
-    //every half second another color
-    int color = (framenr-rolseconds * 25UL) % (3*25UL*showvalduration);
-    int val = 0;
-    if (color < 25UL*showvalduration){
-      color = 0;
-      val = D6R;
-    } else if (color < 2*25UL*showvalduration) {
-      color = 1;
-      val = D6G;
-    } else { color = 2; val = D6B;
-    }
-    if (val == 1) {one(frame, color);}
-    if (val == 2) {two(frame, color);}
-    if (val == 3) {three(frame, color);}
-    if (val == 4) {four(frame, color);}
-    if (val == 5) {five(frame, color);}
-    if (val == 6) {six(frame, color);}
   }
 }
+
+/*************************************************/
+/*       The application: an Fe Cube             */
+/*************************************************/
+
+/***************************************************************************
+A shot consists of frames which are shown 40ms. We determe in the loop if
+a new frame must be drawn.
+
+General outline animation architecture 
+
+1. A movie is a sequence of shots.
+2. A shot/effect has a duration expressed in ms. The action will be split up in 
+   frames to give the illusion of smooth change. 
+2. A frame is a fixed pattern that repeats for 1/25 of a second. The human
+   eye can only see 24 images per second, so one frame every 1/25 seconds
+   can give the illusion of smooth movement/change
+   Frames themself are drawn from subframes
+3. To create a frame, multiplexing will be needed. This is the act of
+   combining individual light outputs so as to create the single frame.
+   Eg, an RGB led cannot show R, G and B at the same time, so 
+   these must be shown serial. Likewise, a led cube might not have the power
+   output to drive a complete cube in one subframe. So a subframe is one 
+   output of a loop in arduino.  A cycle of subrames creates a frame. 
+   The cycle is repeated for the duration of the frame.
+***************************************************************************/
+unsigned long movietime = 0UL;
+
 
 void (*movie(unsigned long *shotduration))(unsigned long, int[27]){
   // when a shot is finished, movie() is called to obtain the next shot.
   unsigned long curmovietime = millis();
-  switch (NRPATTERN) {
+  switch (NREFFECT) {
     case 666:
-      //Double click pattern
-      *shotduration = 8000UL;
+      //Double click effect
+      *shotduration = fecube_dblpress_duration;
       //this shot is shown once, prepare for end:
-      NRPATTERN = PREVPATTERN;
+      NREFFECT = PREVPATTERN;
       PATTERNFINISHED = true;
-      return rolldice;
+      return fecube_dblpress_effect;
       break;
     case 9999:
-      //switch off
-      *shotduration=1000;
-      return switch_off;
+      //long press effect
+      *shotduration = fecube_longpress_duration;
+      return fecube_longpress_effect;
       break;
     default:
-      //we show effect for the NRPATTERN
-      if (NRPATTERN >= fecube_nreffects) {
-        NRPATTERN = 0;
+      //we show effect for the NREFFECT
+      if (NREFFECT >= fecube_nreffects) {
+        NREFFECT = 0;
       }
-      *shotduration = fecube_effect_duration[NRPATTERN];
-      return fecube_effects[NRPATTERN];
+      *shotduration = fecube_effect_duration[NREFFECT];
+      return fecube_effects[NREFFECT];
   }
 }
 
@@ -690,7 +560,6 @@ void (*movie(unsigned long *shotduration))(unsigned long, int[27]){
 //global variables needed
 unsigned long startTime = 0UL;
 unsigned long currentTime;
-unsigned long shotduration = 0UL;
 //shotptr       curshot;
 void (*curshot)(long unsigned int, int*);
 int           curframe[27];
@@ -743,24 +612,24 @@ void fecube_loop(){
       break;
     case SHORTPRESS:
       //increase the pattern number to show new pattern
-      NRPATTERN += 1;
+      NREFFECT += 1;
       PATTERNFINISHED = true;
       break;
     case EXTREMEPRESS:
       //switch on or off
-      if (NRPATTERN == 9999) {
-        NRPATTERN = PREVPATTERN;  //back on
-        if (NRPATTERN == 9999){NRPATTERN = 0;}
+      if (NREFFECT == 9999) {
+        NREFFECT = PREVPATTERN;  //back on
+        if (NREFFECT == 9999){NREFFECT = 0;}
       } else {
-        PREVPATTERN = NRPATTERN;
-        NRPATTERN = 9999; //off
+        PREVPATTERN = NREFFECT;
+        NREFFECT = 9999; //off
       }
       PATTERNFINISHED = true;
       break;
     case DOUBLEPRESS:
       //we run 3 D6 dices, show result for some time, then restart
-      PREVPATTERN = NRPATTERN;
-      NRPATTERN = 666;
+      PREVPATTERN = NREFFECT;
+      NREFFECT = 666;
       PATTERNFINISHED = true;
       break;
     default:
