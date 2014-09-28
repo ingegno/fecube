@@ -1,0 +1,25 @@
+Code uitgelicht
+Je code werkte en de RGB LED flikkert. Maar hoe werte ons programma? Laat ons de verschillende lijnen bekijken en uitleggen.
+De Arduino heeft genummerde uitgangen. We gebruiken uitgang 8, 9 en 10. Daarom begint ons programma met het definieren van namen voor deze nummers, om later geen fouten te maken. Zo zullen we de pin op de LED voor rood verbinden met uitgang 8. Daarom schrijven we
+const int ledPinR = 8;
+De 8 is een constante (const), en een geheel getal (integer in het Engels, daarom int). Telkens als we later ledPinR schrijven, bedoelen we het nummer 8.
+De uitgangen van de Arduino kunnen twee voltages hebben: GND (grond, 0V), of 5V. We duiden deze aan met LOW of HIGH. We definieren met 
+int ledStateR = LOW;
+een variabele die LOW of HIGH kan zijn. 
+Vervolgens definieren we ook een getal dat bijhoudt welke ons laatste tijdstip was waarbij we de LED een flikkercyclus lieten beginnen. We noemen dit previousMillis. De long ervoor betekent dat dit een heel lang geheel getal kan zijn.
+
+Vervolgens houden we bij met interval hoe vlug we willen flikkeren. Dit is in milliseconden, dus 3000 betekent dat een cyclus 3 seconden duurt.
+
+Elk Arduino programma dient een setup en een loop deel te hebben. De setup wordt aan het begin uitgevoerd, de loop is een deel dat constant herhaald wordt. Het enige wat we de Arduino moeten meedelen bij opstarten is welke uitgangen zullen gebruikt worden en hoe ze gebruikt worden. In ons geval worden ze gebruikt om iets stroom te geven, wat aangeduid wordt met OUTPUT. De uitgang voor het rode LEDbeen als uitgang zetten is dus de lijn
+pinMode(ledPinR, OUTPUT);
+
+De loop is ons programma. We zullen een derde van ons interval rood tonen, dan groen, dan blauw, en dan herbegint de cyclus. Hiertoe houden we een timer bij, die aanduidt welk tijdstip het nu is. Via de functie millis() bekomen we de tijd sinds de Arduino aangezet werd, de timer is dus verschil van het huidige tijdstip en het begin van een cyclus.
+unsigned long timer = currentMillis - previousMillis;
+Als de timer groter wordt dan het flikkerinterval, starten we weer bij het begin door ervoor te zorgen dat timer de volgende keer 0 zal worden.
+previousMillis = currentMillis;
+
+Hierna bepalen we welke kleur we zullen tonen op basis van de waarde van timer. Het eerste deel rood, dan groen, dan blauw. We eindigen met naar de uitgang  van de Arduino de berekende stroom te sturen:
+digitalWrite(ledPinR, ledStateR);
+
+Ons programma bevat dus: bovenaan definieren van nodige getallen, daarna in setup definieren van welke uitgangen van de Arduino nodig zijn, en eindigen met in loop te berekenen welk beentje stroom moet krijgen en welk niet, en via digitalWrite er dan voor te zorgen dat dat gebeurt. 
+

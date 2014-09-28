@@ -1,0 +1,18 @@
+De Fe-Cube kit
+Proficiat met je aankoop van de Ingegno Fe-Cube kit. Laat je fantasie de vrije loop, en maak je eigen veelkleurig licht.
+
+Je dient volgend gereedschap klaar te leggen om alles ineen te kunnen zetten: 
+• Soldeerstation en soldeertin
+• Secondenlijm of lijmpistool
+• Striptang, Kniptang
+• Een vrije werkruimte
+
+Met deze kit leer je werken met Arduino, soldeer je componenten en bouw je een hoost persoonlijk licht. 
+Bij deze kit hoort Arduino code die je kunt downloaden van http://github.com/
+Principe
+Een kleuren LED (RGB LED) heeft 4 pootjes. We hebben 3 signalen nodig om hem te sturen. We zullen 9 RGB LED sturen in dit project, dus 3x9=21 signalen zijn nodig. Daarnaast willen we ons licht kunnen sturen met een drukknop (een extra signaal), alsook optioneel een afstandssensor inbouwen (3 signalen voor nodig). 
+Om dit stukje electronica mogelijk te maken hebben we dus minstens 25 signaalkanalen nodig. Dat is bijgevolg al een ingewikkeld schema wat met een eenvoudige rekeneenheid (de Arduino UNO) al niet meer haalbaar is.
+We zullen bijgevolg in dit project gebruik maken van een vereenvoudiging om ons licht mogelijk te maken: multiplexen. Dit houdt in dat we een groep lichten controlen als een product van twee signaal groepen. We nemen een groep met 3 kleuren, een groep met 9 LED. Hiervoor zijn dan 12 signaalkanalen nodig, een grote reductie van onze oorspronkelijke 21 signalen voor de LED.
+
+
+Om de LEDs te sturen gebruiken we een Arduino microcontroller. Dit is een processor die we kunnen programmeren om lichteffecten te maken. Je kan in dit project de Fe-Cube bouwen en effecten programmeren, of je beperken tot het bouwen en de voorgemaakte effecten gebruiken. In elk geval dien je de Arduino software te installeren en leren hoe je het bord programmeert.

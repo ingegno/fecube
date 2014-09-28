@@ -1,0 +1,4 @@
+Opdracht 4
+1. Wijzig de Arduino sketch zodat elke LED een eigen kleur heeft. Zie je de kleur waar je die verwacht?
+
+2. Maak een eigen effect. Bepaal in de loop() functie in hoeveel delen je het interval zal opdelen. Maak dan in plaats van de LEDs() functie eigen functies LEDs1(), LEDs2(), ..., voor elke intervaldeel. In deze geef je de LED de kleur die je wil, om zo je eigen effect samen te stellen.

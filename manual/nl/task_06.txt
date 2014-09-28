@@ -1,0 +1,6 @@
+Opdracht 6
+1. Je had eerder je eigen effect gemaakt op de kubus. Voeg dit toe als een effect. Of vervang effect1() door dit eigen effect.
+
+2. Wijzig de kleur van de slang in het snake() effect.
+
+3. Maak je hoogstpersoonlijke effect, en voeg het toe aan de lijst. Heb je een mooi effect? Stuur de functie van het effect naar ons, mcristina.ciocci@ingegno.be, en we posten het!

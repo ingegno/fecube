@@ -1,0 +1,5 @@
+Opdracht 2
+Je hebt de resistoren gebruikt in de schakeling zoals we voor de LED kubus gebruikt hebben. Deze zijn evenwel niet zo sterk. Heb je van andere projecten weerstanden liggen? Test dan hoe groot de weerstand kan zijn. 
+Je zou in staat moeten zijn om de stroom over de Basis van de NPN sterk te verminderen op deze manier en toch een werkend circuit overhouden. 
+
+Zou dit een manier kunnen zijn om de sterkte van de resistor te testen? 

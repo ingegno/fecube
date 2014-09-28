@@ -1,0 +1,44 @@
+De Fe Cube Bibliotheek
+Waarom?
+Je bent erin geslaagd. De Fe kubus is af, en je kan effecten tonen. Opdracht voldracht. Als je het niet erg vindt, doen we nog even verder evenwel. 
+We kunnen nog veel meer met onze kubus doen, maar je zal wel opgemerkt hebben dat effecten schrijven veel werk is. Je moet de LED aanzetten, dan weer af. Intervallen uitrekenen. Dat wordt vlug veel tikwerk.
+
+We kunnen verschillende functies schrijven die een groot stuk van het werk overnemen, zodat je je kunt concentreren op zo mooi mogelijke effecten schrijven. Deze functies hebben we al voor jou gemaakt, en gebundeld in wat men een 'Bibliotheek' (Engels: Library) noemt. Je downloadt deze bibliotheek en voegt ze toe bij je effect, en kan van alle functies gebruik maken. 
+
+Principe van de Library
+De library werkt anders dan de code die we tot nu toe geschreven hebben. Hij is gebasseerd op het principe van frames. Frames ken je misschien uit de filmwereld. Het is een enkel beeld, welke 1/25 van een seconde getoond wordt. Via persistentie van visie krijg je dan een bewegend beeld. 
+
+De library zal je effect oproepen en vragen een specifiek frame terug te geven. Het voordeel voor onze code is dat je effect maar een keer moet uitrekenen wat in een frame moet komen. Dat is efficienter dat wat we tot nu to deden: telkens opnieuw alles uitrekenen. 
+
+Je deelt dus je effect op in frames, en geeft de frames door aan de functie die de effecten toont. Wat dien je dan door te geven? Wel, we hebben 9 LED, met 3 kleuren, dus dienen we een lijst van 27 getallen door te geven.
+
+Eenvoudig voorbeeld
+Laat ons de vorige sketch herschrijven in termen van de bibliotheek. Je vindt de code op de website als n12_cube_library_test.ino. In de map van deze ino file (map n12_cube_library_test) dien je ook de bibliotheek fecube.h op te slaan, welke je ook op de website vindt. 
+
+Het bestand fecube.h bevat de bibliotheek. Je dient dit file niet te begrijpen, je moet enkel weten welke functies erin staan die je kan gebruiken om de Fe Kubus aan te sturen. We noemen dit een 'zwarte doos' aanpak: een bibliotheek biedt diensten aan die we gebruiken maar waarvan we de interne details niet kennen of zien (daarom, zwarte doos).
+
+Bekijk de file n12_cube_library_test.ino. Je ziet bovenaan de lijn:
+#include "fecube.h"
+Dit laadt de bibliotheek uit het bestand fecube.h die in dezelfde bestandsmap als onze sketch zit.  We kunnen nu alle functies uit de bibliotheek gebruiken. 
+
+Daarna schrijven we de twee effecten op de manier die de bibliotheek ze wil. Alle effecten dienen dezelfde parameters te hebben: framenr en frame[27]. Bv voor effect1():
+void effect1(unsigned long framenr, int frame[27])
+Je effect dient het frame dat hoort bij een bepaald framenr te berekenen, en in de variabele frame te stoppen. Hiertoe moet je weten in welke orde je je LED kleuren moet stoppen in de frame. De orde van de LED in de frame is:
+{ledTLF,   ledTLA,   ledTRF,   ledTRA,   ledBLF,   ledBLA,   ledBRF,   ledBRA,   ledMID}
+Bij effect1() zie je dat we een frame maken die de kleuren bevat die we willen, en met de functie fecube_set_frame() laden we dit frame in het gewenste frame.
+In plaast van te rekenen met interval rekenen we nu met frame nummers. We hebben 25 frames per seconde, dus als we de eerste frame willen tonen voor 1 seconde, dienen we ervoor te zorgen dat de code 25 frames zichtbaar is:
+  if (framenr <=25) {
+In het andere geval tonen we het tweede frame. 
+
+Ook het effect snake() is op deze manier herschreven. Om geen lange frames te moeten tikken zoals in effect1() gebruiken we de bibliotheekfunctie fecube_clearframe om de frame waarden allemaal op 0 te zetten (geen kleur), en dan gebruiken we fecube_set_ledcolor functie om een bepaalde LED  een opgegeven kleur te geven. Je gebruikt hier de bibliotheekwaarden cBLA, cBLF, ... om de LED aan te duiden die je een kleur wil geven.
+
+We hebben hiermee de twee effecten herschreven. Vervolgens maken we een lijst met de effecten, alsook met de duur van elk effect: 
+
+const int nreffects = 2;
+int showeffect = 0;
+void (*effects[nreffects])(unsigned long, int[27]) = {effect1, snake};
+unsigned long effect_duration[nreffects] = {2000UL, 9000UL};
+
+We dienen nu enkel nog de bibliotheek te laten weten welke effecten we willen. We doen dit in de setup code, welke de bibliotheekfunctie fecube_setup() gebruikt als de kubus te initializeren, en fecube_set_efffects() om door te geven welke effecten te tonen. Onze loop() functie dient enkel de bibliotheekfunctie fecube_loop() op te roepen.
+
+Laadt deze sketch op naar je Fe Kubus, en stel vast dat alles nog werkt zoals eerder. Evenwel heb je wel enkele extra functionaliteiten: druk je de knop twee keer snel na elkaar in, of druk je heb heel lang in (meer dan 5 sec) dan schakelt de kubus af. Bij dubbelklik duurt het afzetten 10 seconden, anders blijft de kubus af tot je opnieuw lang drukt. Probeer het!

@@ -1,0 +1,21 @@
+De Fe Cube afwerken
+Drukknop inbouwen
+Na vorige sectie heb je op je schakelbord de drukknop staan. Je dient deze schakeling over te zetten naar het deksel van de kubus. In het deksel zie je 4 kleine gaatjes waar de drukknop moet komen. Soldeer eerst de weerstand van 10kΩ aan het juiste beentje. Soldeer de draad naar de uitgang 13 van de Arduino aan het been dat altijd verbonden is met het been waar de weerstand aan verbonden is.
+
+De laatste draad moet naar de 5V uitgang van de Arduino. Indien je de NPN transistoren verwijdert had van het schakelbord, plaats je ze nu terug (zie onder sectie Constructie). Gezien de NPN transistor uitgangen ook naar de 5V verbonden moeten worden, maak je op het kleine schakelbord een lijn die je verbindt met de 5V uitgang van de Arduino. Gebruik die lijn op het schakelbord ook voor de draad van de drukknop die op 5V moet staan. 
+
+Je hebt nu alle elementen, en deze zijn allemaal juist verbonden. Sluit het geheel, schroef de Arduino vast op de bodem met de voorziene schroeven zo dat je eenvoudig de USB kabel kan vast- of losmaken. Maak het geheel tijdelijk vast met elastieken. Na uittesten of alles werkt kun je de doos toelijmen.
+
+Fe Kubus uittesten
+Onze kubus test (n10_cube_test.ino) zullen we nu aanpassen zodat we via de drukknop een effect kunnen kiezen. We maken volgende effecten:
+
+1. Het effect uit n10_cube_test.ino
+2. Een slang effect waarbij alle LEDs een per een opgelicht worden.
+
+Je vindt de code op de website als n11_cube_pushbtn_test.ino. Download deze code, en laad ze op je Arduino. Test of de drukknop je doet veranderen van effect. Test ook of de beweging van de slang overeenkomt met wat in de sketch staat. 
+
+Als je de sketch bekijkt in de Arduino IDE zie je dat het een combinatie is van de vorige kubus test code, en de drukknop code. Het effect van de kubus test code is nu aanwezig in de functie effect1().
+
+Het slang effect staat in de functie snake(). Je zou deze functie nu in staat moeten zijn volledig te verstaan. De loop() functie is analoog aan deze uit de drukknop sketch. In de lijsten effects en intervals, zie je dat we twee effecten hebben (nreffects=2;), en dat de eerste 2000 milliseconden duurt, en de tweede 9000. 
+
+Alles werkt? Proficiat. Je Fe Kubus is af. Zorg dat alles er verzorgt uitziet, en lijm het deksel vast. 

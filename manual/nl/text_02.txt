@@ -1,0 +1,89 @@
+Arduino
+Laat ons beginnen met onze Arduino uit te testen. Neem je schakelbord, je Arduino, 3 draden, een weerstand en een RGB LED. De RGB LED zijn Common Kathode LED. Dit betekend dat het langste been negatief moet zijn, en de andere beentjes positief om licht te genereren. 
+
+Laat ons dit uittesten met onze Arduino UNO. Neem de Arduino, een 220 Ohm weerstand en een RGB LED. Het langste been is de kathode en dient verbonden te worden met de GND van de Arduino via de weerstand. Een van de andere benen verbind je met de 5V input. Normaal is de orde van de kleuren op je RGB LED links rood, dan de kathode, dan blauw, en rechts groen. 
+
+Zet je Arduino onder stroom door de usb kabel met je computer te verbinden. Test via dit schema of je LEDs werken. 
+
+Dat was simpel niet? Geen programmatie was nodig, we gebruikten de Arduino hier gewoon als een batterij. De Arduino hebben we evenwel omdat we het licht willen controleren via code. Laat ons dit doen en de RGB laten flikkeren met enkele kleuren. 
+
+Ga met je webbrowser naar http://arduino.cc, en klik op de Download button. Download dan de Arduino IDE. Kies de stabiele versie. Laat je hierbij helpen door een volwassene.
+
+We zullen nu ons licht de 3 kleuren laten tonen. Eerst wijzigen we ons schema. In plaats van de 5V output te gebruiken, gebruiken we nu de genummerde Arduino uitgangen. Zie het schema hiernaast. We hebben de pootjes van de LED die overeenkomen met de kleuren verbonden met de  uitgangen 8, 9 en 10 op de Arduino. 
+
+Als tweede stap dienen we nu een programma te schrijven met de Arduino IDE die zorgt dat deze poorten stroom krijgen en de LED doen branden. Open dus de Arduino IDE (laat een volwassene controleren dat in menu Extra->Bord het juiste bord aangeduid is, normaal zou je de Arduino Uno moeten hebben), en tik volgende code in:
+
+const int ledPinR =  8;
+const int ledPinG =  9;
+const int ledPinB = 10;
+
+int ledStateR = LOW;
+int ledStateG = LOW;
+int ledStateB = LOW;
+long previousMillis = 0;
+
+long interval = 3000;
+
+void setup() {
+  pinMode(ledPinR, OUTPUT);
+  pinMode(ledPinG, OUTPUT);
+  pinMode(ledPinB, OUTPUT);
+}
+
+void loop()
+{
+  unsigned long currentMillis = millis();
+  unsigned long timer = currentMillis 
+                - previousMillis;
+  if (timer > interval) {
+    // save last time
+    previousMillis = currentMillis;
+  }
+
+  if ( timer < interval/3) {
+    ledStateR = HIGH;
+    ledStateG = LOW;
+    ledStateB = LOW;
+  } else if (timer < 2*interval/3) {
+    ledStateR = LOW;
+    ledStateG = HIGH;
+    ledStateB = LOW;
+  } else {
+    ledStateR = LOW;
+    ledStateG = LOW;
+    ledStateB = HIGH;
+  }
+  // set the LED
+  digitalWrite(ledPinR, ledStateR);
+  digitalWrite(ledPinG, ledStateG);
+  digitalWrite(ledPinB, ledStateB);
+}
+
+
+Bovenstaande code moet identiek overgetikt worden in de Arduino IDE. Een programmeertaal moet verstaan worden door een computer. Spijtig genoeg zijn computers nog altijd een beetje dom, dus mag je geen enkele fout maken! Het is zoals een dictee waar je altijd 10/10 moet halen. Neem dus de tijd om de structuur en taal van de Arduino te leren. Zie de blaadjes 'Programmeren met Arduino' die je bij deze gids kan downloaden.
+
+Ben je klaar? Druk dan op de eerste knop in de Arduino IDE.
+
+
+Onderaan de IDE zul je of zien dat Compileren voltooid is, of zul je een fout krijgen. De fouten kunnen moeilijk te lezen zijn. Laat je bijstaan door een volwassene indien nodig. Een foutmelding bevat de lijn waar een fout gezien is. Bevoorbeeld: 
+
+
+
+
+
+
+Hier zie je dat er een fout is op lijn 26. Een ; teken ontbreekt. Dit is een typische fout die je snel kunt corrigeren.
+De tweede fout is op lijn 29. HIGHH werd ingetikt ipv HIGH. De lijn waar je cursor op staat zie je in de onderaan de ide. In de figuur hierboven zie je dat dat lijn 25 was.
+
+Heb je een fout? Niet panikeren, lees de foutboodschap rustig door, en probeer te begrijpen wat er gaande is.
+
+Als er geen fouten meer zijn kun je de code opladen naar de Arduino met de laadknop:
+
+
+
+Via de USB kabel wordt de code op je Arduino geladen, en als je het schema juist hebt zul je de RGB LED zien beginnen flikkeren. Proficiat, je eerste Arduino sketch is af!
+
+Problemen met je code? Je kan ze ook downloaden van volgende webpagina: 
+https://github.com/ingegno/fecube
+Ga naar de sectie Manual sketches, en selecteer de Arduino sketch van deze handleiding die je wil downloaden of copiëren. Voor deze eerste sketch was dat n01_RGB.ino.
+

@@ -1,0 +1,9 @@
+7. Zoals op het schema getoond werd, dient elke pilaar (de kathode) verbonden te worden aan de Arduino via een weerstand van 220 Ohm. Neem de weerstanden, en maak aan beide zijden een helix (krul) zoals je deed met het kathode been van de LED. De ene zijde van de weerstand soldeer je vast aan de draad die in de Arduino kan gestoken worden. 
+De andere kant van de weerstand soldeer je vast aan de onderkant van de pilaar, in de buurt van het plastieken stopstukje.
+Als alles goed was, heb je nu 9 draden die in de Arduino uitgangen 1 tot en met 9 kunnen geplugd worden.
+Doe dit als volgt. Kies een voorkant voor je kubus. Als je ernaar kijkt, zie je 3 richtingen. Van de bodem (B) naar de top (T), van links (L) naar rechts (R), en van voor (front, F) naar achter (A). Op die manier benoemen we de verschillende LED met codes als bevoorbeeld TLA: de top, links, achter LED. De LED in het centrum, noemen we evenwel MID, van midden. Verbind op volgende manier de LED met de verschillende Arduino uitgangen:
+BLA: uitgang 1                   TLA: uitgang 2
+BLF: uitgang 3                   TLF: uitgang 4
+MID: uitgang 5
+TRA: uitgang 6                   TRF: uitgang 7
+BRA: uitgang 8                   BRF: uitgang 9

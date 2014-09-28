@@ -1,0 +1,8 @@
+Hoe werkt een LED?
+We beschrijven dit met  kwantumfysica, een tak van de fysica waar de meeste mensen nooit over leren. We werken dan met kwantumdeeltjes, hier elektronen, negatief geladen deeltjes. Elektronen stromen uit de GND pin, passeren de kathode (-) van de LED, en dan de anode (+). 
+
+De kathode bestaat uit wat we een n-type materiaal noemen. Dit is een materiaal dat een overschot aan electronen heeft. De anode zijde bestaat uit een p-type materiaal. Dat is een materiaal dat een tekort aan elektronen heeft, wat we gaten noemen: het is de afwezigheid van een elektron in het materiaal, Het p-type materiaal geleid stroom door gaten rond te bewegen. Het n-type materiaal via elektronen.
+
+Dus, als elektronen toekomen aan de kathode creëren ze daar een surplus aan elektronen, en de elektronen worden geduwd in de richting van het p-materiaal. Daar aangekomen vallen ze in een van de gaten, en het is dit kwantumeffect dat een klein kwantum (beetje) aan energie creëert: een foton, wat we waarnemen als het licht van de LED. Dit effect noemen we  Electroluminescentie, en het gebeurt enkel bij overgang van een elekrton van een  n-type materiaal naar een p-type materiaal waarbij een elektron in een gat valt.
+
+Een LED zal dus maar licht produceren met stroom die in een specfieke richting vloeit: kathode verbonden met GND! Probeer maar  eens andersom.

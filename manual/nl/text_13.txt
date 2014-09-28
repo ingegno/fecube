@@ -1,0 +1,30 @@
+Volledig voorbeeld
+We eindigen met een voorbeeld die alle mogelijkhedn van de fecube bibliotheek toont. Download de sketch n13_cube_showtime.ino van de website. 
+Dit voorbeeld bevat verschillende effecten die je ook moet downloaden en in dezelfde map (n13_cube_showtime) plaatsen: 
+#include "effect_fixed_random_smooth.h"
+#include "effect_rolldice.h"
+#include "effect_beating_heart.h"
+#include "effect_siren.h"
+#include "effect_snake.h"
+#include "effect_simple_pattern.h"
+Al deze files dien je dus ook te downloaden. 
+Verder heb je natuurlijk ook de bibliotheek fecube.h nodig. 
+
+De sketch bevat 9 effecten. Je ziet ze in de lijst effects opgesomd. In de setup code hebben we nog enkele initializatie functies:
+  set_fixed_color(255, 0, 255);
+  // timings for smooth color transitions
+  set_smooth_color_durations(5000, 10000);
+Dit zijn functies waarmee je bepaalde effecten kunt aanpassen. Zo kun je met set_fixed_color bepalen welke kleur het effect: effect_fixed_color() zal tonen.
+
+De code is redelijk simpel. Bollebozen kunnen de effecten van nabij bestuderen om ze te doorgronden. Dat is al wat moeilijker. De bibliotheek zelf doorgronden dien je maar te kunnen als je volwassen bent en programmeur wil worden! Wij eindigen met het effect effect_simple_pattern(), welke je in staat zou moeten zijn aan te passen. Open dus het bestand effect_simple_pattern.h, en lees de code. Het belangrijkste deel is het patroon: 
+
+Dit patroon bestaat uit 4 lijnen. De laatste lijn is de afsluiter van het patroon, en dient altijd aanwezig te zijn. De drie lijnen daarboven zijn 27 nummers die de kleur aanduiden in groepen van 3 per LED, en een 28e nummer die duur is dat dit patroon moet getoond worden. In dit geval, alle drie 1000 milliseconden, dus 1 seconde. 
+
+Onder het patroon staan enkele variabelen die je kan wijzigen, maar dit hoeft niet. Deze variabelen wijzigen hoe het patroon zich gedraagd. Daaronder staat dan een laad functie die je niet dient te wijzgen, en het effectieve effect, de functie effect_simple_pattern(), welke je ook niet dient te wijzigen.
+
+Andere patronen maak je dus door enkel en alleen de PatternSimple lijst aan te passen.
+
+In de sketch n13_cube_showtime.ino laden we ook een speciaal effect bij dubbelklik op de drukknop: 
+  fecube_set_dblpress_effect(rolldice_duration, 
+                             effect_rolldice);
+Hiermee geven we aan dat bij dubbelklik we het effect effect_rolldice() willen starten. Dat is een leuk effect dat voor jou 3 gewone dobbelstenen simuleert. Wil je een ander effect bij dubbelklik? Wijzig dan gewoon deze lijn in je sketch om een ander effect te laden.

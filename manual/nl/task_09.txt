@@ -1,0 +1,7 @@
+Opdracht 9
+Maak je eigen versie van n13_cube_showtime. Beslis hoeveel effecten je wil tonen, en welk effect je wil zien bij dubbelklik. 
+Om je eigen effecten te maken is kun je een effect maken zoals je deed in sketch n12_cube_library_test.ino, of je kan effect_simple_pattern.h aanpassen. Wil je verschillende eigen patronen? Sla dan effect_simple_pattern.h op met een nieuwe naam, bv effect_eigen_pattern.h. Wijzig bovenaan in twee lijnen EFFECT_SIMPLE_PATTERN in een eigen nieuwe unieke naam, bv EFFECT_EIGEN_PATTERN. Geef ook de twee functies load_simple_function en effect_simple_pattern een eigen unieke naam. In de functie effect_simple_pattern dien je dan ook ervoor te zorgen dat je load_simple_function wijzigt in de nieuwe naam die je die functie gegeven hebt. 
+
+Geen inspiratie voor nieuwe effecten, kijk dan eens op onze website welke effecten er allemaal zijn: https://github.com/ingegno/fecube/tree/master/effects
+
+Heb je een eigen super effect? Stuur het ons, en we nemen het op in de lijst van effecten.

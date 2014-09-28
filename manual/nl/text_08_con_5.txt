@@ -1,0 +1,2 @@
+5. Je hebt nu al iets dat er als de kubus uitziet. We dienen nu alle gelijke LED kleurbeentjes met elkaar te verbinden. Er zijn verschillende manieren waarop je dit kunt doen. We stellen het volgende voor: Kies 2 LED op een zijde en verbind van die twee rood met rood, groen met groen, en blauw met blauw (gebruik eventueel een alcoholstift om te herinneren welk been welk kleur is).
+Gebruik daarna draadjes om de paarsgewijze LEDverbindingen met elkaar te verbinden.

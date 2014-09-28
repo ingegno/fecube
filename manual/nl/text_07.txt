@@ -1,0 +1,10 @@
+Fe LED Cube constructie
+Schematisch
+We maken nu de Fe LED kubus. Eerst leggen we de constructie uit aan de hand van een groot  schakelbord. Indien je zo'n groot schakelbord hebt, kun je het onmiddellijk proberen. Op het schakelbord zijn de genummerde kolommen verticaal verbonden per 5 gaatjes. De boveste en onderste 2 rijen zijn horizontaal verbonden.
+We zien dat de gelijke kleuren beentjes van de LEDs allemaal met elkaar verbonden moeten worden alsook met een NPN transistor. Deze transistor gebruiken we voor de kleurselectie, via uitgangen 10, 11 en 12 op de Arduino. De uitgangen 1 tot en met 9 gebruiken we om de gemeenschappelijke kathode (-) aan te sturen passerend over een 220 Ohm weerstand. De NPN transistor rechterbeen gaat naar de 5V (+) output van de Arduino. 
+Je ziet dat er veel verbindingen zijn, maar dat het logisch opgebouwd is: 9 uitgangen voor 9 LEDs, en dan nog 3 uitgangen voor 3 kleuren. Zo zullen we 3x9=27 signaalcombinaties kunnen maken.  
+Indien je een groot schakelbord heb, kun je onmiddellijk de vorige Arduino sketch aanpassen om effecten te generen. Indien niet, geen probleem, we bouwen de kubus nu, en testen daarna!
+
+Fe Cube
+We hebben 9 LEDs, en niet 8, het aantal hoekpunten van een kubus. Dit omdat we ze solderen in de vorm van een Fe Cubus. We noemen onze kubus een Fe Cubus omdat het georganizeerd is zoals het Ijzer (Fe) metaal kristalrooster. Ijzermetaal heeft een specifieke structuur welke uitgebeeld wordt in het Atomium gebouw in Brussel.
+We noemen deze structuur een Lichaams-gecentreerd kubisch kristalrooster (in het Engels Cubic crystal system, genoteerd als bcc). 

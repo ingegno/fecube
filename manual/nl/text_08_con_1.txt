@@ -1,0 +1,2 @@
+Constructie
+1. Neem de lasercut delen, en zorg dat ze goed in elkaar passen. Het deksel bevat enkele gaten. Dit zijn de gaten voor de pilaren waarop de kubus komt. We zullen hem niet zoals het Atomium bouwen, maar als een gewone kubus. We hebben een pilaar nodig per LED, dus 4 hoeken met 2 gaten (voor 8 pilaren), en een centrumpilaar. Verifieer de afstanden, dit is de lengte van een zijde van de kubus. Zorg dat je de LED op deze afstand aan elkaar soldeert.

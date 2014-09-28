@@ -1,0 +1,2 @@
+3. We bereiden nu de 9 RGB LEDs voor. Neem een LED, en plooi het been voor het rode licht horizontaal. Gebruik een afgeronde tang om een helix (krul) te maken in de gemeenschappelijke kathode (-).
+Herhaal dit voor de andere 8 RGB LED.

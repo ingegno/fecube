@@ -1,0 +1,4 @@
+Persistentie van visie
+Als je de opdracht uit de eerste sectie gedaan hebt, weet je dat door vlug te flikkeren, je de illusie kunt creeren dat de LED altijd helemaal niet flikkert maar een 'gemengde' kleur toont.  Dus, we kunnen beinvloeden hoe helder een LED is of welke kleur hij toont door heel snel andere kleuren te tonen, of hem even af te zetten (dimmen)
+De truck is te verhinderen dat de mensen de LED effectief zien blinken. Gelukkig hebben mensen persistentie van beelden, denk aan de Phenakistiscoop, uitgevonden door de Belg Plateau in Gent. Persistentie van beelden is het fenomeen waarbij een beeld dat maar een fractie van een seconde gezien is, door je brein zal blijven gezien worden, zelfs nadat het originele beeld verdwenen is of bewogen heeft. Dit is het principie achter film en televisie. 
+Mensen kunnen maximaal 24 beelden per seconde zien, als we dus vlugger flikkeren dan ongeveer 40 milliseconden, zullen onze hersenen een samengesteld beeld waarnemen.

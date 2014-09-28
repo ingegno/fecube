@@ -1,0 +1,29 @@
+Kleuren mengen
+Als je opdracht 1 hebt gedaan, weet je dat je niet zomaar de rode, groene en blauwe kleur kunt mengen. Hoe kunnen we dan roze, of paars, bekomen via de RGB LED? Of kan dat niet?
+Ja, dit kan!  Dankzij persistentie van visie kunnen we onze ogen doen geloven elke combinatie van rood, groen en blauw licht te zien. Welke kleuren je zo kan maken? Een heleboel:
+
+
+
+
+
+
+
+
+
+
+Laat ons een Arduino programma maken om een gemengde kleur te tonen op onze RGB LED. Het Arduino schema wijzigt weer niet. We zullen enkel het programma 'slimmer' maken, en zo de gemengde kleuren tevoorschijn toveren. 
+Download het tweede programma van de website, n02_RGB_mixing.ino, en sla het op in een map met dezelfde naam: n02_RGB_mixing. Open de Arduino sketch met de Arduino IDE, laad het op. 
+Je zou nu in plaats van rood, groen of blauw die flikkeren, drie andere gemengde kleuren moeten zien.
+
+Laat ons kijken wat we verandert hebben in de sketch. Het eerste belangrijke is dat we extra functies definieren: de functie color() en de functie yellow() (geel in het Engels). Dit maakt de code overzichtelijker, en laat doe een stukje code die verschillende keren terugkomt maar een keer op te schrijven.
+We mengen kleuren door een hoeveelheid rood, groen en blauw te tonen. De manier dat die hoeveelheid doorgegeven wordt is een afspraak. Wij gebruiken de meest voorkomende: een kleurhoeveelheid geven we door via een getal van 0 tot 255. Dus rood 0 betekent geen rood, 255 volledig rood, en 200 dat we 200 delen van 255 aan rood tonen. 
+De functie color(int R, int G, int B), is een functie die de 3 hoeveelheden doorkrijgt, en dit omzet in een gemengde kleur. De truck is om voor elke eenheid aan kleur 3 microseconden te tonen. Is rood dus 2, dan tonen we 6 microseconden rood, is rood 200, dan tonen we 600 microseconden rood. Een vaste duur een kleur tonen doen we met de functie 
+delayMicroseconds(val);
+
+Dit is een functie die evenlang wacht als de waarde die je opheeft als val.
+Door enkel rood te tonen, en daarna dit te doen voor enkel groen en enkel blauw, slagen we erin een gemengde kleur te krijgen.
+Om de kleur te dimmen moeten we daarna nog een tijdje geen kleur tonen. Dit is niet zo mooi om zien als het niet volledig donker is. Daarom kun je zelf kiezen of je dimmen wil toelaten of niet. Als de variabele ALLOWDIM waar is (true in het Engels), dan dimmen we. Zet je de variabele vals (false in het Engels), zoals wij standaard doen, dan is dimmen niet toegestaan. Met de code die we hier geven zal dimmen vlug aanleiding geven tot flikkeren, je bent gewaarschuwd!
+
+De functie yellow() toont how we de functie color kunnen gebruiken om vaste kleuren te definieren. In dit geval geel, welke evenveel rood als groen is. 
+
+De loop functie dient ook aangepast te worden ten opzichte van vorig programma. We dienen niet meer zelf op te geven of een arduino uitgang aan of af is, dat doet de color functie nu. We dienen enkel nog maar een effect te maken. In dit geval een seconde geel tonen, dan een kleur die wit benadert, dan paars. 

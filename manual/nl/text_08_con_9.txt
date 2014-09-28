@@ -1,0 +1,1 @@
+9. De basis Fe Cube is hiermee af! Deze kubus is niet interactief, maar we kunnen reeds een programma schrijven om alle LEDs uit te testen. We doen dit eerst voor we verder bouwen.

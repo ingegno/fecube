@@ -1,0 +1,7 @@
+Test Arduino Sketch
+We nemen nu de vorige sketch die we gemaakt hebben, n03_RGB_multiplex.ino, en passen deze aan om onze Fe kubus te testen. Je kan de sketch downloaden van de website, het is sketch n10_cube_test.ino.
+Je ziet hierin een beperkt aantal wijzigingen. In de setup zie je dat de verschillende kubus LED uitgangen gedefinieerd worden, bv 
+   int ledBLA=1;
+welke we dan als een OUTPUT definieren, en op HIGH zetten.
+Verder is de enige wijziging in de LEDs functie. We zullen alle bodem LEDs de eerste kleur geven, en de top LEDs de tweede kleur. De middelste LED geven we de witte kleur: 
+  color(255, 255, 255);

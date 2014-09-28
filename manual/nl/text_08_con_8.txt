@@ -1,0 +1,4 @@
+8. Nu doen we de 3 kleur circuits. Neem een rode draad en verbindt hem met het circuit van de rode LED benen. Steek hem door het voorziene gat in het deksel. Doe hetzelfde met het circuit van de groene en blauwe  LED benen.
+Neem het kleine schakelbord, en plaats de NPN transistoren erop (idem aan vorige circuit). De ingangen verbindt je onderling naar een vrije lijn op het kleine schakelbord, welke je verbindt naar de 5V uitgang van de Arduino.
+De uitgang van de eerste NPN transistor verbind je met het rode circuit, van de tweede met het groene circuit en de derde met het blauwe circuit.
+Het middelste been van de eerste NPN transistor verbindt je met uitgang 10 van de Arduino. Het middelste been van de tweede NPN transistor met uitgang 11, en dat van de derde NPN transistor met uitgang 12.

@@ -1,0 +1,6 @@
+Opdracht 1
+Probeer nu de code te veranderen. Je kan het volgende proberen:
+
+• Wijzig hoe lang de verschillende kleuren getoond worden. Nu word elke kleur 1/3 van de intervallengte getoond. Toon rood langer, of maak een eigen afwisseling van RGB kleuren. 
+• Wat gebeurt er als je de intervallengte korter en korter maakt? Het kortst mogelijke interval met onze code is 1 milliseconde, of een duizendste van een seconde.  Je kan nog vlugger met Arduino via de functie micros(), welke in microseconden rekent, een miljoenste van een seconde. 
+•  Wat stel je vast als je terzelfdertijd Blauw en Groen, of zelfs alledrie, stroom heeft? Dit kan door HIGH te sturen naar de juiste pinnen via de digitalWrite functie. 

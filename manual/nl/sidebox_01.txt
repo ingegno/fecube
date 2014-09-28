@@ -1,0 +1,12 @@
+De Componenten
+• Lasercut frame om de electronica in te stoppen
+• Een plexiglas bovendeel
+• 9 RGB LED (Common Kathode)
+• 9 220 Ohm of 330 Ohm weerstanden
+• Een drukknop
+• Een Arduino UNO met USB kabel
+• 5 harde draden die we als pilaren voor de kubus zullen gebruiken
+• Verschillende draadjes
+•  3 NPN transistoren (2N3904 of 2N2222) 
+• Optioneel: afstandssensor
+• Een schakelbord (breadboard)

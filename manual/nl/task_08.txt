@@ -1,0 +1,2 @@
+Opdracht 8
+Pas PatternSimple aan: wijzig een lijn door andere kleuren te tonen. Voeg enkele lijnen toe om je eigen effect te maken.

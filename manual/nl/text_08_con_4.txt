@@ -1,0 +1,4 @@
+4. Schuif nu de krul over een pilaar, en hou het op zijn plaats met een klem. Soldeer de gemeenschapplelijke kathode vast aan de pilaar. Opgelet, zorg dat de andere beentjes vrij blijven. 
+Doe het zelfde voor de ander 3 onderste LED. 
+Knip de middelste pilaar op halve hoogte van de kubus, en soldeer de LED daar ook vast via de kathode.
+Doe daarna de bovenste 4 LED.

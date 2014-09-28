@@ -1,0 +1,25 @@
+Voor bollebozen: procedurele effecten 
+Je kan nu zelf effecten maken. Deze bestaan aan het opleggen van kleur na kleur volgens je eigen samenstelling. Dit is leuk, en tof, maar wel veel werk! Er bestaat nog een andere manier om effecten te maken: procedures maken die een effect generen. 
+
+Procedurele effecten maken we door een functie te maken die bepaald welke kleur we tonen. We berekenen dus de kleur, waarna we ze tonen. Zo kun je een kleur maken die reageert op de buitenwereld, bevoorbeeld een temperatuursensor die aanleiding heeft tot een kleur tussen blauw en rood.  Enkele ideeen voor procedurele effecten:
+	• Een willekeurige kleur tonen een aantal seconden, met dan een 'fade' overgang
+	• Laat de LED sneller en sneller blinken
+	• Laat de LED twee kleuren sneller en sneller blinken	
+	• Geef de tijd sinds de Arduino aan is mee met een kleur
+	• enz ... 
+  
+Laat ons de eerste idee uitwerken. Download de sketch n04_RGB_procedural, en bestudeer het. Vooreerst moeten we leren hoe we een willekeurig getal kunnen kiezen. Hiertoe voegen we in de setup() functie volgende lijn toe:
+randomSeed(analogRead(0));
+Een random getal is enkel volledige willekeurig indien we niet kunnen raden waar het start. Hiertoe moeten we de random getallen generator zaaien (seed in het Engels) met een begingetal. We doen dit hier door het lezen van de waarde op de niet gebruikte analoge pin 0: analogRead(0). Gezien deze analoge pin bij ons met niets geconnecteerd is, zal er enkel willekeurige storing erop zitten, welke we niet vooraf kunnen raden. Dit zal ons ongekend begin zijn, zodat we zeker zijn dat de serie helderheid die we zien telkens anders is als we de Arduino heropstarten. We kunnen nu een willekeurig getal bekomen met de functie:
+random(256);
+Deze Arduino functie genereert een willekeurig getal tussen 0 en 255. 
+
+We nemen een interval van 6 seconden. De eerste 3 seconden tonen we op de twee LED twee willekeurig gekozen kleuren. Bij de overgang naar het tweede deel van ons interval, kiezen we een derde kleur, en tonen we op LED 1 een fade overgang van kleur 1 naar kleur 2, en op LED 2 een fade overgang van kleur 2 naar kleur 3. Zie de loop() functie, en de nieuwe functie
+void smooth_transitie(float fadeval);
+Hier betekent float een reeel getal (dus een kommagetal). Het dient een waarde te zijn tussen 0 en 1. Bij 0 tonen we de eerste kleur, bij 1 de tweede, en een waarde ertussen toont een mengkleur, zodat we een mooi fade effect krijgen. De menging is  (* is x in programmeertaal):
+(1-fadeval) * oude_kleur + fadeval * nieuwe_kleur
+De waarde van fadeval is hoever we zijn in het tweede deel van het interval, herschaald naar een waarde tussen 0 en 1:
+(timer-interval/2) / float(interval/2)
+Hier is float() een functie die een geheel getal wijzigt naar een kommagetal, dit moet hier om zeker te zijn dat het resultaat een kommagetal zou zijn, een deling van twee gehele getallen levert immers steeds een geheel getal op in Arduino, bv 10 / 4 = 2 en 3 / 4 = 0.
+
+Verder worden de nodige variabelen gedefinieerd. Probeer het, en waag je aan je eigen procedure.

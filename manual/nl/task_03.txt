@@ -1,0 +1,2 @@
+Opdracht 3
+Wijzig de Arduino sketch als volgt: Laat dimmen toe, en toon een rood licht dat in 10 stappen van helrood naar compleet gedimd rood wijzigt. Neem als intervallengte 10 seconden, dus een wijziging in de helderheid elke seconde.

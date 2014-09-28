@@ -1,0 +1,5 @@
+Opdracht 5
+1. Pas vorige Arduino sketch aan: voeg een eigen effect toe. Jouw manier van flikkeren. Zie je het effect die je verwacht? Voor deze opdracht dien je een functie effect5() te schrijven, en deze toe te voegen aan de lijsten. 
+
+2. Maak een effect dat de eerste letter van je naam in Morse code toont. Maak een een tweede effect voor de tweede letter. Doe verder tot je alle letters van je naam hebt. Gebruik de drukknop om tussen de letters te schakelen.
+Zoek hiervoor op internet naar de Morse code van de letters die je nodig hebt.

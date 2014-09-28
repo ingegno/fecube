@@ -1,0 +1,5 @@
+De Weerstand
+Waarom was er een weerstand nodig in ons schema om de LED te doen branden?
+
+De Arduino levert 5 Volt, Volt is een indicatie  van hoeveel werk je kan doen. De LED is gemaakt voor 3 Volt. Gebruik je meer dan zal hij kapot gaan. 
+We moeten daarom een weerstand gebruiken om het voltage over de LED te verminderen. De resistor of weerstand doet wat de naam zegt: het resisteert of weerstaat de stroom. Bijgevolg verliezen de kwantumdeeltjes een deel van hun kracht als ze door een weerstand stromen. Niet alleen zullen de deeltjes minder kracht hebben erna, er zullen ook minder deeltjes passeren elke seconde. De stroom is dus verminderd. Een weerstand of resistor zal dus de stroom verminderen en na het passeren zal er ook nog eens minder kracht over zijn om door de rest van het circuit te stromen.

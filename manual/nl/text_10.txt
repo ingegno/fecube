@@ -1,0 +1,49 @@
+Drukknop voor interactie
+Principe
+Nu de basis kubus af is voegen we een drukknop toe. Dit laat ons toe om te interageren met de kubus via de knop. We beginnen met korte uitleg over de schakeling achter de drukknop.
+
+Neem de drukknop. Je merkt 4 pinnen. Daarvan staan er twee dicht bijeen aan de ene kant, en twee dicht bijeen aan de andere kant. Zet de knop zo dat deze twee kanten links en rechts zijn. De pinnen die dicht bijeen staan zijn niet met elkaar verbonden als je de knop niet aanraakt. Druk je de knop in, dan worden deze twee pinnen met elkaar verbonden. De twee pinnen onderaan zijn steeds onderling verbonden, en ook de twee pinnen bovenaan zijn steeds verbonden. 
+
+Waarom 4 pinnen en niet 2? Dit is omdat het makkelijker solderen is zo. Je zal vaak meer dan 2 draden aan een knop moeten bevestigen, en dus zijn twee extra pinnen handig.
+
+Net zoals onze allereerste schakeling tonen we hoe het werkt door de Arduino als batterij te gebruiken. Neem je kleine schakelbord, en maak het circuit zoals hiernaast afgebeeld. Test dat inderdaad bij indrukken de LED blauw oplicht, terwijl hij anders af staat.
+
+Drukknop status lezen
+We hebben nu geleerd hoe een drukknop de stroom kan onderbreken. Dit kan nuttig zijn in sommige omstandigheden, maar niet voor onze Fe Kubus. In de plaats willen we een knop waardoor we input kunnen krijgen van de gebruiker. In andere woorden, we willen weten als de gebruiker de knop drukt of niet, en we willen daarop reageren via Arduino code.
+
+De Arduino heeft een speciale functie om input te lezen van een digitale pin: 
+  digitalRead(pin);
+Om deze methode te gebruiken moeten we een pin definieren als INPUT in de setup() functie: 
+  pinMode(pin, INPUT);
+
+De functie zal HIGH lezen als de pin op 5V staat en LOW als ze op GND is. De truck is dus om een circuit te maken die  LOW is als de knop niet ingedrukt is en HIGH als de knop ingedrukt is. Zo'n circuit is gegeven in weergegeven in de zijbalk. Maak het na. Let op, een van de weerstanden is 10kΩ, de andere 220Ω of 330Ω!
+
+Laat ons dit circuit analyseren. De pin om de status van de knop te lezen is pin 12. Als de drukknop niet is ingedrukt zien we dat de pin verbonden is via zwart met de GND. Het zal dus in de GND staat of LOW zijn. Je ziet dat er een weerstand is, maar deze lijkt geen functie te hebben.
+
+Beschouw nu het geval dat de knop ingedrukt is. Er is nu een connectie van links naar rechts in de drukknop. Zwart (GND) is dus verbonden met rood die naar de 5V op de Arduino gaat. Moest er geen weerstand zijn dan zouden we een kortsluiting krijgen: stroom die vrij stroomt van 5V naar GND. Aldus moeten we een weerstand hebben om kortsluiting te voorkomen. Welke weerstand hebben we nodig? Wel, we willen dat pin 12 op 5V staat als de knop ingedrukt is, en we willen niet veel stroom gebruiken om dit te verkrijgen. Bijgevolg willen we een grote weerstand! 
+Een grote weerstand zal zorgen dat de weerstand in de draden van de drukknop naar de 5V pin verwaarloosbaar is ten opzichte van de grote weerstand, en dus zal pin 12 op 5V staan. Terzelfdertijd zal een grote weerstand ervoor zorgen dat er maar heel weinig stroom zal vloeien over de drukknop, en ons circuit zal dus heel efficient zijn. Daarom nemen we als weerstand eentje van 10000 Ω, welke we ook schrijven als 10KΩ of 10kΩ. We noemen zo'n weerstand op deze manier gebruikt een pull-down (naar GND) of pull-up (naar 5V) weerstand.
+
+We kunnen nu Arduino code schrijven die de status van pin 12 leest, en het effect wijzigt op de LED na indrukken van de knop. Je vindt de code op de website als n05_RGB_pushbtn.ino
+
+Deze sketch bevat enkele belangrijke wijzigingen. Eerst en vooral gebruiken we #define om nummers aan pinnen toe te kennen. Merk op dat op het einde van deze lijn niet langer ; staat. #define is niet beter, gewoon een alternatief die wel minder geheugen in beslag neemt. Je kan het gebruiken voor alle constante waarden. 
+
+Daarnaast maken we gebruik van lijsten. We geven op hoeveel effecten we zullen maken:
+const int nreffects = 4;
+Dan maken we een lijst die al onze effecten opsomt. De syntax is moeilijk, maar je dient enkel een eigen effect hieraan toe te voegen, of weg te nemen: 
+void (*effects[nreffects])() = {effect1, effect2, effect3, effect4};
+Voor elk effect houden we dan nog een lijst bij van hoe lang het effect duurt:
+long intervals[nreffects] = {3000,3000,3000,3};
+
+Zoals eerder herhaalt een effect zich eindeloos lang. Met de drukknop zullen we ervoor zorgen dat na drukken het volgende effect getoond wordt. Je ziet dit aan het begin van de loop() functie: We lezen de waarde op de drukknop pin, en als deze ingedrukt is (HIGH), en eerder was hij niet ingedrukt (buttonStatePrev == LOW), dan verhogen we het effect dat getoond wordt met 1:
+      showeffect += 1;
+We zorgen er natuurlijk wel voor nooit meer effecten te hebben dan we gemaakt hebben. Lijsten beginnen te tellen bij 0. Onze lijst bevat 4 effecten, dus: 0, 1, 2 en 3. Daarom, als we effect met nummer 4 willen tonen, zorgen we dat we opnieuw bij 0 beginnen:
+      if (showeffect >= nreffects) {
+        showeffect = 0;
+      }
+Daarna tonen we de effecten. Deze code is analoog aan wat je eerder deed. Enige verschil is dat we nu vooraf 4 effecten gemaakt hebben: blinken, licht aan, licht af, en licht gedimd. 
+
+Events
+Wat kunnen we doen met maar een knop? Meer dan je denkt! Denk aan een aanraakscherm op een tablet. Wat kun je doen met een vinger? Denk aan de computermuis. Wat kun je doen met een knop?
+
+Ja, het antwoord is: veel! Je kan een normale druk hebben, een lange druk, een dubbele druk ... . Je zou zelf kunnen reageren op basis van bepaalde patronen (bv SOS in morse).
+Het verschillend reageren op verschillende drukken is een kwestie van software. In onze sketch is het een kwestie van bij te houden op welk tijdstip de knop ingedrukt werd, en wanneer hij losgelaten wordt. Het programma die we zullen gebruiken voor de kubus zal in staat zijn om onderscheid te maken tussen een aantal type drukken. 

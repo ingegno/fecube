@@ -1,0 +1,18 @@
+Multiplexen: meer doen met minder
+We hebben bijna alle principes uitgelegd waarom onze LED kubus gebaseerd is: de RGB LED, de transistor, persistentie van visie. Het laatste principe is multiplexen.
+
+Multiplexen is het principe waarbij je met bv 6 uitgangen van de Arduino niet 6 LEDs controleert, maar wel bv 3*3=9 LEDs of 2*4=8 LEDs. We sturen dus meer LEDs aan dan we uitgangen hebben. De kostprijs die we moeten betalen is dat we niet alle LED terzelfdertijd kunnen doen branden, maar enkel maar een groep per keer. Door het principe van persistentie van visie is dit evenwel geen probleem, als we vlug genoeg schakelen tussen de groepen, zullen we toch een enkel beeld waarnemen. 
+
+Laat ons multiplexen aantonen met een schakeling die twee RGB LED bevat. We hebben dan 6 pinnen aan te sturen. In de vorige oefening hadden we pinnen 8, 9 en 10 nodig. Voor twee LED zouden we dus normaal nu pinnen 11, 12 en 13 nodig hebben. We kunnen dan beide LED terzefdertijd sturen. 
+
+Als we nu multiplexing willen gebruiken zullen we de LED niet meer terzelfdertijd kunnen sturen, maar wel minder uitgangen nodig hebben. We weten dat 6=3*2, dus kunnen we met 3+2=5 uitgangen de LEDs uitsturen. Dit is maar een kleine winst aan uitgangen, maar voor meer sturing loopt dit vlug op. Onze LED kubus zal 29 LED pinnen moeten sturen. We zullen dit doen met 12 pinnen in plaats van 29!
+
+Het schema vind je in de zijkolom. Maak dit na. Het schema bouwt voort op het vorige: je voegt een RGB LED toe naast de eerdere RGB LED. Je verbindt de transistoren naar de R, G en B uitgang van beide LED. De common Kathode van de eeste LED verbind je met uitgang 11, en die van de tweede LED naar uitgang 12 in plaats van de GND waar het eerder zat. Indien er veel stroom over de LED zou stromen zouden we twee extra NPN transistoren toevoegen tussen de LED kathodes en de GND, en uitgang 11 en 12 gebruiken om die te sturen. Gezien een LED niet veel stroom nodig heeft doen we dit hier niet evenwel. 
+
+Het Arduino schema kun je downloaden van de website, het is het derde programma n03_RGB_multiplex.ino, welke je weer in een map n03_RGB_multiplex moet opslaan. We kunnen niet beide LED terzelfdertijd sturen, dus zullen we eerst de linkse LED, dan de rechtse LED sturen, en dit zo vlug dat het lijkt dat ze beide aan zijn: we multiplexen de twee LEDs.
+
+De code is erg analoog aan de vorige Arduino sketch. De functie color is er nog steeds en is dezelfde. Een nieuwe functie LEDs() is aanwezig welke zorgt voor het multiplexen: eerst wordt de linkse LED  kathode (-) op LOW, dus 0V gezet. De rechtse staat dan nog op HIGH (zie setup, dus op 5V). Bijgevolg brandt enkel de linkse LED. We roepen dan de color functie op om op die LED een kleur te tonen. Daarna wordt de linkse LED af gezet (op HIGH), en de rechtse aan (op LOW), en roepen we weer color op om op de rechtse de gewenste kleur te tonen. Dit alles gebeurt in een fractie van een milliseconde.
+
+Het effect dat we standaard tonen in de loop() functie is iets anders: het duurt 2 seconden (interval = 2000), en de eerste seconde tonen we paars links, en geel rechts. De tweede seconde is dit omgewisseld. Daarna herbegint het effect. 
+
+Hierbij hebben we alle basisprincipes gezien van de LED kubus. Tijd om hem te bouwen.
