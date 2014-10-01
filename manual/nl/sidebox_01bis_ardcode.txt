@@ -1,0 +1,19 @@
+Basis Arduino Code
+;   Elk opdracht eindigt met een
+    puntkomma
+{}  Accolades gebruik je voor een blok
+    code
+//  Twee slashes start commentaar
+    Dit is dus geen code. Gebruik het om
+    je code leesbaar te maken!
+    /* commentaar */ is een alternatieve
+    methode voor lang commentaar     
+
+if (conditie)  { .... } else { ...}
+   De if conditie laat je toe te testen. Is de conditie waar, dan voer je eerste codeblok uit. Staat er een else, dan wordt dat blok uitgevoerd indien de conditie vals was.
+
+ ==  Testen of iets gelijk is
+ <, <=, >=, >  Testen of iets kleiner, kleiner of gelijk, groter of gelijk, groter is.
+
+Meer: http://ingegno.be/Manuals/
+          Ard_Sheet_nl.pdf
