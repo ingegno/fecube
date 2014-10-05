@@ -8,17 +8,15 @@ Controlling a FE Cube - intelligent patterns
 #include "effect_rolldice.h"
 #include "effect_beating_heart.h"
 #include "effect_siren.h"
-#include "effect_snake.h"
-#include "effect_simple_pattern.h"
+#include "effect_sparkle.h"
 
 // List of the effects we want to show
-const int nreffects = 6;
-void (*effects[nreffects])(unsigned long, int[27]) = {effect_random_color, effect_smooth_color,
-                                                      effect_beating_heart, effect_siren,
-                                                      effect_snakeBR, effect_simple_pattern};
-unsigned long effect_duration[nreffects] = {1000UL, 4000UL,
-                                            1000UL, 1000UL, 1000UL,
-                                            1000UL,};
+const int nreffects = 4;
+void (*effects[nreffects])(unsigned long, int[27]) = {effect_random_color,
+                                                      effect_beating_heart,
+                                                      effect_siren, effect_sparkle};
+unsigned long effect_duration[nreffects] = {1000UL, 1000UL,
+                                            1000UL, 10000UL};
 
 /*************************************************/
 /*       Setup code                              */
@@ -37,8 +35,7 @@ void setup() {
   // set effect information
   // fixed color to show
   set_fixed_color(255, 0, 255);
-  // timings for smooth color transitions
-  set_smooth_color_durations(1000, 2000);
+  set_sparkle(true, 255, 255, 255, true);
 }
 
 /*************************************************/
