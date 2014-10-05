@@ -171,7 +171,7 @@ unsigned long prevpresstime = 0;
 //timeout to wait for echo pulse in microseconds
 unsigned long timeout_echo = (2* MAX_DIST+1) / SPEED_SOUND;
 //storage variables:
-unsigned long duration = 0UL;
+unsigned long eduration = 0UL;
 float distance = 0, old_distance = 0;;
 unsigned char echoval;
 unsigned long echoduration=0UL;
@@ -885,7 +885,7 @@ float meas_dist(){
         //timeout, jump out of loop
         contwait = false;
         inecholoc = false;
-        duration = 0UL;
+        eduration = 0UL;
         updated_dist = true;
       }
     }
@@ -894,21 +894,21 @@ float meas_dist(){
     echoval = digitalRead(echoPin);
     //if we read LOW, timing ends
     if (echoval == LOW) {
-      //echo received, new duration value
-      duration = currentTime_mus-echoduration;
+      //echo received, new eduration value
+      eduration = currentTime_mus-echoduration;
       inecholoc = false;
       updated_dist = true;
     } else if (currentTime_mus-echoduration > timeout_echo) {
-      duration = 0UL;
+      eduration = 0UL;
       inecholoc = false;
       updated_dist = true;
     }
   }
   if (updated_dist) {
     if (test) {
-        Serial.print("Duration of echo in microsec ");Serial.println(duration);
+        Serial.print("Duration of echo in microsec ");Serial.println(eduration);
       }
-    distance = (duration/2.) * SPEED_SOUND;
+    distance = (eduration/2.) * SPEED_SOUND;
     if (distance < MIN_DIST || distance > MAX_DIST){
       //out of range
       if (test) {
