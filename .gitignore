@@ -20,7 +20,10 @@
 # latex
 *.aux
 *.log
-*.pdf
+*.dvi
+*.kilepr.*
+*tex.gz
+#*.pdf
 
 # kde and kile
 *.backup

@@ -1,0 +1,106 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage{a4wide}
+%\usepackage[utf8]{inputenc}
+
+%\usepackage[english,dutch]{babel}
+% better color management than parallel:
+\usepackage{pdfcolparallel}
+
+\setlength{\columnsep}{0.5cm}
+
+%\usepackage{parallel}
+\usepackage{color}
+\usepackage{amsmath}
+\usepackage{graphicx}
+
+\usepackage{inconsolata} %a different monofont, texlive-fonts-extra needed!
+
+\usepackage{arduinohighlight}
+
+
+\usepackage{xcolor} 
+\usepackage{framed}
+\colorlet{shadecolor}{gray!50}
+
+\usepackage[
+      %dvipdfm,    %put here the correct(!) driver you are using
+      pdftex,
+      unicode,
+      colorlinks=true,    %no frame around URL
+      urlcolor=blue,    %blue color
+      menucolor=black,    %no colors
+      linkcolor=blue,    %blue color
+      bookmarks=true,    %tree-like TOC
+      bookmarksopen=true,    %expanded when starting
+      hyperfootnotes=false,    %no referencing of footnotes, does not compile
+      pdfpagemode=UseOutlines,    %show the bookmarks when starting the pdf viewer
+      pdfauthor={Ingegno.be},
+      pdftitle={Fe Cube - Ingegno.be},
+]{hyperref}
+
+
+\newtheorem{opdrE}{Task} 
+\newenvironment{doE}
+  {\begin{shaded}\begin{opdrE}}
+  {\end{opdrE}\end{shaded}}
+
+\newtheorem{opdrN}{Opdracht} 
+\newenvironment{doN}
+  {\begin{shaded}\begin{opdrN}}
+  {\end{opdrN}\end{shaded}}
+\newtheorem{code}{Code} 
+
+%% First to \eng, then \ned, closes automatically with a paragraph
+% \newcommand{\eng}[1]{\selectlanguage{english} \ParallelLText{#1}}
+% \newcommand{\ned}[1]{\selectlanguage{dutch} \ParallelRText{#1} \ParallelPar}
+% \newcommand{\engt}[1]{{#1} - }
+% \newcommand{\nedt}[1]{{#1}}
+% \newcommand{\engo}[1]{\eng {#1}}
+% \newcommand{\nedo}[1]{\ned {#1}}
+
+%% Use following for book in English language
+% \usepackage{multicol}
+% %\newcommand{\eng}[1]{\selectlanguage{english} {#1}}
+% \newcommand{\eng}[1]{\begin{multicols}{2}{\selectlanguage{english} {#1}}\end{multicols} \hrule}
+% \newcommand{\ned}[1]{ }
+% \newcommand{\engt}[1]{{#1}}
+% \newcommand{\nedt}[1]{ }
+% \newcommand{\nedo}[1]{ }
+% \newcommand{\engo}[1]{\selectlanguage{english} {#1}}
+
+%% Use following for book in Dutch language
+\usepackage{multicol}
+%\newcommand{\ned}[1]{\selectlanguage{dutch} {#1}}
+%\newcommand{\ned}[1]{\begin{multicols}{2}{\selectlanguage{dutch} {#1}}\end{multicols} \hrule}
+\newcommand{\ned}[1]{\begin{multicols}{2}{ {#1}}\end{multicols} \hrule}
+\newcommand{\eng}[1]{ }
+\newcommand{\nedt}[1]{{#1}}
+\newcommand{\engt}[1]{ }
+\newcommand{\engo}[1]{ }
+%\newcommand{\nedo}[1]{\selectlanguage{dutch} {#1}}
+\newcommand{\nedo}[1]{ {#1}}
+
+
+%\selectlanguage{english}
+% \ParallelLText{\blindtext}
+%\selectlanguage{dutch}
+%\ParallelRText{\blindtext}
+%\ParallelPar
+
+
+\begin{document}
+
+
+ \title{\engt{Fe Cube: Make it! Understand it!} \nedt{Fe Cube: Maak het! Versta het!}}
+ \author{Ingegno Team: M.C. Ciocci, B. Malengier}
+ \date{\today}
+ \maketitle
+
+\begin{Parallel}{7.5cm}{7.5cm}
+
+\input{fecube}
+\newpage
+\input{fecube_2}
+
+\end{Parallel}
+\end{document}
